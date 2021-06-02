@@ -14,15 +14,5 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        lifecycleScope.launch(Dispatchers.Default) {
-            try {
-                val doc: Document = Jsoup.connect("https://nyaa.si/").get()
-                val pageItems = doc.select("tr.default")
-                Log.w("asdasdsa", "${pageItems.size}")
-            } catch(e: Exception) {
-                Log.e("asd", "exception", e)
-            }
-        }
     }
 }
