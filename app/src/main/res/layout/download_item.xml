@@ -1,18 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="30dp">
+    android:layout_height="wrap_content"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="16dp"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="?selectableItemBackground"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
-        android:id="@+id/test_text"
+        android:id="@+id/release_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/release_bottom"
+        app:layout_constraintEnd_toStartOf="@id/download_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Random file with very long name" />
+
+    <LinearLayout
+        android:id="@+id/release_bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/release_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/release_title"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal">
+
+        <!--<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseID"
+            android:text="ID: " />
+
+        <TextView
+            android:id="@+id/release_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseID"
+            tools:text="I123123123123123" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:layout_marginHorizontal="10dp"/>-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseID"
+            android:text="Release date: " />
+
+        <TextView
+            android:id="@+id/release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseID"
+            tools:text="Today" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/download_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:marqueeRepeatLimit ="marquee_forever"
-        android:scrollHorizontally="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_gravity="center_vertical"/>
+        android:src="@drawable/ic_outline_download_24"
+        android:background="?selectableItemBackgroundBorderless"
+        android:layout_marginStart="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/release_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="?android:textColorPrimary" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

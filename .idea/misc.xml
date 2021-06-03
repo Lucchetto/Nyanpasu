@@ -3,8 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_outline_download_24.xml" value="0.1787037037037037" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.11770833333333333" />
-        <entry key="app/src/main/res/layout/download_item.xml" value="0.16485507246376813" />
+        <entry key="app/src/main/res/layout/download_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_browse.xml" value="0.11770833333333333" />
       </map>
     </option>

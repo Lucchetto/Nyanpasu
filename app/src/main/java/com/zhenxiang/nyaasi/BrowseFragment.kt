@@ -41,8 +41,21 @@ class BrowseFragment : Fragment() {
         val fragmentView = inflater.inflate(R.layout.fragment_browse, container, false)
 
         val downloadsList = fragmentView.findViewById<RecyclerView>(R.id.downloads_list)
-        downloadsList.layoutManager = LinearLayoutManager(fragmentView.context)
+        val listLayoutManager = LinearLayoutManager(fragmentView.context)
+        downloadsList.layoutManager = listLayoutManager
         downloadsList.adapter = downloadsAdapter
+
+        // WIP: infinite data loading
+        downloadsList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (listLayoutManager.findLastVisibleItemPosition() == downloadsAdapter.itemCount - 1) {
+                    lifecycleScope.launch() {
+                        viewModel.loadData()
+                    }
+                }
+            }
+        })
 
         lifecycleScope.launch() {
             viewModel.loadData()

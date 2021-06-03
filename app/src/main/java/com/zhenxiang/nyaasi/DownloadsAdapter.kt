@@ -6,17 +6,21 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.api.NyaaDownloadItem
+import java.text.DateFormat
 
 class DownloadsAdapter(): RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
 
     val items = mutableListOf<NyaaDownloadItem>()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val textView: TextView = view.findViewById(R.id.test_text)
+        //private val id: TextView = view.findViewById(R.id.release_id)
+        private val title: TextView = view.findViewById(R.id.release_title)
+        private val releaseDate: TextView = view.findViewById(R.id.release_date)
 
         fun bind(item: NyaaDownloadItem) {
-            textView.text = "${item.id} ${item.name} ${item.magnet} ${item.date.toLocaleString()}"
-            textView.isSelected = true
+            //id.text = item.id.toString()
+            title.text = item.name
+            releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(item.date)
         }
     }
 
