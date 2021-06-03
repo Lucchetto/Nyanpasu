@@ -35,6 +35,7 @@ class BrowseFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(NyaaViewModel::class.java)
         viewModel.itemsLiveData.observe(viewLifecycleOwner,  {
             downloadsAdapter.setItems(it)
+            downloadsAdapter.setFooterVisible(!viewModel.isBottomReached())
         })
 
         // Inflate the layout for this fragment
@@ -49,7 +50,7 @@ class BrowseFragment : Fragment() {
         downloadsList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (listLayoutManager.findLastVisibleItemPosition() == downloadsAdapter.itemCount - 1) {
+                if (listLayoutManager.findLastVisibleItemPosition() == downloadsAdapter.itemCount - 1 && !viewModel.isBottomReached()) {
                     lifecycleScope.launch() {
                         viewModel.loadData()
                     }

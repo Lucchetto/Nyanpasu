@@ -8,11 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.api.NyaaDownloadItem
 import java.text.DateFormat
 
-class DownloadsAdapter(): RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
+class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val items = mutableListOf<NyaaDownloadItem>()
+    private val TYPE_DOWNLOAD_ITEM = 0
+    private val TYPE_FOOTER_ITEM = 1
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private val items = mutableListOf<NyaaDownloadItem>()
+
+    private var showFooter = true
+
+    class DownloadItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //private val id: TextView = view.findViewById(R.id.release_id)
         private val title: TextView = view.findViewById(R.id.release_title)
         private val releaseDate: TextView = view.findViewById(R.id.release_date)
@@ -24,19 +29,44 @@ class DownloadsAdapter(): RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.download_item, parent, false)
-        return ViewHolder(view)
+    class FooterViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        private val loadingCircle = view.findViewById<View>(R.id.footer_loading_circle)
+        fun setVisible(visible: Boolean) {
+            loadingCircle.visibility = if (visible) View.VISIBLE else View.GONE
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val element = items[position]
-        holder.bind(element)
+    fun setFooterVisible(visible: Boolean) {
+        if (visible != showFooter) {
+            showFooter = visible
+            // Update last item which is footer
+            notifyItemChanged(itemCount - 1)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val isFooterItem = viewType == TYPE_FOOTER_ITEM
+        val view = LayoutInflater.from(parent.context)
+            .inflate(if (isFooterItem) R.layout.loading_circle_footer else R.layout.download_item, parent, false)
+        return if (isFooterItem) FooterViewHolder(view) else DownloadItemViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is DownloadItemViewHolder) {
+            val element = items[position]
+            holder.bind(element)
+        } else if (holder is FooterViewHolder) {
+            holder.setVisible(showFooter)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position < itemCount - 1) TYPE_DOWNLOAD_ITEM else TYPE_FOOTER_ITEM
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        // All data plus one for footer
+        return items.size + 1
     }
 
     fun setItems(newItems: List<NyaaDownloadItem>) {
@@ -44,5 +74,4 @@ class DownloadsAdapter(): RecyclerView.Adapter<DownloadsAdapter.ViewHolder>() {
         items.addAll(newItems)
         notifyDataSetChanged()
     }
-
 }

@@ -14,10 +14,16 @@ class NyaaViewModel: ViewModel() {
     val repository = NyaaRepository()
     val itemsLiveData = MutableLiveData(repository.items)
 
+    private var bottomReached = false
+
     suspend fun loadData() {
-        repository.getLinks()
+        // Request more items from repository
+        bottomReached = repository.getLinks()
         withContext(Dispatchers.Main) {
+            // Emit new values from repository
             itemsLiveData.value = repository.items
         }
     }
+
+    fun isBottomReached() = bottomReached
 }
