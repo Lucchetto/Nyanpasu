@@ -52,9 +52,8 @@ class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is DownloadItemViewHolder) {
-            val element = items[position]
-            holder.bind(element)
+        if (holder is DownloadItemViewHolder && items[position] != null) {
+            holder.bind(items[position])
         } else if (holder is FooterViewHolder) {
             holder.setVisible(showFooter)
         }
