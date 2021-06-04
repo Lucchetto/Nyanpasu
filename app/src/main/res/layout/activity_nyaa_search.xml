@@ -35,7 +35,7 @@
             android:layout_marginTop="24dp"
             android:text="Type the keywords then press search"/>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.revengeos.revengeui.widget.BounceRecyclerView
             android:id="@+id/search_results"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

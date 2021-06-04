@@ -19,7 +19,7 @@
             app:layout_scrollFlags="scroll|enterAlways" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.revengeos.revengeui.widget.BounceRecyclerView
         android:id="@+id/downloads_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

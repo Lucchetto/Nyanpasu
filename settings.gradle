@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Nyaa.si"
 include ':app'
+include ':revengeui'
