@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="Browse"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:background="?android:colorBackground"
             app:layout_scrollFlags="scroll|enterAlways" />
     </com.google.android.material.appbar.AppBarLayout>
 
