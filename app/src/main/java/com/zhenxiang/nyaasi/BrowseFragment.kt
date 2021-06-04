@@ -69,7 +69,7 @@ class BrowseFragment : Fragment() {
         return fragmentView
     }
 
-    fun openNyaaSearch() {
+    private fun openNyaaSearch() {
         val intent = Intent(activity, NyaaSearchActivity::class.java)
         startActivity(intent)
 

@@ -3,15 +3,16 @@ package com.zhenxiang.nyaasi.api
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class NyaaSearchViewModel: ViewModel() {
 
     private val repository = NyaaRepository()
     val searchResultsLiveData = MutableLiveData(repository.items)
-    private var busy = false
+    var busy = false
+        private set
+
+    private var job : Job? = null
 
     fun setSearchText(searchText: String?) {
         searchText?.let {
@@ -29,7 +30,7 @@ class NyaaSearchViewModel: ViewModel() {
     }
 
     fun loadSearchResults() {
-        viewModelScope.launch {
+        job = viewModelScope.launch {
             busy = true
             if (repository.searchValue?.isNotEmpty() == true) {
                 repository.getLinks()

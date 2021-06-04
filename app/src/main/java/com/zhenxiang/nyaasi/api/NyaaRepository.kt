@@ -28,7 +28,7 @@ class NyaaRepository {
             bottomReached = value == null || value.isEmpty()
         }
 
-    suspend fun getLinks(): Boolean = withContext(Dispatchers.Default) {
+    suspend fun getLinks(): Boolean = withContext(Dispatchers.IO) {
         if (!bottomReached) {
             pageIndex++
             try {

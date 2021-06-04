@@ -2,6 +2,7 @@ package com.zhenxiang.nyaasi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelProvider
@@ -51,13 +52,18 @@ class NyaaSearchActivity : AppCompatActivity() {
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+                if (resultsList.visibility == View.GONE) {
+                    resultsList.visibility = View.VISIBLE
+                    val hintText = findViewById<View>(R.id.search_hint)
+                    hintText.visibility = View.GONE
+                }
+                searchViewModel.setSearchText(query)
+                searchViewModel.loadSearchResults()
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                searchViewModel.setSearchText(newText)
-                searchViewModel.loadSearchResults()
-                return true
+                return false
             }
 
         })
