@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.zhenxiang.nyaasi.api.NyaaDownloadItem
+import com.zhenxiang.nyaasi.api.NyaaReleaseItem
 import java.text.DateFormat
 
 class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -13,7 +13,7 @@ class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_DOWNLOAD_ITEM = 0
     private val TYPE_FOOTER_ITEM = 1
 
-    private val items = mutableListOf<NyaaDownloadItem>()
+    val items = mutableListOf<NyaaReleaseItem>()
 
     private var showFooter = true
 
@@ -22,7 +22,7 @@ class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val title: TextView = view.findViewById(R.id.release_title)
         private val releaseDate: TextView = view.findViewById(R.id.release_date)
 
-        fun bind(item: NyaaDownloadItem) {
+        fun bind(item: NyaaReleaseItem) {
             //id.text = item.id.toString()
             title.text = item.name
             releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(item.date)
@@ -68,7 +68,7 @@ class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return items.size + 1
     }
 
-    fun setItems(newItems: List<NyaaDownloadItem>) {
+    fun setItems(newItems: List<NyaaReleaseItem>) {
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()

@@ -13,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Nyaasi">
         <activity
+            android:name=".NyaaReleaseActivity"
+            android:exported="true"
+            android:label="@string/title_activity_nyaa_release"
+            android:theme="@style/Theme.Nyaasi.NoActionBar" />
+        <activity
             android:name=".NyaaSearchActivity"
             android:exported="true" />
         <activity

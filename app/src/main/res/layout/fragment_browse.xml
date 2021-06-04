@@ -32,6 +32,6 @@
         app:icon="@drawable/ic_search_black_24dp"
         android:layout_gravity="bottom|end"
         android:onClick="openNyaaSearch"
-        android:layout_margin="20dp"/>
+        android:layout_margin="@dimen/fab_margin"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

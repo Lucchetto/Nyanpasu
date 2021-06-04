@@ -7,6 +7,7 @@
         <entry key="../../../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_outline_download_24.xml" value="0.1787037037037037" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.11770833333333333" />
+        <entry key="app/src/main/res/layout/activity_nyaa_release.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_nyaa_search.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/layout/download_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_browse.xml" value="0.11770833333333333" />

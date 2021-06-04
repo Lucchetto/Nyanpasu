@@ -6,15 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
-import kotlinx.coroutines.launch
 import android.content.Intent
-
-
 
 
 /**
@@ -64,6 +60,16 @@ class BrowseFragment : Fragment() {
                 }
             }
         })
+
+        downloadsList.addOnItemTouchListener(object: RecyclerViewItemClickListener(downloadsList.context) {
+            override fun onItemClick(view: View, position: Int) {
+                super.onItemClick(view, position)
+                downloadsAdapter.items.getOrNull(position)?.let {
+                    NyaaReleaseActivity.startNyaaReleaseActivity(it, requireActivity())
+                }
+            }
+        })
+
         browseViewModel.loadData()
 
         return fragmentView
@@ -72,7 +78,6 @@ class BrowseFragment : Fragment() {
     private fun openNyaaSearch() {
         val intent = Intent(activity, NyaaSearchActivity::class.java)
         startActivity(intent)
-
     }
 
     companion object {

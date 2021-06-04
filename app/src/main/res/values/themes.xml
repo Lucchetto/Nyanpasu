@@ -24,4 +24,13 @@
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">?android:textColorSecondary</item>
     </style>
+
+    <style name="Theme.Nyaasi.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Nyaasi.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Nyaasi.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

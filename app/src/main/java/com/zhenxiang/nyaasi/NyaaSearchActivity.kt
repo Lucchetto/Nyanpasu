@@ -49,6 +49,14 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
         })
 
+        resultsList.addOnItemTouchListener(object: RecyclerViewItemClickListener(resultsList.context) {
+            override fun onItemClick(view: View, position: Int) {
+                super.onItemClick(view, position)
+                resultsAdapter.items.getOrNull(position)?.let {
+                    NyaaReleaseActivity.startNyaaReleaseActivity(it, this@NyaaSearchActivity)
+                }
+            }
+        })
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
