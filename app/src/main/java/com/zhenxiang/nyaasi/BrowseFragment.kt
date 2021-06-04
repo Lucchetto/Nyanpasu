@@ -1,7 +1,6 @@
 package com.zhenxiang.nyaasi
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.zhenxiang.nyaasi.api.NyaaViewModel
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import kotlinx.coroutines.launch
+import android.content.Intent
+
+
+
 
 /**
  * A simple [Fragment] subclass.
@@ -20,7 +24,7 @@ import kotlinx.coroutines.launch
  */
 class BrowseFragment : Fragment() {
 
-    private lateinit var viewModel: NyaaViewModel
+    private lateinit var browseViewModel: NyaaBrowseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,15 +35,20 @@ class BrowseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val downloadsAdapter = DownloadsAdapter()
-        viewModel = ViewModelProvider(this).get(NyaaViewModel::class.java)
-        viewModel.itemsLiveData.observe(viewLifecycleOwner,  {
-            downloadsAdapter.setItems(it)
-            downloadsAdapter.setFooterVisible(!viewModel.isBottomReached())
-        })
-
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_browse, container, false)
+
+        val searchBtn = fragmentView.findViewById<ExtendedFloatingActionButton>(R.id.search_btn)
+        searchBtn.setOnClickListener {
+            openNyaaSearch()
+        }
+
+        val downloadsAdapter = DownloadsAdapter()
+        browseViewModel = ViewModelProvider(this).get(NyaaBrowseViewModel::class.java)
+        browseViewModel.itemsLiveData.observe(viewLifecycleOwner,  {
+            downloadsAdapter.setItems(it)
+            downloadsAdapter.setFooterVisible(!browseViewModel.isBottomReached())
+        })
 
         val downloadsList = fragmentView.findViewById<RecyclerView>(R.id.downloads_list)
         val listLayoutManager = LinearLayoutManager(fragmentView.context)
@@ -50,18 +59,20 @@ class BrowseFragment : Fragment() {
         downloadsList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (listLayoutManager.findLastVisibleItemPosition() == downloadsAdapter.itemCount - 1 && !viewModel.isBottomReached()) {
-                    lifecycleScope.launch() {
-                        viewModel.loadData()
-                    }
+                if (listLayoutManager.findLastVisibleItemPosition() == downloadsAdapter.itemCount - 1) {
+                    browseViewModel.loadMore()
                 }
             }
         })
+        browseViewModel.loadData()
 
-        lifecycleScope.launch() {
-            viewModel.loadData()
-        }
         return fragmentView
+    }
+
+    fun openNyaaSearch() {
+        val intent = Intent(activity, NyaaSearchActivity::class.java)
+        startActivity(intent)
+
     }
 
     companion object {

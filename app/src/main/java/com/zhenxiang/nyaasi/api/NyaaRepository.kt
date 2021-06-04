@@ -1,5 +1,6 @@
 package com.zhenxiang.nyaasi.api
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
@@ -7,6 +8,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import java.net.URLEncoder
 import java.util.*
 
 class NyaaRepository {
@@ -15,13 +17,27 @@ class NyaaRepository {
 
     val items = mutableListOf<NyaaDownloadItem>()
     private var pageIndex = 0
-    private var bottomReached = false
+    var bottomReached = false
+        private set
+
+    var searchValue: String? = null
+        set(value) {
+            items.clear()
+            field = value
+            pageIndex = 0
+            bottomReached = value == null || value.isEmpty()
+        }
 
     suspend fun getLinks(): Boolean = withContext(Dispatchers.Default) {
         if (!bottomReached) {
             pageIndex++
             try {
-                val doc: Document = Jsoup.connect("https://nyaa.si/?p=${pageIndex}").get()
+                var url = "https://nyaa.si/?p=${pageIndex}"
+                searchValue?.let {
+                    url += "&q=${URLEncoder.encode(it, "utf-8")}"
+                }
+                Log.w(TAG, url)
+                val doc: Document = Jsoup.connect(url).get()
                 // Check that item has href with format /view/[integer_id]
                 val pageItems = doc.select("tr>td>a[href~=^\\/view\\/\\d+\$]")
                 if (pageItems.size > 0) {
@@ -50,6 +66,6 @@ class NyaaRepository {
     }
 
     companion object {
-        const val MAX_LOADABLE_ITEMS = 150
+        const val MAX_LOADABLE_ITEMS = 3500
     }
 }
