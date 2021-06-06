@@ -7,6 +7,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
 
 class NyaaSearchActivity : AppCompatActivity() {
@@ -29,6 +30,12 @@ class NyaaSearchActivity : AppCompatActivity() {
             resultsAdapter.setFooterVisible(!searchViewModel.isBottomReached())
         })
 
+        resultsAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
+            override fun itemClicked(item: NyaaReleasePreviewItem) {
+                NyaaReleaseActivity.startNyaaReleaseActivity(item, this@NyaaSearchActivity)
+            }
+        }
+
         val resultsList = findViewById<RecyclerView>(R.id.search_results)
         val listLayoutManager = LinearLayoutManager(this)
         resultsList.layoutManager = listLayoutManager
@@ -40,15 +47,6 @@ class NyaaSearchActivity : AppCompatActivity() {
                 super.onScrolled(recyclerView, dx, dy)
                 if (listLayoutManager.findLastVisibleItemPosition() == resultsAdapter.itemCount - 1) {
                     searchViewModel.loadMore()
-                }
-            }
-        })
-
-        resultsList.addOnItemTouchListener(object: RecyclerViewItemClickListener(resultsList.context) {
-            override fun onItemClick(view: View, position: Int) {
-                super.onItemClick(view, position)
-                resultsAdapter.items.getOrNull(position)?.let {
-                    NyaaReleaseActivity.startNyaaReleaseActivity(it, this@NyaaSearchActivity)
                 }
             }
         })

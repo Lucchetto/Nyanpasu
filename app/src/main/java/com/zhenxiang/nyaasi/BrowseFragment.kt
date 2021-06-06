@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import android.content.Intent
+import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 
 
 /**
@@ -60,14 +61,11 @@ class BrowseFragment : Fragment() {
             }
         })
 
-        releasesList.addOnItemTouchListener(object: RecyclerViewItemClickListener(releasesList.context) {
-            override fun onItemClick(view: View, position: Int) {
-                super.onItemClick(view, position)
-                releasesListAdapter.items.getOrNull(position)?.let {
-                    NyaaReleaseActivity.startNyaaReleaseActivity(it, requireActivity())
-                }
+        releasesListAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
+            override fun itemClicked(item: NyaaReleasePreviewItem) {
+                NyaaReleaseActivity.startNyaaReleaseActivity(item, requireActivity())
             }
-        })
+        }
 
         browseViewModel.loadData()
 

@@ -2,6 +2,7 @@ package com.zhenxiang.nyaasi
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -38,6 +39,14 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val idView = findViewById<TextView>(R.id.release_id)
             idView.text = "ID: ${it.id}"
+
+            val magnetBtn = findViewById<View>(R.id.magnet_btn)
+            magnetBtn.setOnClickListener { _ ->
+                startActivity(
+                    Intent(Intent.ACTION_VIEW, Uri.parse(it.magnet))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+            }
 
             val date = findViewById<ReleaseDataItemView>(R.id.release_date)
             date.setValue(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it.date))

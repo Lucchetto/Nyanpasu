@@ -1,5 +1,7 @@
 package com.zhenxiang.nyaasi
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,21 +10,43 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 import java.text.DateFormat
 
-class ReleasesListAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_DOWNLOAD_ITEM = 0
     private val TYPE_FOOTER_ITEM = 1
 
     val items = mutableListOf<NyaaReleasePreviewItem>()
 
+    var listener: ItemClickedListener? = null
+
     private var showFooter = true
 
-    class DownloadItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class DownloadItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //private val id: TextView = view.findViewById(R.id.release_id)
         private val title: TextView = view.findViewById(R.id.release_title)
         private val releaseDate: TextView = view.findViewById(R.id.release_date)
+        private val magnetBtn: View = view.findViewById(R.id.magnet_btn)
+
+        private var itemData: NyaaReleasePreviewItem? = null
+
+        init {
+            view.setOnClickListener {
+                val itemData = itemData
+                val listener = listener
+                if (itemData != null && listener != null) {
+                    listener.itemClicked(itemData)
+                }
+            }
+            magnetBtn.setOnClickListener {
+                itemData?.let {
+                    magnetBtn.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it.magnet))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                }
+            }
+        }
 
         fun bind(item: NyaaReleasePreviewItem) {
+            itemData = item
             //id.text = item.id.toString()
             title.text = item.name
             releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(item.date)
@@ -72,5 +96,9 @@ class ReleasesListAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
+    }
+
+    interface ItemClickedListener {
+        fun itemClicked(item: NyaaReleasePreviewItem)
     }
 }

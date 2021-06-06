@@ -42,6 +42,7 @@
                 android:layout_weight="1"/>
 
             <ImageButton
+                android:id="@+id/magnet_btn"
                 android:src="@drawable/ic_magnet"
                 style="@style/Theme.Nyaasi.ReleaseActionButton" />
 
