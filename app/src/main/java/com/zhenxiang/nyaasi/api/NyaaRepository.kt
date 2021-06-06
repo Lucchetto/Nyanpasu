@@ -12,7 +12,7 @@ class NyaaRepository {
 
     private val TAG = javaClass.name
 
-    val items = mutableListOf<NyaaReleaseItem>()
+    val items = mutableListOf<NyaaReleasePreviewItem>()
     private var pageIndex = 0
     var bottomReached = false
         private set
@@ -47,7 +47,7 @@ class NyaaRepository {
                         val seeders = parentRow.select("td:nth-child(6)").text().toInt()
                         val leechers = parentRow.select("td:nth-child(7)").text().toInt()
                         val completed = parentRow.select("td:nth-child(8)").text().toInt()
-                        val nyaaItem = NyaaReleaseItem(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed)
+                        val nyaaItem = NyaaReleasePreviewItem(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed)
                         items.add(nyaaItem)
 
                         // Prevent loading too many items in the repository

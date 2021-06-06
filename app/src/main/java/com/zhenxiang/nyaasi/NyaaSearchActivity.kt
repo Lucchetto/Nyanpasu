@@ -4,15 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 
 class NyaaSearchActivity : AppCompatActivity() {
 
@@ -26,7 +21,7 @@ class NyaaSearchActivity : AppCompatActivity() {
         searchBar.setIconifiedByDefault(false)
         searchBar.requestFocus()
 
-        val resultsAdapter = DownloadsAdapter()
+        val resultsAdapter = ReleasesListAdapter()
         searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
         searchViewModel.setSearchText(null)
         searchViewModel.searchResultsLiveData.observe(this,  {

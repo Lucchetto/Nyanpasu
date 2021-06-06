@@ -15,7 +15,7 @@
         android:id="@+id/release_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.Nyaasi.ReleaseTitle"
+        style="@style/TextAppearance.Nyaasi.ReleasePreviewTitle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="@id/release_bottom"
         app:layout_constraintEnd_toStartOf="@id/download_btn"

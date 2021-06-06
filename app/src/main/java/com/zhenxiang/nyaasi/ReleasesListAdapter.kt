@@ -5,15 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.zhenxiang.nyaasi.api.NyaaReleaseItem
+import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 import java.text.DateFormat
 
-class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ReleasesListAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_DOWNLOAD_ITEM = 0
     private val TYPE_FOOTER_ITEM = 1
 
-    val items = mutableListOf<NyaaReleaseItem>()
+    val items = mutableListOf<NyaaReleasePreviewItem>()
 
     private var showFooter = true
 
@@ -22,7 +22,7 @@ class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val title: TextView = view.findViewById(R.id.release_title)
         private val releaseDate: TextView = view.findViewById(R.id.release_date)
 
-        fun bind(item: NyaaReleaseItem) {
+        fun bind(item: NyaaReleasePreviewItem) {
             //id.text = item.id.toString()
             title.text = item.name
             releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(item.date)
@@ -47,7 +47,7 @@ class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val isFooterItem = viewType == TYPE_FOOTER_ITEM
         val view = LayoutInflater.from(parent.context)
-            .inflate(if (isFooterItem) R.layout.loading_circle_footer else R.layout.download_item, parent, false)
+            .inflate(if (isFooterItem) R.layout.loading_circle_footer else R.layout.release_preview_item, parent, false)
         return if (isFooterItem) FooterViewHolder(view) else DownloadItemViewHolder(view)
     }
 
@@ -68,7 +68,7 @@ class DownloadsAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return items.size + 1
     }
 
-    fun setItems(newItems: List<NyaaReleaseItem>) {
+    fun setItems(newItems: List<NyaaReleasePreviewItem>) {
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()

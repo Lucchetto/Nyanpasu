@@ -39,32 +39,32 @@ class BrowseFragment : Fragment() {
             openNyaaSearch()
         }
 
-        val downloadsAdapter = DownloadsAdapter()
+        val releasesListAdapter = ReleasesListAdapter()
         browseViewModel = ViewModelProvider(this).get(NyaaBrowseViewModel::class.java)
         browseViewModel.itemsLiveData.observe(viewLifecycleOwner,  {
-            downloadsAdapter.setItems(it)
-            downloadsAdapter.setFooterVisible(!browseViewModel.isBottomReached())
+            releasesListAdapter.setItems(it)
+            releasesListAdapter.setFooterVisible(!browseViewModel.isBottomReached())
         })
 
-        val downloadsList = fragmentView.findViewById<RecyclerView>(R.id.downloads_list)
+        val releasesList = fragmentView.findViewById<RecyclerView>(R.id.releases_list)
         val listLayoutManager = LinearLayoutManager(fragmentView.context)
-        downloadsList.layoutManager = listLayoutManager
-        downloadsList.adapter = downloadsAdapter
+        releasesList.layoutManager = listLayoutManager
+        releasesList.adapter = releasesListAdapter
 
         // WIP: infinite data loading
-        downloadsList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        releasesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (listLayoutManager.findLastVisibleItemPosition() == downloadsAdapter.itemCount - 1) {
+                if (listLayoutManager.findLastVisibleItemPosition() == releasesListAdapter.itemCount - 1) {
                     browseViewModel.loadMore()
                 }
             }
         })
 
-        downloadsList.addOnItemTouchListener(object: RecyclerViewItemClickListener(downloadsList.context) {
+        releasesList.addOnItemTouchListener(object: RecyclerViewItemClickListener(releasesList.context) {
             override fun onItemClick(view: View, position: Int) {
                 super.onItemClick(view, position)
-                downloadsAdapter.items.getOrNull(position)?.let {
+                releasesListAdapter.items.getOrNull(position)?.let {
                     NyaaReleaseActivity.startNyaaReleaseActivity(it, requireActivity())
                 }
             }

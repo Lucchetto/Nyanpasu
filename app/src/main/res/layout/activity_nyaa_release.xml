@@ -5,13 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="15dp"
     tools:context=".NyaaReleaseActivity">
 
     <TextView
         android:id="@+id/release_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTitle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="Release title" />
+        tools:text="Release title, may be very long or short" />
 </androidx.constraintlayout.widget.ConstraintLayout>

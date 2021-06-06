@@ -14,11 +14,16 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="TextAppearance.Nyaasi.ReleaseTitle" parent="TextAppearance.AppCompat.Body1">
+    <style name="TextAppearance.Nyaasi.ReleasePreviewTitle" parent="TextAppearance.AppCompat.Body1">
         <item name="android:maxLines">2</item>
         <item name="android:inputType">none</item>
         <item name="android:scrollHorizontally">true</item>
         <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="TextAppearance.Nyaasi.ReleaseTitle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="TextAppearance.Nyaasi.ReleaseID" parent="TextAppearance.AppCompat.Body1">
