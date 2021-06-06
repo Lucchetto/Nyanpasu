@@ -33,10 +33,9 @@ class NyaaRepository {
                 searchValue?.let {
                     url += "&q=${URLEncoder.encode(it, "utf-8")}"
                 }
-                Log.w(TAG, url)
                 val doc: Document = Jsoup.connect(url).get()
                 // Check that item has href with format /view/[integer_id]
-                val pageItems = doc.select("tr>td>a[href~=^\\/view\\/\\d+\$]")
+                val pageItems = doc.select("tr >td > a[href~=^\\/view\\/\\d+\$]")
                 if (pageItems.size > 0) {
                     pageItems.forEach {
                         // Get parent tr since we select element by a
@@ -45,7 +44,10 @@ class NyaaRepository {
                         val title = it.attr("title")
                         val magnetLink = parentRow.selectFirst("a[href~=^magnet:\\?xt=urn:[a-z0-9]+:[a-z0-9]{32,40}&dn=.+&tr=.+\$]").attr("href").toString()
                         val timestamp = parentRow.selectFirst("*[data-timestamp~=^\\d+\$]").attr("data-timestamp").toString().toLong()
-                        val nyaaItem = NyaaReleaseItem(id, title, magnetLink, Date(timestamp * 1000))
+                        val seeders = parentRow.select("td:nth-child(6)").text().toInt()
+                        val leechers = parentRow.select("td:nth-child(7)").text().toInt()
+                        val completed = parentRow.select("td:nth-child(8)").text().toInt()
+                        val nyaaItem = NyaaReleaseItem(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed)
                         items.add(nyaaItem)
 
                         // Prevent loading too many items in the repository
