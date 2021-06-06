@@ -16,12 +16,39 @@
         android:padding="15dp">
 
         <TextView
+            android:layout_marginBottom="15dp"
             android:id="@+id/release_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTitle"
             android:breakStrategy="simple"
             tools:text="Release title, may be very long or short" />
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/release_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseID"
+                tools:text="ID: 1232213113"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:src="@drawable/ic_magnet"
+                style="@style/Theme.Nyaasi.ReleaseActionButton" />
+
+            <ImageButton
+                android:src="@drawable/ic_outline_download_24"
+                style="@style/Theme.Nyaasi.ReleaseActionButton" />
+        </LinearLayout>
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/release_extra_data"

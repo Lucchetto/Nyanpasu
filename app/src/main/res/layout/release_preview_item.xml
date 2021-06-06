@@ -18,7 +18,7 @@
         style="@style/Style.Nyaasi.ReleasePreviewTitle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="@id/release_bottom"
-        app:layout_constraintEnd_toStartOf="@id/download_btn"
+        app:layout_constraintEnd_toStartOf="@id/magnet_btn"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Random file with very long name" />
 
@@ -54,27 +54,40 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseID"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"
             android:text="Release date: " />
 
         <TextView
             android:id="@+id/release_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseID"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"
             tools:text="Today" />
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/download_btn"
+        android:id="@+id/magnet_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_outline_download_24"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_magnet"
         android:background="?selectableItemBackgroundBorderless"
         android:layout_marginStart="12dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/release_title"
+        app:layout_constraintEnd_toStartOf="@id/download_btn"
+        app:tint="?android:textColorPrimary" />
+
+    <ImageButton
+        android:id="@+id/download_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_outline_download_24"
+        android:background="?selectableItemBackgroundBorderless"
+        android:layout_marginStart="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/magnet_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="?android:textColorPrimary" />
 

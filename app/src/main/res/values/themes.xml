@@ -21,6 +21,12 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="TextAppearance.Nyaasi.ReleasePreviewDate" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
     <style name="TextAppearance.Nyaasi.ReleaseTitle" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">18sp</item>
@@ -32,14 +38,22 @@
     </style>
 
     <style name="TextAppearance.Nyaasi.ReleaseDataValue" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textSize">21sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?android:textColorPrimary</item>
     </style>
 
     <style name="TextAppearance.Nyaasi.ReleaseID" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textSize">13sp</item>
-        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Theme.Nyaasi.ReleaseActionButton">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="tint">?android:textColorPrimary</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
     <style name="Theme.Nyaasi.ReleaseDataItem">

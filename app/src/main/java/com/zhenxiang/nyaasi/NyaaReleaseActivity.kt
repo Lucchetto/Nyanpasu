@@ -36,6 +36,21 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val releaseTitle = findViewById<TextView>(R.id.release_title)
             releaseTitle.text = it.name
 
+            val idView = findViewById<TextView>(R.id.release_id)
+            idView.text = "ID: ${it.id}"
+
+            val date = findViewById<ReleaseDataItemView>(R.id.release_date)
+            date.setValue(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it.date))
+
+            val seeders = findViewById<ReleaseDataItemView>(R.id.seeders)
+            seeders.setValue(it.seeders.toString())
+
+            val leechers = findViewById<ReleaseDataItemView>(R.id.leechers)
+            leechers.setValue(it.leechers.toString())
+
+            val completed = findViewById<ReleaseDataItemView>(R.id.completed)
+            completed.setValue(it.completed.toString())
+
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val doc: Document = Jsoup.connect("https://nyaa.si/view/${it.id}").get()
@@ -46,18 +61,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
                         val markdownView = findViewById<MarkdownView>(R.id.release_details_markdown)
                         markdownView.addStyleSheet(Github())
                         markdownView.loadMarkdown(descriptionMarkdown)
-
-                        val date = findViewById<ReleaseDataItemView>(R.id.release_date)
-                        date.setValue(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it.date))
-
-                        val seeders = findViewById<ReleaseDataItemView>(R.id.seeders)
-                        seeders.setValue(it.seeders.toString())
-
-                        val leechers = findViewById<ReleaseDataItemView>(R.id.leechers)
-                        leechers.setValue(it.leechers.toString())
-
-                        val completed = findViewById<ReleaseDataItemView>(R.id.completed)
-                        completed.setValue(it.completed.toString())
 
                         // Hide loading circle
                         findViewById<View>(R.id.progress_frame).visibility = View.GONE
