@@ -38,9 +38,10 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }
             }
             magnetBtn.setOnClickListener {
-                itemData?.let {
-                    magnetBtn.context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it.magnet))
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                val itemData = itemData
+                val listener = listener
+                if (itemData != null && listener != null) {
+                    listener.downloadMagnet(itemData)
                 }
             }
         }
@@ -100,5 +101,6 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ItemClickedListener {
         fun itemClicked(item: NyaaReleasePreviewItem)
+        fun downloadMagnet(item: NyaaReleasePreviewItem)
     }
 }

@@ -2,7 +2,6 @@ package com.zhenxiang.nyaasi
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -29,7 +28,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nyaa_release)
 
-        findViewById<NestedScrollView>(R.id.scroll_root).isNestedScrollingEnabled = false
+        val scrollRoot = findViewById<NestedScrollView>(R.id.scroll_root)
+        scrollRoot.isNestedScrollingEnabled = false
+
         val nyaaRelease = intent.getSerializableExtra(RELEASE_INTENT_OBJ) as NyaaReleasePreviewItem?
 
         nyaaRelease?.let {
@@ -41,10 +42,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val magnetBtn = findViewById<View>(R.id.magnet_btn)
             magnetBtn.setOnClickListener { _ ->
-                startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse(it.magnet))
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
+                AppUtils.openMagnetLink(this, it, scrollRoot)
             }
 
             val date = findViewById<ReleaseDataItemView>(R.id.release_date)

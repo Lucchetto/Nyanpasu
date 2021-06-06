@@ -30,12 +30,6 @@ class NyaaSearchActivity : AppCompatActivity() {
             resultsAdapter.setFooterVisible(!searchViewModel.isBottomReached())
         })
 
-        resultsAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
-            override fun itemClicked(item: NyaaReleasePreviewItem) {
-                NyaaReleaseActivity.startNyaaReleaseActivity(item, this@NyaaSearchActivity)
-            }
-        }
-
         val resultsList = findViewById<RecyclerView>(R.id.search_results)
         val listLayoutManager = LinearLayoutManager(this)
         resultsList.layoutManager = listLayoutManager
@@ -50,6 +44,16 @@ class NyaaSearchActivity : AppCompatActivity() {
                 }
             }
         })
+
+        resultsAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
+            override fun itemClicked(item: NyaaReleasePreviewItem) {
+                NyaaReleaseActivity.startNyaaReleaseActivity(item, this@NyaaSearchActivity)
+            }
+
+            override fun downloadMagnet(item: NyaaReleasePreviewItem) {
+                AppUtils.openMagnetLink(this@NyaaSearchActivity, item, resultsList)
+            }
+        }
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {

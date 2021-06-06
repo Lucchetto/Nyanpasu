@@ -65,6 +65,10 @@ class BrowseFragment : Fragment() {
             override fun itemClicked(item: NyaaReleasePreviewItem) {
                 NyaaReleaseActivity.startNyaaReleaseActivity(item, requireActivity())
             }
+
+            override fun downloadMagnet(item: NyaaReleasePreviewItem) {
+                AppUtils.openMagnetLink(fragmentView.context, item, fragmentView, searchBtn)
+            }
         }
 
         browseViewModel.loadData()
