@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
-import br.tiagohm.markdownview.css.ExternalStyleSheet
 import br.tiagohm.markdownview.css.styles.Github
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
@@ -66,10 +65,15 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     doc.outputSettings().prettyPrint(false)
                     val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
+                    val releaseSize = doc.selectFirst("div.col-md-1:matches(File size:)").parent().select("div:matches(^\\d*\\.?\\d* [a-zA-Z]+\$)").text()
+
                     withContext(Dispatchers.Main) {
                         val markdownView = findViewById<MarkdownView>(R.id.release_details_markdown)
                         markdownView.addStyleSheet(Github())
                         markdownView.loadMarkdown(descriptionMarkdown)
+
+                        val releaseSizeView = findViewById<ReleaseDataItemView>(R.id.release_size)
+                        releaseSizeView.setValue(releaseSize)
 
                         // Hide loading circle
                         findViewById<View>(R.id.progress_frame).visibility = View.GONE

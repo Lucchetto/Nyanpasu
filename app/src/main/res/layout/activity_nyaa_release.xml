@@ -56,6 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            tools:visibility="visible"
             app:flexWrap="wrap">
 
             <com.zhenxiang.nyaasi.view.ReleaseDataItemView
@@ -81,6 +82,12 @@
                 style="@style/Theme.Nyaasi.ReleaseDataItem"
                 app:title="Completed"
                 tools:value="420"/>
+
+            <com.zhenxiang.nyaasi.view.ReleaseDataItemView
+                android:id="@+id/release_size"
+                style="@style/Theme.Nyaasi.ReleaseDataItem"
+                app:title="Release size"
+                tools:value="143.2 MiB"/>
         </com.google.android.flexbox.FlexboxLayout>
 
         <br.tiagohm.markdownview.MarkdownView
