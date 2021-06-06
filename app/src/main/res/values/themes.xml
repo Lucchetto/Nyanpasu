@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="TextAppearance.Nyaasi.ReleasePreviewTitle" parent="TextAppearance.AppCompat.Body1">
+    <style name="Style.Nyaasi.ReleasePreviewTitle" parent="TextAppearance.AppCompat.Body1">
         <item name="android:maxLines">2</item>
         <item name="android:inputType">none</item>
         <item name="android:scrollHorizontally">true</item>
@@ -26,9 +26,28 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="TextAppearance.Nyaasi.ReleaseDataTitle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">?android:textColorTertiary</item>
+    </style>
+
+    <style name="TextAppearance.Nyaasi.ReleaseDataValue" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
     <style name="TextAppearance.Nyaasi.ReleaseID" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="Theme.Nyaasi.ReleaseDataItem">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginTop">15dp</item>
     </style>
 
     <style name="Theme.Nyaasi.NoActionBar">

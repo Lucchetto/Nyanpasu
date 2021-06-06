@@ -51,7 +51,6 @@ class BrowseFragment : Fragment() {
         releasesList.layoutManager = listLayoutManager
         releasesList.adapter = releasesListAdapter
 
-        // WIP: infinite data loading
         releasesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
