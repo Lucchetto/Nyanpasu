@@ -49,6 +49,10 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val category = findViewById<TextView>(R.id.category)
             category.text = getString(R.string.release_category, getString(it.category.stringResId))
 
+            val date = findViewById<TextView>(R.id.date)
+            date.text = getString(R.string.release_date,
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(it.date))
+
             val seeders = findViewById<ReleaseDataItemView>(R.id.seeders)
             seeders.setValue(it.seeders.toString())
 
@@ -77,8 +81,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         val submitter = findViewById<TextView>(R.id.submitter)
                         submitter.text = getString(R.string.release_submitter,
-                            release.user?.let { release.user } ?: run { getString(R.string.submitter_null) },
-                            DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it.date))
+                            release.user?.let { release.user } ?: run { getString(R.string.submitter_null) })
 
                         val markdownView = findViewById<MarkdownView>(R.id.release_details_markdown)
                         markdownView.addStyleSheet(Github())

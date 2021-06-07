@@ -38,6 +38,13 @@
             android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseSubtitle"
             tools:text="Submitter: CapitainJack"/>
 
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseSubtitle"
+            tools:text="Date: 31 February -123"/>
+
         <LinearLayout
             android:layout_marginTop="15dp"
             android:gravity="center_vertical"
