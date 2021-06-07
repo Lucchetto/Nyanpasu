@@ -11,7 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import android.content.Intent
+import android.util.Log
+import android.widget.AdapterView
+import android.widget.Spinner
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
+import android.widget.ArrayAdapter
+import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 
 
 /**
@@ -72,6 +77,27 @@ class BrowseFragment : Fragment() {
         }
 
         browseViewModel.loadData()
+
+        val categoriesSpinner = fragmentView.findViewById<Spinner>(R.id.categories_selection)
+        categoriesSpinner.adapter = AppUtils.getNyaaCategoriesSpinner(fragmentView.context)
+
+        // Prevent listener from firing on start
+        categoriesSpinner.setSelection(0, false)
+        categoriesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                browseViewModel.setCategory(NyaaReleaseCategory.values()[position])
+                browseViewModel.loadData()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+        }
 
         return fragmentView
     }

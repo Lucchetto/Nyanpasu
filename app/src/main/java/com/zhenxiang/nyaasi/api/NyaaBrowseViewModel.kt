@@ -34,5 +34,11 @@ class NyaaBrowseViewModel: ViewModel() {
         }
     }
 
+    fun setCategory(category: NyaaReleaseCategory) {
+        this.repository.category = category
+        this.repository.clearRepo()
+        itemsLiveData.value = repository.items
+    }
+
     fun isBottomReached() = this.repository.bottomReached
 }

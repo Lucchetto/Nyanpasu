@@ -44,5 +44,9 @@ class NyaaSearchViewModel: ViewModel() {
         }
     }
 
+    fun setCategory(category: NyaaReleaseCategory) {
+        this.repository.category = category
+    }
+
     fun isBottomReached() = this.repository.bottomReached
 }

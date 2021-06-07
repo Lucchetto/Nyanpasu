@@ -1,11 +1,14 @@
 package com.zhenxiang.nyaasi
 
+import android.R
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.widget.ArrayAdapter
 import com.google.android.material.snackbar.Snackbar
+import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 
 class AppUtils {
@@ -23,6 +26,14 @@ class AppUtils {
                 }
                 snack.show()
             }
+        }
+
+        fun getNyaaCategoriesSpinner(context: Context): ArrayAdapter<String> {
+            return ArrayAdapter(
+                context,
+                R.layout.simple_list_item_1,
+                NyaaReleaseCategory.values().map { context.getString(it.stringResId) }
+            )
         }
     }
 }

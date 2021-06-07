@@ -3,10 +3,13 @@ package com.zhenxiang.nyaasi
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.Spinner
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
 
@@ -60,6 +63,25 @@ class NyaaSearchActivity : AppCompatActivity() {
             override fun downloadMagnet(item: NyaaReleasePreviewItem) {
                 AppUtils.openMagnetLink(this@NyaaSearchActivity, item, resultsList)
             }
+        }
+
+        val categoriesSpinner = findViewById<Spinner>(R.id.categories_selection)
+        categoriesSpinner.adapter = AppUtils.getNyaaCategoriesSpinner(this)
+        // Prevent listener from firing on start
+        categoriesSpinner.setSelection(0, false)
+        categoriesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                searchViewModel.setCategory(NyaaReleaseCategory.values()[position])
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
         }
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

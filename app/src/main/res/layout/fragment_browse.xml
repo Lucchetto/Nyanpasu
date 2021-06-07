@@ -9,14 +9,20 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground">
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="Browse"
-            android:background="?android:colorBackground"
             app:layout_scrollFlags="scroll|enterAlways" />
+
+        <Spinner
+            android:id="@+id/categories_selection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.revengeos.revengeui.widget.BounceRecyclerView

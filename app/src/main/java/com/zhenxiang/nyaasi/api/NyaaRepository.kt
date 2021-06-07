@@ -20,11 +20,18 @@ class NyaaRepository {
 
     var searchValue: String? = null
         set(value) {
-            items.clear()
             field = value
-            pageIndex = 0
+            clearRepo()
             bottomReached = value == null || value.isEmpty()
         }
+
+    var category: NyaaReleaseCategory = NyaaReleaseCategory.ALL
+
+    fun clearRepo() {
+        pageIndex = 0
+        items.clear()
+        bottomReached = false
+    }
 
     suspend fun getLinks(): Boolean = withContext(Dispatchers.IO) {
         if (!bottomReached) {
@@ -33,6 +40,9 @@ class NyaaRepository {
                 var url = "https://nyaa.si/?p=${pageIndex}"
                 searchValue?.let {
                     url += "&q=${URLEncoder.encode(it, "utf-8")}"
+                }
+                if (category != NyaaReleaseCategory.ALL) {
+                    url += "&c=${category.id}"
                 }
                 val doc: Document = Jsoup.connect(url).get()
                 // Check that item has href with format /view/[integer_id]
