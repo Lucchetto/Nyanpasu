@@ -79,6 +79,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             tools:visibility="visible"
+            app:justifyContent="center"
             app:flexWrap="wrap">
 
             <com.zhenxiang.nyaasi.view.ReleaseDataItemView
