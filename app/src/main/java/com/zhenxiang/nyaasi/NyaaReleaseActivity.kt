@@ -11,6 +11,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
+import com.zhenxiang.nyaasi.api.NyaaRelease
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import kotlinx.coroutines.Dispatchers
@@ -45,11 +46,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 AppUtils.openMagnetLink(this, it, scrollRoot)
             }
 
-            val category = findViewById<ReleaseDataItemView>(R.id.category)
-            category.setValue(getString(it.category.stringResId))
-
-            val date = findViewById<ReleaseDataItemView>(R.id.release_date)
-            date.setValue(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it.date))
+            val category = findViewById<TextView>(R.id.category)
+            category.text = getString(R.string.release_category, getString(it.category.stringResId))
 
             val seeders = findViewById<ReleaseDataItemView>(R.id.seeders)
             seeders.setValue(it.seeders.toString())
@@ -60,21 +58,31 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val completed = findViewById<ReleaseDataItemView>(R.id.completed)
             completed.setValue(it.completed.toString())
 
+            val releaseSizeView = findViewById<ReleaseDataItemView>(R.id.release_size)
+            releaseSizeView.setValue(it.releaseSize)
+
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val doc: Document = Jsoup.connect("https://nyaa.si/view/${it.id}").get()
                     doc.outputSettings().prettyPrint(false)
+
+                    val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
+                    val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
                     val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
-                    val releaseSize = doc.selectFirst("div.col-md-1:matches(File size:)").parent().select("div:matches(^\\d*\\.?\\d* [a-zA-Z]+\$)").text()
+                    val release = NyaaRelease(it.id, it.name, it.magnet, it.date, it.seeders,
+                        it.leechers, it.completed,it.releaseSize, it.category,
+                        if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
 
                     withContext(Dispatchers.Main) {
+                        val submitter = findViewById<TextView>(R.id.submitter)
+                        submitter.text = getString(R.string.release_submitter,
+                            release.user?.let { release.user } ?: run { getString(R.string.submitter_null) },
+                            DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it.date))
+
                         val markdownView = findViewById<MarkdownView>(R.id.release_details_markdown)
                         markdownView.addStyleSheet(Github())
-                        markdownView.loadMarkdown(descriptionMarkdown)
-
-                        val releaseSizeView = findViewById<ReleaseDataItemView>(R.id.release_size)
-                        releaseSizeView.setValue(releaseSize)
+                        markdownView.loadMarkdown(release.descriptionMarkdown)
 
                         // Hide loading circle
                         findViewById<View>(R.id.progress_frame).visibility = View.GONE

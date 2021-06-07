@@ -62,8 +62,9 @@ class NyaaRepository {
                         val seeders = parentRow.select("td:nth-child(6)").text().toInt()
                         val leechers = parentRow.select("td:nth-child(7)").text().toInt()
                         val completed = parentRow.select("td:nth-child(8)").text().toInt()
+                        val releaseSize = parentRow.selectFirst("td:matches(^\\d*\\.?\\d* [a-zA-Z]+\$)").text()
 
-                        val nyaaItem = NyaaReleasePreviewItem(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed, category!!)
+                        val nyaaItem = NyaaReleasePreviewItem(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed, category!!, releaseSize)
                         items.add(nyaaItem)
 
                         // Prevent loading too many items in the repository

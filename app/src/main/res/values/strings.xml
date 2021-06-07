@@ -36,4 +36,8 @@
     <string name="category_software">Software</string>
     <string name="category_software_apps">Software apps</string>
     <string name="category_software_games">Software games</string>
+
+    <string name="release_category">Category: %1$s</string>
+    <string name="release_submitter">Submitted by %1$s on %2$s</string>
+    <string name="submitter_null">Anonymous</string>
 </resources>

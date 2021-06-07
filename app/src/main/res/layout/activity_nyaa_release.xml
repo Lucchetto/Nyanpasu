@@ -16,7 +16,6 @@
         android:padding="15dp">
 
         <TextView
-            android:layout_marginBottom="15dp"
             android:id="@+id/release_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,7 +23,23 @@
             android:breakStrategy="simple"
             tools:text="Release title, may be very long or short" />
 
+        <TextView
+            android:id="@+id/category"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseSubtitle"
+            tools:text="Category: Literature non English translated"/>
+
+        <TextView
+            android:id="@+id/submitter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseSubtitle"
+            tools:text="Submitter: CapitainJack"/>
+
         <LinearLayout
+            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -51,12 +66,6 @@
                 style="@style/Theme.Nyaasi.ReleaseActionButton" />
         </LinearLayout>
 
-        <com.zhenxiang.nyaasi.view.ReleaseDataItemView
-            android:id="@+id/category"
-            style="@style/Theme.Nyaasi.ReleaseDataItem"
-            app:title="Category"
-            tools:value="Category goes here"/>
-
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/release_extra_data"
             android:layout_width="match_parent"
@@ -64,12 +73,6 @@
             android:visibility="gone"
             tools:visibility="visible"
             app:flexWrap="wrap">
-
-            <com.zhenxiang.nyaasi.view.ReleaseDataItemView
-                android:id="@+id/release_date"
-                style="@style/Theme.Nyaasi.ReleaseDataItem"
-                app:title="Release date"
-                tools:value="Random date"/>
 
             <com.zhenxiang.nyaasi.view.ReleaseDataItemView
                 android:id="@+id/seeders"
