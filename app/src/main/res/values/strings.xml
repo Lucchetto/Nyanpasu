@@ -11,4 +11,28 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="category_anime">Anime</string>
+    <string name="category_anime_amv">Anime AMV</string>
+    <string name="category_anime_english">Anime English translated</string>
+    <string name="category_anime_non_english">Anime non English translated</string>
+    <string name="category_anime_raw">Anime raw</string>
+    <string name="category_audio">Audio</string>
+    <string name="category_audio_lossless">Audio lossless</string>
+    <string name="category_audio_lossy">Audio lossy</string>
+    <string name="category_literature">Literature</string>
+    <string name="category_literature_english">Literature English translated</string>
+    <string name="category_literature_non_english">Literature non English translated</string>
+    <string name="category_literature_raw">Literature raw</string>
+    <string name="category_liveaction">Live action</string>
+    <string name="category_liveaction_english">Live action English translated</string>
+    <string name="category_liveaction_idol_prom">Live action Idol/Promotional video</string>
+    <string name="category_liveaction_non_english">Live action non English translated</string>
+    <string name="category_liveaction_raw">Live action raw</string>
+    <string name="category_pictures">Pictures</string>
+    <string name="category_pictures_graphics">Pictures graphics</string>
+    <string name="category_pictures_photos">Pictures photos</string>
+    <string name="category_software">Software</string>
+    <string name="category_software_apps">Software apps</string>
+    <string name="category_software_games">Software games</string>
 </resources>
