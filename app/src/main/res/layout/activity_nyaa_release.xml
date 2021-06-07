@@ -51,6 +51,12 @@
                 style="@style/Theme.Nyaasi.ReleaseActionButton" />
         </LinearLayout>
 
+        <com.zhenxiang.nyaasi.view.ReleaseDataItemView
+            android:id="@+id/category"
+            style="@style/Theme.Nyaasi.ReleaseDataItem"
+            app:title="Category"
+            tools:value="Category goes here"/>
+
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/release_extra_data"
             android:layout_width="match_parent"

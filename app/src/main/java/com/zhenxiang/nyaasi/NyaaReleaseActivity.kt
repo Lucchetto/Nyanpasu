@@ -45,6 +45,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 AppUtils.openMagnetLink(this, it, scrollRoot)
             }
 
+            val category = findViewById<ReleaseDataItemView>(R.id.category)
+            category.setValue(getString(it.category.stringResId))
+
             val date = findViewById<ReleaseDataItemView>(R.id.release_date)
             date.setValue(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(it.date))
 
