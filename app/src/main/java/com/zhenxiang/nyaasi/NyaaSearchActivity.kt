@@ -22,20 +22,27 @@ class NyaaSearchActivity : AppCompatActivity() {
         searchBar.setIconifiedByDefault(false)
         searchBar.requestFocus()
 
+        val resultsList = findViewById<RecyclerView>(R.id.search_results)
         val resultsAdapter = ReleasesListAdapter()
         searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
-        searchViewModel.setSearchText(null)
+
         searchViewModel.searchResultsLiveData.observe(this,  {
+            if (it.size > 0 && resultsList.visibility == View.GONE) {
+                resultsList.visibility = View.VISIBLE
+                val hintText = findViewById<View>(R.id.search_hint)
+                hintText.visibility = View.GONE
+            }
             resultsAdapter.setItems(it)
             resultsAdapter.setFooterVisible(!searchViewModel.isBottomReached())
         })
+        if (savedInstanceState == null) {
+            searchViewModel.setSearchText(null)
+        }
 
-        val resultsList = findViewById<RecyclerView>(R.id.search_results)
         val listLayoutManager = LinearLayoutManager(this)
         resultsList.layoutManager = listLayoutManager
         resultsList.adapter = resultsAdapter
 
-        // WIP: infinite data loading
         resultsList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
