@@ -28,7 +28,7 @@
 
     <style name="TextAppearance.Nyaasi.ReleaseTitle" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">19sp</item>
     </style>
 
     <style name="TextAppearance.Nyaasi.ReleaseDataTitle" parent="TextAppearance.AppCompat.Body1">
@@ -37,7 +37,7 @@
     </style>
 
     <style name="TextAppearance.Nyaasi.ReleaseDataValue" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?android:textColorPrimary</item>
     </style>
