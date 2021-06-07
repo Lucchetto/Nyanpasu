@@ -2,7 +2,7 @@ package com.zhenxiang.nyaasi.api
 
 import com.zhenxiang.nyaasi.R
 
-enum class NyaaReleaseCategories(val id: String, val stringResId: Int) {
+enum class NyaaReleaseCategory(val id: String, val stringResId: Int) {
     ANIME("1_0", R.string.category_anime),
     ANIME_AMV("1_1", R.string.category_anime_amv),
     ANIME_ENGLISH("1_2", R.string.category_anime_english),

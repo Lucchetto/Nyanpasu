@@ -11,6 +11,7 @@ import java.util.*
 class NyaaRepository {
 
     private val TAG = javaClass.name
+    private val categoryIdRegex = "^\\d+_\\d+\$".toRegex()
 
     val items = mutableListOf<NyaaReleasePreviewItem>()
     private var pageIndex = 0
@@ -40,14 +41,19 @@ class NyaaRepository {
                     pageItems.forEach {
                         // Get parent tr since we select element by a
                         val parentRow = it.parent().parent()
+
+                        val categoryId = categoryIdRegex.find(parentRow.selectFirst("td > a[href~=^(.*?)(\\?|\\&)c=\\d+_\\d+\$]").attr("href").removePrefix("/?c="))!!.value
+                        val category = NyaaReleaseCategory.values().find { category -> category.id == categoryId }
+
                         val id = it.attr("href").split("/").last().toInt()
                         val title = it.attr("title")
-                        val magnetLink = parentRow.selectFirst("a[href~=^magnet:\\?xt=urn:[a-z0-9]+:[a-z0-9]{32,40}&dn=.+&tr=.+\$]").attr("href").toString()
+                        val magnetLink = parentRow.selectFirst("a[href~=^magnet:\\?xt=urn:[a-z0-9]+:[a-z0-9]{32,40}&dn=.+&tr=.+\$]").attr("href")
                         val timestamp = parentRow.selectFirst("*[data-timestamp~=^\\d+\$]").attr("data-timestamp").toString().toLong()
                         val seeders = parentRow.select("td:nth-child(6)").text().toInt()
                         val leechers = parentRow.select("td:nth-child(7)").text().toInt()
                         val completed = parentRow.select("td:nth-child(8)").text().toInt()
-                        val nyaaItem = NyaaReleasePreviewItem(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed)
+
+                        val nyaaItem = NyaaReleasePreviewItem(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed, category!!)
                         items.add(nyaaItem)
 
                         // Prevent loading too many items in the repository
