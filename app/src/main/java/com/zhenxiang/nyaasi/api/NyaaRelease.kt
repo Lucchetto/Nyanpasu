@@ -2,14 +2,17 @@ package com.zhenxiang.nyaasi.api
 
 import java.util.*
 
-class NyaaRelease(
-    id: Int, name: String, magnet: String, date: Date, seeders: Int, leechers: Int,
-    completed: Int, releaseSize: String, category: NyaaReleaseCategory,
-    val user: String?, val hash: String, val descriptionMarkdown: String,
-) : NyaaReleasePreviewItem(
-    id, name, magnet,
-    date,
-    seeders,
-    leechers, completed, category, releaseSize
-) {
-}
+data class NyaaRelease(
+    override val id: Int,
+    override val name: String,
+    override val magnet: String,
+    override val date: Date,
+    override val seeders: Int,
+    override val leechers: Int,
+    override val completed: Int,
+    override val category: NyaaReleaseCategory,
+    override val releaseSize: String,
+    val user: String?,
+    val hash: String,
+    val descriptionMarkdown: String,
+) : NyaaReleaseBase {}

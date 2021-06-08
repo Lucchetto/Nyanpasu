@@ -75,7 +75,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
                     val release = NyaaRelease(it.id, it.name, it.magnet, it.date, it.seeders,
-                        it.leechers, it.completed,it.releaseSize, it.category,
+                        it.leechers, it.completed, it.category, it.releaseSize,
                         if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
 
                     withContext(Dispatchers.Main) {
