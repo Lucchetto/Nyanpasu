@@ -11,8 +11,9 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
-import com.zhenxiang.nyaasi.api.NyaaRelease
+import com.zhenxiang.nyaasi.db.NyaaRelease
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
+import com.zhenxiang.nyaasi.db.NyaaDb
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -77,6 +78,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     val release = NyaaRelease(it.id, it.name, it.magnet, it.date, it.seeders,
                         it.leechers, it.completed, it.category, it.releaseSize,
                         if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
+
+                    val db = NyaaDb(this@NyaaReleaseActivity)
+                    db.nyaaReleasesDao().insert(release)
 
                     withContext(Dispatchers.Main) {
                         val submitter = findViewById<TextView>(R.id.submitter)
