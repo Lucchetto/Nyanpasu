@@ -14,6 +14,7 @@ import br.tiagohm.markdownview.css.styles.Github
 import com.zhenxiang.nyaasi.db.NyaaRelease
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 import com.zhenxiang.nyaasi.db.NyaaDb
+import com.zhenxiang.nyaasi.db.ViewedNyaaRelease
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,6 +82,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
                     val db = NyaaDb(this@NyaaReleaseActivity)
                     db.nyaaReleasesDao().insert(release)
+                    db.viewedNyaaReleasesDao().insert(ViewedNyaaRelease(releaseId = release.id))
 
                     withContext(Dispatchers.Main) {
                         val submitter = findViewById<TextView>(R.id.submitter)

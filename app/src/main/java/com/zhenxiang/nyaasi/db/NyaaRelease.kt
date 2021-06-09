@@ -20,4 +20,4 @@ class NyaaRelease(
     val user: String?,
     val hash: String,
     val descriptionMarkdown: String,
-) : NyaaReleasePreviewItem(id, name, magnet, date, seeders, leechers, completed, category, releaseSize) {}
+) : NyaaReleasePreviewItem(id, name, magnet, date, seeders, leechers, completed, category, releaseSize)
