@@ -7,12 +7,12 @@ import androidx.room.Relation
 
 @Entity
 data class ViewedNyaaRelease(
-    @PrimaryKey(autoGenerate = true) val viewedId: Int = 0,
-    val releaseId: Int
+    @PrimaryKey val releaseId: Int,
+    val timestamp: Long,
 )
 
 data class ViewedNyaaReleaseWithDetails(
-    @Embedded val release: NyaaRelease,
+    @Embedded val details: NyaaRelease,
     @Relation(
         parentColumn = "id",
         entityColumn = "releaseId"

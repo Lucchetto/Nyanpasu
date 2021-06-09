@@ -8,13 +8,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
 import com.zhenxiang.nyaasi.db.NyaaRelease
 import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
-import com.zhenxiang.nyaasi.db.NyaaDb
-import com.zhenxiang.nyaasi.db.ViewedNyaaRelease
+import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +35,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
         scrollRoot.isNestedScrollingEnabled = false
 
         val nyaaRelease = intent.getSerializableExtra(RELEASE_INTENT_OBJ) as NyaaReleasePreviewItem?
+
+        val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
 
         nyaaRelease?.let {
             val releaseTitle = findViewById<TextView>(R.id.release_title)
@@ -80,9 +82,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                         it.leechers, it.completed, it.category, it.releaseSize,
                         if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
 
-                    val db = NyaaDb(this@NyaaReleaseActivity)
-                    db.nyaaReleasesDao().insert(release)
-                    db.viewedNyaaReleasesDao().insert(ViewedNyaaRelease(releaseId = release.id))
+                    localNyaaDbViewModel.addToViewed(release)
 
                     withContext(Dispatchers.Main) {
                         val submitter = findViewById<TextView>(R.id.submitter)
