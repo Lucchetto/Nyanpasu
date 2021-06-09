@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/browse"
+        android:id="@id/browseFragment"
         android:enabled="true"
         android:icon="@drawable/ic_travel_explore_24"
         android:title="Browse"/>
     <item
-        android:id="@+id/saved_and_recents"
+        android:id="@id/savedFragment"
         android:enabled="true"
         android:icon="@drawable/ic_outline_bookmarks_24"
         android:title="Saved"/>
-    <item
+    <!--<item
         android:id="@+id/settings"
         android:enabled="true"
         android:icon="@drawable/ic_outline_settings_24"
-        android:title="Settings"/>
+        android:title="Settings"/>-->
 </menu>
