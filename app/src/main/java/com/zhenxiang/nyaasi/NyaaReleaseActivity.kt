@@ -13,7 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
 import com.zhenxiang.nyaasi.db.NyaaRelease
-import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +33,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
         val scrollRoot = findViewById<NestedScrollView>(R.id.scroll_root)
         scrollRoot.isNestedScrollingEnabled = false
 
-        val nyaaRelease = intent.getSerializableExtra(RELEASE_INTENT_OBJ) as NyaaReleasePreviewItem?
+        val nyaaRelease = intent.getSerializableExtra(RELEASE_INTENT_OBJ) as NyaaRelease?
 
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
 
@@ -78,20 +77,20 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
                     val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
-                    val release = NyaaRelease(it.id, it.name, it.magnet, it.date, it.seeders,
-                        it.leechers, it.completed, it.category, it.releaseSize,
-                        if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
+                    nyaaRelease.user = if (userName.isNullOrEmpty()) null else userName
+                    nyaaRelease.hash = hash
+                    nyaaRelease.descriptionMarkdown = descriptionMarkdown
 
-                    localNyaaDbViewModel.addToViewed(release)
+                    localNyaaDbViewModel.addToViewed(nyaaRelease)
 
                     withContext(Dispatchers.Main) {
                         val submitter = findViewById<TextView>(R.id.submitter)
                         submitter.text = getString(R.string.release_submitter,
-                            release.user?.let { release.user } ?: run { getString(R.string.submitter_null) })
+                            nyaaRelease.user?.let { nyaaRelease.user } ?: run { getString(R.string.submitter_null) })
 
                         val markdownView = findViewById<MarkdownView>(R.id.release_details_markdown)
                         markdownView.addStyleSheet(Github())
-                        markdownView.loadMarkdown(release.descriptionMarkdown)
+                        markdownView.loadMarkdown(nyaaRelease.descriptionMarkdown)
 
                         // Hide loading circle
                         findViewById<View>(R.id.progress_frame).visibility = View.GONE
@@ -110,7 +109,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
     companion object {
         const val RELEASE_INTENT_OBJ = "nyaaRelease"
 
-        fun startNyaaReleaseActivity(release: NyaaReleasePreviewItem, activity: Activity) {
+        fun startNyaaReleaseActivity(release: NyaaRelease, activity: Activity) {
             val intent = Intent(activity, NyaaReleaseActivity::class.java).putExtra(RELEASE_INTENT_OBJ, release)
             activity.startActivity(intent)
         }

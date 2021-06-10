@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaasi.api
 
 import android.util.Log
+import com.zhenxiang.nyaasi.db.NyaaRelease
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -13,7 +14,7 @@ class NyaaRepository {
     private val TAG = javaClass.name
     private val categoryIdRegex = "^\\d+_\\d+\$".toRegex()
 
-    val items = mutableListOf<NyaaReleasePreviewItem>()
+    val items = mutableListOf<NyaaRelease>()
     private var pageIndex = 0
     var bottomReached = false
         private set
@@ -64,7 +65,7 @@ class NyaaRepository {
                         val completed = parentRow.select("td:nth-child(8)").text().toInt()
                         val releaseSize = parentRow.selectFirst("td:matches(^\\d*\\.?\\d* [a-zA-Z]+\$)").text()
 
-                        val nyaaItem = NyaaReleasePreviewItem(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed, category!!, releaseSize)
+                        val nyaaItem = NyaaRelease(id, title, magnetLink, Date(timestamp * 1000), seeders, leechers, completed, category!!, releaseSize)
                         items.add(nyaaItem)
 
                         // Prevent loading too many items in the repository

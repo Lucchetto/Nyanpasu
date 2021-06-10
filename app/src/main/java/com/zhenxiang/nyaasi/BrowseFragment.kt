@@ -11,12 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import android.content.Intent
-import android.util.Log
 import android.widget.AdapterView
 import android.widget.Spinner
-import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
-import android.widget.ArrayAdapter
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
+import com.zhenxiang.nyaasi.db.NyaaRelease
 
 
 /**
@@ -67,11 +65,11 @@ class BrowseFragment : Fragment() {
         })
 
         releasesListAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
-            override fun itemClicked(item: NyaaReleasePreviewItem) {
+            override fun itemClicked(item: NyaaRelease) {
                 NyaaReleaseActivity.startNyaaReleaseActivity(item, requireActivity())
             }
 
-            override fun downloadMagnet(item: NyaaReleasePreviewItem) {
+            override fun downloadMagnet(item: NyaaRelease) {
                 AppUtils.openMagnetLink(fragmentView.context, item, fragmentView, searchBtn)
             }
         }

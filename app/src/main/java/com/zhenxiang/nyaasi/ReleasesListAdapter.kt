@@ -1,13 +1,11 @@
 package com.zhenxiang.nyaasi
 
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.zhenxiang.nyaasi.api.NyaaReleasePreviewItem
+import com.zhenxiang.nyaasi.db.NyaaRelease
 import java.text.DateFormat
 
 class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -15,7 +13,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_DOWNLOAD_ITEM = 0
     private val TYPE_FOOTER_ITEM = 1
 
-    val items = mutableListOf<NyaaReleasePreviewItem>()
+    val items = mutableListOf<NyaaRelease>()
 
     var listener: ItemClickedListener? = null
 
@@ -27,7 +25,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val releaseDate: TextView = view.findViewById(R.id.release_date)
         private val magnetBtn: View = view.findViewById(R.id.magnet_btn)
 
-        private var itemData: NyaaReleasePreviewItem? = null
+        private var itemData: NyaaRelease? = null
 
         init {
             view.setOnClickListener {
@@ -46,7 +44,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
         }
 
-        fun bind(item: NyaaReleasePreviewItem) {
+        fun bind(item: NyaaRelease) {
             itemData = item
             //id.text = item.id.toString()
             title.text = item.name
@@ -77,7 +75,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is DownloadItemViewHolder && items[position] != null) {
+        if (holder is DownloadItemViewHolder && /items[position] != null) {
             holder.bind(items[position])
         } else if (holder is FooterViewHolder) {
             holder.setVisible(showFooter)
@@ -93,14 +91,14 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return items.size + 1
     }
 
-    fun setItems(newItems: List<NyaaReleasePreviewItem>) {
+    fun setItems(newItems: List<NyaaRelease>) {
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
     }
 
     interface ItemClickedListener {
-        fun itemClicked(item: NyaaReleasePreviewItem)
-        fun downloadMagnet(item: NyaaReleasePreviewItem)
+        fun itemClicked(item: NyaaRelease)
+        fun downloadMagnet(item: NyaaRelease)
     }
 }
