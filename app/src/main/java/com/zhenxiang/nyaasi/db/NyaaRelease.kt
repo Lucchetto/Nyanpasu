@@ -1,13 +1,12 @@
 package com.zhenxiang.nyaasi.db
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import java.io.Serializable
 import java.util.*
 
 @Entity
-class NyaaRelease(
+data class NyaaReleasePreview(
     @PrimaryKey val id: Int,
     val name: String,
     val magnet: String,
@@ -17,7 +16,16 @@ class NyaaRelease(
     val completed: Int,
     val category: NyaaReleaseCategory,
     val releaseSize: String,
-    var user: String? = null,
-    var hash: String? = null,
-    var descriptionMarkdown: String? = null,
 ): Serializable
+
+@Entity(foreignKeys = [
+    ForeignKey(entity = NyaaReleasePreview::class,
+        parentColumns = ["id"], childColumns = ["parentId"],
+        onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
+])
+data class NyaaReleaseDetails(
+    @PrimaryKey val parentId: Int,
+    val user: String?,
+    val hash: String,
+    val descriptionMarkdown: String,
+)

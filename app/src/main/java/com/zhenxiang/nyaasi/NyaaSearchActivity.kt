@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
-import com.zhenxiang.nyaasi.db.NyaaRelease
+import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 
 class NyaaSearchActivity : AppCompatActivity() {
 
@@ -56,11 +56,11 @@ class NyaaSearchActivity : AppCompatActivity() {
         })
 
         resultsAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
-            override fun itemClicked(item: NyaaRelease) {
+            override fun itemClicked(item: NyaaReleasePreview) {
                 NyaaReleaseActivity.startNyaaReleaseActivity(item, this@NyaaSearchActivity)
             }
 
-            override fun downloadMagnet(item: NyaaRelease) {
+            override fun downloadMagnet(item: NyaaReleasePreview) {
                 AppUtils.openMagnetLink(this@NyaaSearchActivity, item, resultsList)
             }
         }

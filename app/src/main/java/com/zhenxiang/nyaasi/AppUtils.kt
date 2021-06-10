@@ -9,11 +9,11 @@ import android.view.View
 import android.widget.ArrayAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
-import com.zhenxiang.nyaasi.db.NyaaRelease
+import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 
 class AppUtils {
     companion object {
-        fun openMagnetLink(context: Context, item: NyaaRelease, parentView: View, anchorView: View? = null) {
+        fun openMagnetLink(context: Context, item: NyaaReleasePreview, parentView: View, anchorView: View? = null) {
             try {
                 context.startActivity(
                     Intent(Intent.ACTION_VIEW, Uri.parse(item.magnet))

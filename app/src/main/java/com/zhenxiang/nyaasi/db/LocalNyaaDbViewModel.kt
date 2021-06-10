@@ -10,11 +10,11 @@ import kotlinx.coroutines.withContext
 
 class LocalNyaaDbViewModel(application: Application): AndroidViewModel(application) {
 
-    private val detailsRepo = NyaaDbRepo(application)
+    private val nyaaLocalRepo = NyaaDbRepo(application)
 
     private val viewedReleasesRepo = ViewedNyaaReleaseRepo(application)
-    private val viewedItems = mutableListOf<NyaaRelease>()
-    val viewedReleases = MutableLiveData<MutableList<NyaaRelease>>()
+    private val viewedItems = mutableListOf<NyaaReleasePreview>()
+    val viewedReleases = MutableLiveData<MutableList<NyaaReleasePreview>>()
 
     init {
         getAll()
@@ -30,10 +30,18 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
-    fun addToViewed(release: NyaaRelease) {
-        viewModelScope.launch(Dispatchers.IO) {
-            detailsRepo.dao.insert(release)
-            viewedReleasesRepo.dao.insert(ViewedNyaaRelease(release.id, System.currentTimeMillis()))
+    suspend fun getDetailsById(id: Int): NyaaReleaseDetails? {
+        return withContext(Dispatchers.IO) {
+            nyaaLocalRepo.detailsDao.getById(id)
         }
+    }
+
+    fun addToViewed(release: NyaaReleasePreview) {
+        nyaaLocalRepo.previewsDao.insert(release)
+        viewedReleasesRepo.dao.insert(ViewedNyaaRelease(release.id, System.currentTimeMillis()))
+    }
+
+    fun addDetails(details: NyaaReleaseDetails) {
+        nyaaLocalRepo.detailsDao.insert(details)
     }
 }

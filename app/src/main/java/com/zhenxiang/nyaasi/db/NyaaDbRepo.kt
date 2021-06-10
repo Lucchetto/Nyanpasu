@@ -4,5 +4,6 @@ import android.app.Application
 
 class NyaaDbRepo(application: Application) {
 
-    val dao = NyaaDb(application.applicationContext).nyaaReleasesDao()
+    val previewsDao = NyaaDb(application.applicationContext).nyaaReleasesPreviewDao()
+    val detailsDao = NyaaDb(application.applicationContext).nyaaReleasesDetailsDao()
 }

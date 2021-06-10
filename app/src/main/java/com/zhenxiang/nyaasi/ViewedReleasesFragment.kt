@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
+import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 
 class ViewedReleasesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +24,7 @@ class ViewedReleasesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_viewed_releases, container, false)
+        val searchBtn = fragmentView.findViewById<ExtendedFloatingActionButton>(R.id.search_btn)
 
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         val releasesListAdapter = ReleasesListAdapter()
@@ -32,6 +35,15 @@ class ViewedReleasesFragment : Fragment() {
         val viewedReleasesList = fragmentView.findViewById<RecyclerView>(R.id.viewed_releases_list)
         viewedReleasesList.layoutManager = LinearLayoutManager(fragmentView.context)
         viewedReleasesList.adapter = releasesListAdapter
+        releasesListAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
+            override fun itemClicked(item: NyaaReleasePreview) {
+                NyaaReleaseActivity.startNyaaReleaseActivity(item, requireActivity())
+            }
+
+            override fun downloadMagnet(item: NyaaReleasePreview) {
+                AppUtils.openMagnetLink(fragmentView.context, item, fragmentView, searchBtn)
+            }
+        }
 
         return fragmentView
     }

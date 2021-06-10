@@ -9,7 +9,7 @@ interface ViewedNyaaReleaseDao {
     fun getAll(): List<ViewedNyaaRelease>
 
     @Transaction
-    @Query("SELECT * From nyaarelease")
+    @Query("SELECT * From nyaareleasepreview")
     fun getAllWithDetails(): List<ViewedNyaaReleaseWithDetails>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

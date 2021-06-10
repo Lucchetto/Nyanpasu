@@ -14,7 +14,7 @@ import android.content.Intent
 import android.widget.AdapterView
 import android.widget.Spinner
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
-import com.zhenxiang.nyaasi.db.NyaaRelease
+import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 
 
 /**
@@ -65,11 +65,11 @@ class BrowseFragment : Fragment() {
         })
 
         releasesListAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
-            override fun itemClicked(item: NyaaRelease) {
+            override fun itemClicked(item: NyaaReleasePreview) {
                 NyaaReleaseActivity.startNyaaReleaseActivity(item, requireActivity())
             }
 
-            override fun downloadMagnet(item: NyaaRelease) {
+            override fun downloadMagnet(item: NyaaReleasePreview) {
                 AppUtils.openMagnetLink(fragmentView.context, item, fragmentView, searchBtn)
             }
         }

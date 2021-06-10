@@ -12,7 +12,7 @@ data class ViewedNyaaRelease(
 )
 
 data class ViewedNyaaReleaseWithDetails(
-    @Embedded val details: NyaaRelease,
+    @Embedded val details: NyaaReleasePreview,
     @Relation(
         parentColumn = "id",
         entityColumn = "releaseId"

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.zhenxiang.nyaasi.db.NyaaRelease
+import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import java.text.DateFormat
 
 class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -13,7 +13,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_DOWNLOAD_ITEM = 0
     private val TYPE_FOOTER_ITEM = 1
 
-    val items = mutableListOf<NyaaRelease>()
+    val items = mutableListOf<NyaaReleasePreview>()
 
     var listener: ItemClickedListener? = null
 
@@ -25,7 +25,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val releaseDate: TextView = view.findViewById(R.id.release_date)
         private val magnetBtn: View = view.findViewById(R.id.magnet_btn)
 
-        private var itemData: NyaaRelease? = null
+        private var itemData: NyaaReleasePreview? = null
 
         init {
             view.setOnClickListener {
@@ -44,7 +44,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
         }
 
-        fun bind(item: NyaaRelease) {
+        fun bind(item: NyaaReleasePreview) {
             itemData = item
             //id.text = item.id.toString()
             title.text = item.name
@@ -75,7 +75,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is DownloadItemViewHolder && /items[position] != null) {
+        if (holder is DownloadItemViewHolder && items[position] != null) {
             holder.bind(items[position])
         } else if (holder is FooterViewHolder) {
             holder.setVisible(showFooter)
@@ -91,14 +91,14 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return items.size + 1
     }
 
-    fun setItems(newItems: List<NyaaRelease>) {
+    fun setItems(newItems: List<NyaaReleasePreview>) {
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
     }
 
     interface ItemClickedListener {
-        fun itemClicked(item: NyaaRelease)
-        fun downloadMagnet(item: NyaaRelease)
+        fun itemClicked(item: NyaaReleasePreview)
+        fun downloadMagnet(item: NyaaReleasePreview)
     }
 }
