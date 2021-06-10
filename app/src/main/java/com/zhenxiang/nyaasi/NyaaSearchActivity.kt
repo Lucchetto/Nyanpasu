@@ -6,12 +6,16 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.appcompat.widget.SearchView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
+import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity() {
 
@@ -21,11 +25,26 @@ class NyaaSearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nyaa_search)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         val searchBar = findViewById<SearchView>(R.id.search_bar)
+        searchBar.applyInsetter {
+            type(statusBars = true) {
+                margin()
+            }
+        }
+
         searchBar.setIconifiedByDefault(false)
         searchBar.requestFocus()
 
         val resultsList = findViewById<RecyclerView>(R.id.search_results)
+        if (!NavigationModeUtils.isFullGestures(this)) {
+            findViewById<CoordinatorLayout>(R.id.search_activity_root).applyInsetter {
+                type(navigationBars = true) {
+                    padding()
+                }
+            }
+        }
         val resultsAdapter = ReleasesListAdapter()
         searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
 
