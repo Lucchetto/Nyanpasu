@@ -33,11 +33,13 @@ class ViewedReleasesFragment : Fragment() {
             searchBar.visibility = View.VISIBLE
             searchBar.isIconified = false
             searchBar.requestFocus()
+            searchBtn.hide()
         }
 
         searchBar.setOnCloseListener {
             toolbar.visibility = View.VISIBLE
             searchBar.visibility = View.GONE
+            searchBtn.show()
             true
         }
 
