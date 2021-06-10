@@ -1,11 +1,12 @@
 package com.zhenxiang.nyaasi
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +25,21 @@ class ViewedReleasesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_viewed_releases, container, false)
+        val toolbar = fragmentView.findViewById<Toolbar>(R.id.toolbar)
+        val searchBar = fragmentView.findViewById<SearchView>(R.id.search_bar)
         val searchBtn = fragmentView.findViewById<ExtendedFloatingActionButton>(R.id.search_btn)
+        searchBtn.setOnClickListener {
+            toolbar.visibility = View.GONE
+            searchBar.visibility = View.VISIBLE
+            searchBar.isIconified = false
+            searchBar.requestFocus()
+        }
+
+        searchBar.setOnCloseListener {
+            toolbar.visibility = View.VISIBLE
+            searchBar.visibility = View.GONE
+            true
+        }
 
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         val releasesListAdapter = ReleasesListAdapter()
@@ -32,6 +47,19 @@ class ViewedReleasesFragment : Fragment() {
         localNyaaDbViewModel.viewedReleases.observe(viewLifecycleOwner, {
             releasesListAdapter.setItems(it)
         })
+
+        searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                localNyaaDbViewModel.searchViewedRelease(newText)
+                return true
+            }
+
+        })
+
         val viewedReleasesList = fragmentView.findViewById<RecyclerView>(R.id.viewed_releases_list)
         viewedReleasesList.layoutManager = LinearLayoutManager(fragmentView.context)
         viewedReleasesList.adapter = releasesListAdapter

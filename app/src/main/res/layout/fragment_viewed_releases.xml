@@ -9,14 +9,24 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:background="?android:colorBackground">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:title="Recently viewed"
             app:layout_scrollFlags="scroll|enterAlways" />
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_bar"
+            style="@style/Widget.AppCompat.SearchView.ActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:iconifiedByDefault="true"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:visibility="gone" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.revengeos.revengeui.widget.BounceRecyclerView

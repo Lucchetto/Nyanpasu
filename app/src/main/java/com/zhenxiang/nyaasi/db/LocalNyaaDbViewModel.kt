@@ -30,6 +30,16 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
+    fun searchViewedRelease(query: String?) {
+        query?.let {
+             viewedItems.filter { item -> item.name.contains(query, true) }.let {
+                 viewedReleases.value = it.toMutableList()
+            }
+        } ?: run {
+            viewedReleases.value = viewedItems
+        }
+    }
+
     suspend fun getDetailsById(id: Int): NyaaReleaseDetails? {
         return withContext(Dispatchers.IO) {
             nyaaLocalRepo.detailsDao.getById(id)
