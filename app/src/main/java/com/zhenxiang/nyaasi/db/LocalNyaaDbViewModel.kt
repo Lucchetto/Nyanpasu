@@ -2,42 +2,39 @@ package com.zhenxiang.nyaasi.db
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.lifecycle.MutableLiveData
+
+
+
 
 class LocalNyaaDbViewModel(application: Application): AndroidViewModel(application) {
 
     private val nyaaLocalRepo = NyaaDbRepo(application)
 
     private val viewedReleasesRepo = ViewedNyaaReleaseRepo(application)
-    private val viewedItems = mutableListOf<NyaaReleasePreview>()
-    val viewedReleases = MutableLiveData<MutableList<NyaaReleasePreview>>()
+
+    val searchFilter = MutableLiveData<String>()
+    // Source of data
+    private val preFilterViewedReleases = Transformations.map(viewedReleasesRepo.dao.getAllWithDetails()) {
+        it.map { item -> item.details }
+    }
+    // Filtered list exposed for usage
+    val viewedReleases = Transformations.switchMap(searchFilter) { query ->
+        if (query.isNullOrEmpty()) {
+            preFilterViewedReleases
+        } else {
+            Transformations.map(preFilterViewedReleases) { list ->
+                list.filter { item -> item.name.contains(query, true) }
+            }
+        }
+    }
 
     init {
-        getAll()
-    }
-
-    fun getAll() {
-        viewModelScope.launch(Dispatchers.IO) {
-            viewedItems.clear()
-            viewedItems.addAll(viewedReleasesRepo.dao.getAllWithDetails().map { item -> item.details })
-            withContext(Dispatchers.Main) {
-                viewedReleases.value = viewedItems
-            }
-        }
-    }
-
-    fun searchViewedRelease(query: String?) {
-        query?.let {
-             viewedItems.filter { item -> item.name.contains(query, true) }.let {
-                 viewedReleases.value = it.toMutableList()
-            }
-        } ?: run {
-            viewedReleases.value = viewedItems
-        }
+        // Required to emit value for viewedReleases on start
+        searchFilter.value = null
     }
 
     suspend fun getDetailsById(id: Int): NyaaReleaseDetails? {

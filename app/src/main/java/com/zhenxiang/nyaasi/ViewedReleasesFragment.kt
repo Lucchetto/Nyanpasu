@@ -46,6 +46,7 @@ class ViewedReleasesFragment : Fragment() {
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         val releasesListAdapter = ReleasesListAdapter()
         releasesListAdapter.setFooterVisible(false)
+
         localNyaaDbViewModel.viewedReleases.observe(viewLifecycleOwner, {
             releasesListAdapter.setItems(it)
         })
@@ -56,7 +57,7 @@ class ViewedReleasesFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                localNyaaDbViewModel.searchViewedRelease(newText)
+                localNyaaDbViewModel.searchFilter.value = newText
                 return true
             }
 
