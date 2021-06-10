@@ -12,10 +12,10 @@ data class ViewedNyaaRelease(
 )
 
 data class ViewedNyaaReleaseWithDetails(
-    @Embedded val details: NyaaReleasePreview,
+    @Embedded val viewedNyaaRelease: ViewedNyaaRelease,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "releaseId"
+        parentColumn = "releaseId",
+        entityColumn = "id"
     )
-    val viewedNyaaRelease: ViewedNyaaRelease
+    val details: NyaaReleasePreview
 )
