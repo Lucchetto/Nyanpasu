@@ -15,7 +15,7 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Browse"
+            app:title="Browse nyaa.si"
             app:layout_scrollFlags="scroll|enterAlways" />
 
         <Spinner
