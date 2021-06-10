@@ -15,8 +15,7 @@
         <activity
             android:name=".NyaaReleaseActivity"
             android:exported="true"
-            android:label="@string/title_activity_nyaa_release"
-            android:theme="@style/Theme.Nyaasi.NoActionBar" />
+            android:label="@string/title_activity_nyaa_release" />
         <activity
             android:name=".NyaaSearchActivity"
             android:exported="true" />
