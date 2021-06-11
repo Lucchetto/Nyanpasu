@@ -7,6 +7,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.zhenxiang.nyaasi.fragment.BrowseFragment
+import com.zhenxiang.nyaasi.fragment.SavedReleasesFragment
+import com.zhenxiang.nyaasi.fragment.ViewedReleasesFragment
 import dev.chrisbanes.insetter.applyInsetter
 
 class MainActivity : AppCompatActivity() {
@@ -31,14 +34,17 @@ class MainActivity : AppCompatActivity() {
 
         val browseFragment: Fragment
         val savedFragment: Fragment
+        val recentsFragment: Fragment
 
         if (savedInstanceState == null) {
             browseFragment = setupFragment(BrowseFragment.newInstance(), "1")
-            savedFragment = setupFragment(ViewedReleasesFragment.newInstance(), "2")
+            recentsFragment = setupFragment(ViewedReleasesFragment.newInstance(), "2")
+            savedFragment = setupFragment(SavedReleasesFragment.newInstance(), "3")
             switchActiveFragment(browseFragment)
         } else {
             browseFragment = supportFragmentManager.findFragmentByTag("1")!!
-            savedFragment = supportFragmentManager.findFragmentByTag("2")!!
+            recentsFragment = supportFragmentManager.findFragmentByTag("2")!!
+            savedFragment = supportFragmentManager.findFragmentByTag("3")!!
         }
 
         bottomNav = findViewById(R.id.bottom_nav)
@@ -46,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.browseFragment -> switchActiveFragment(browseFragment)
+                R.id.recentsFragment -> switchActiveFragment(recentsFragment)
                 R.id.savedFragment -> switchActiveFragment(savedFragment)
             }
             true

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- NOTE: order is important (the first matching state(s) is what is rendered) -->
+    <item
+        android:state_activated="true"
+        android:drawable="@drawable/ic_outline_bookmark_24" />
+    <item
+        android:drawable="@drawable/ic_outline_bookmark_border_24" />
+</selector>

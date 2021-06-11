@@ -9,8 +9,10 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="recently_viewed_fragment_bottom_nav">Recents</string>
+    <string name="recently_viewed_fragment_title">Recently viewed</string>
+    <string name="saved_fragment_bottom_nav">Saved</string>
+    <string name="saved_fragment_title">Saved releases</string>
 
     <string name="category_all">All categories</string>
     <string name="category_anime">Anime</string>

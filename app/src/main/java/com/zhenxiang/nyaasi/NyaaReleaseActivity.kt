@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
@@ -54,6 +55,23 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val magnetBtn = findViewById<View>(R.id.magnet_btn)
             magnetBtn.setOnClickListener { _ ->
                 AppUtils.openMagnetLink(this, it, scrollRoot)
+            }
+
+            val saveBtn = findViewById<ImageButton>(R.id.save_btn)
+            lifecycleScope.launch(Dispatchers.IO) {
+                val active = localNyaaDbViewModel.isSaved(it)
+                withContext(Dispatchers.Main) {
+                    saveBtn.isActivated = active
+                }
+            }
+
+            saveBtn.setOnClickListener { view ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val active = localNyaaDbViewModel.toggleSaved(it)
+                    withContext(Dispatchers.Main) {
+                        view.isActivated = active
+                    }
+                }
             }
 
             val category = findViewById<TextView>(R.id.category)

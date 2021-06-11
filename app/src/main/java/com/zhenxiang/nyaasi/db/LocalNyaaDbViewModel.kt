@@ -14,15 +14,13 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
 
     private val nyaaLocalRepo = NyaaDbRepo(application)
 
-    private val viewedReleasesRepo = ViewedNyaaReleaseRepo(application)
-
-    val searchFilter = MutableLiveData<String>()
+    val viewedReleasesSearchFilter = MutableLiveData<String>()
     // Source of data
-    private val preFilterViewedReleases = Transformations.map(viewedReleasesRepo.dao.getAllWithDetails()) {
+    private val preFilterViewedReleases = Transformations.map(nyaaLocalRepo.viewedDao.getAllWithDetails()) {
         it.map { item -> item.details }
     }
     // Filtered list exposed for usage
-    val viewedReleases = Transformations.switchMap(searchFilter) { query ->
+    val viewedReleases = Transformations.switchMap(viewedReleasesSearchFilter) { query ->
         if (query.isNullOrEmpty()) {
             preFilterViewedReleases
         } else {
@@ -32,9 +30,27 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
+    val savedReleasesSearchFilter = MutableLiveData<String>()
+    // Source of data
+    private val preFilterSavedReleases = Transformations.map(nyaaLocalRepo.savedDao.getAllWithDetails()) {
+        it.map { item -> item.details }
+    }
+    // Filtered list exposed for usage
+    val savedReleases = Transformations.switchMap(savedReleasesSearchFilter) { query ->
+        if (query.isNullOrEmpty()) {
+            preFilterSavedReleases
+        } else {
+            Transformations.map(preFilterSavedReleases) { list ->
+                list.filter { item -> item.name.contains(query, true) }
+            }
+        }
+    }
+
     init {
         // Required to emit value for viewedReleases on start
-        searchFilter.value = null
+        viewedReleasesSearchFilter.value = null
+        // Required to emit value for savedReleases on start
+        savedReleasesSearchFilter.value = null
     }
 
     suspend fun getDetailsById(id: Int): NyaaReleaseDetails? {
@@ -45,7 +61,22 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
 
     fun addToViewed(release: NyaaReleasePreview) {
         nyaaLocalRepo.previewsDao.insert(release)
-        viewedReleasesRepo.dao.insert(ViewedNyaaRelease(release.id, System.currentTimeMillis()))
+        nyaaLocalRepo.viewedDao.insert(ViewedNyaaRelease(release.id, System.currentTimeMillis()))
+    }
+
+    fun isSaved(release: NyaaReleasePreview): Boolean {
+        return nyaaLocalRepo.savedDao.getById(release.id) != null
+    }
+
+    fun toggleSaved(release: NyaaReleasePreview): Boolean {
+        nyaaLocalRepo.savedDao.getById(release.id)?.let {
+            nyaaLocalRepo.savedDao.delete(it)
+            return false
+        } ?: run {
+            nyaaLocalRepo.previewsDao.insert(release)
+            nyaaLocalRepo.savedDao.insert(SavedNyaaRelease(release.id, System.currentTimeMillis()))
+            return true
+        }
     }
 
     fun addDetails(details: NyaaReleaseDetails) {

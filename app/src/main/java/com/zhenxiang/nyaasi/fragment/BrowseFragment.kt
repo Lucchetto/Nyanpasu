@@ -1,4 +1,4 @@
-package com.zhenxiang.nyaasi
+package com.zhenxiang.nyaasi.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,6 +13,7 @@ import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import android.content.Intent
 import android.widget.AdapterView
 import android.widget.Spinner
+import com.zhenxiang.nyaasi.*
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 

@@ -1,4 +1,4 @@
-package com.zhenxiang.nyaasi
+package com.zhenxiang.nyaasi.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,19 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.zhenxiang.nyaasi.AppUtils
+import com.zhenxiang.nyaasi.NyaaReleaseActivity
+import com.zhenxiang.nyaasi.R
+import com.zhenxiang.nyaasi.ReleasesListAdapter
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import dev.chrisbanes.insetter.applyInsetter
 
-class ViewedReleasesFragment : Fragment() {
+open class ViewedReleasesFragment : Fragment() {
 
     private lateinit var toolbar: Toolbar
     private lateinit var searchBar: SearchView
     private lateinit var searchBtn: ExtendedFloatingActionButton
+    lateinit var localNyaaDbViewModel: LocalNyaaDbViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +38,7 @@ class ViewedReleasesFragment : Fragment() {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_viewed_releases, container, false)
         toolbar = fragmentView.findViewById(R.id.toolbar)
+        toolbar.setTitle(getTitleRes())
         searchBar = fragmentView.findViewById(R.id.search_bar)
         searchBtn = fragmentView.findViewById(R.id.search_btn)
 
@@ -48,11 +55,11 @@ class ViewedReleasesFragment : Fragment() {
             true
         }
 
-        val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
+        localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         val releasesListAdapter = ReleasesListAdapter()
         releasesListAdapter.setFooterVisible(false)
 
-        localNyaaDbViewModel.viewedReleases.observe(viewLifecycleOwner, {
+        liveDataSource().observe(viewLifecycleOwner, {
             releasesListAdapter.setItems(it)
         })
 
@@ -62,7 +69,7 @@ class ViewedReleasesFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                localNyaaDbViewModel.searchFilter.value = newText
+                searchQuery(newText)
                 return true
             }
 
@@ -87,6 +94,18 @@ class ViewedReleasesFragment : Fragment() {
         }
 
         return fragmentView
+    }
+
+    open fun getTitleRes(): Int {
+        return R.string.recently_viewed_fragment_title
+    }
+
+    open fun liveDataSource(): LiveData<List<NyaaReleasePreview>> {
+        return localNyaaDbViewModel.viewedReleases
+    }
+
+    open fun searchQuery(query: String?) {
+        localNyaaDbViewModel.viewedReleasesSearchFilter.value = query
     }
 
     private fun hideSearch() {
