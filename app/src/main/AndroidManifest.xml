@@ -15,9 +15,11 @@
         <activity
             android:name=".NyaaReleaseActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_nyaa_release" />
         <activity
             android:name=".NyaaSearchActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true" />
         <activity
             android:name=".MainActivity"

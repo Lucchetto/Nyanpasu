@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
+import dev.chrisbanes.insetter.applyInsetter
 
 class ViewedReleasesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +65,11 @@ class ViewedReleasesFragment : Fragment() {
         })
 
         val viewedReleasesList = fragmentView.findViewById<RecyclerView>(R.id.viewed_releases_list)
+        viewedReleasesList.applyInsetter {
+            type(ime = true) {
+                margin()
+            }
+        }
         viewedReleasesList.layoutManager = LinearLayoutManager(fragmentView.context)
         viewedReleasesList.adapter = releasesListAdapter
         releasesListAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {

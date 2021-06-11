@@ -28,21 +28,13 @@ class NyaaSearchActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val searchBar = findViewById<SearchView>(R.id.search_bar)
-        searchBar.applyInsetter {
-            type(statusBars = true) {
-                margin()
-            }
-        }
-
         searchBar.setIconifiedByDefault(false)
         searchBar.requestFocus()
 
         val resultsList = findViewById<RecyclerView>(R.id.search_results)
-        if (!NavigationModeUtils.isFullGestures(this)) {
-            findViewById<CoordinatorLayout>(R.id.search_activity_root).applyInsetter {
-                type(navigationBars = true) {
-                    padding()
-                }
+        findViewById<CoordinatorLayout>(R.id.search_activity_root).applyInsetter {
+            type(navigationBars = !NavigationModeUtils.isFullGestures(this@NyaaSearchActivity), statusBars = true, ime = true) {
+                margin()
             }
         }
         val resultsAdapter = ReleasesListAdapter()
@@ -112,6 +104,7 @@ class NyaaSearchActivity : AppCompatActivity() {
                 }
                 searchViewModel.setSearchText(query)
                 searchViewModel.loadSearchResults()
+                searchBar.clearFocus()
                 return true
             }
 
