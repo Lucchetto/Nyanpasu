@@ -65,6 +65,7 @@ open class ViewedReleasesFragment : Fragment() {
 
         searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                searchBar.clearFocus()
                 return true
             }
 
