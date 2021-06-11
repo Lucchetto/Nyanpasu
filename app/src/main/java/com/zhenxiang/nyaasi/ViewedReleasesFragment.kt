@@ -16,6 +16,11 @@ import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import dev.chrisbanes.insetter.applyInsetter
 
 class ViewedReleasesFragment : Fragment() {
+
+    private lateinit var toolbar: Toolbar
+    private lateinit var searchBar: SearchView
+    private lateinit var searchBtn: ExtendedFloatingActionButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -26,9 +31,10 @@ class ViewedReleasesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_viewed_releases, container, false)
-        val toolbar = fragmentView.findViewById<Toolbar>(R.id.toolbar)
-        val searchBar = fragmentView.findViewById<SearchView>(R.id.search_bar)
-        val searchBtn = fragmentView.findViewById<ExtendedFloatingActionButton>(R.id.search_btn)
+        toolbar = fragmentView.findViewById(R.id.toolbar)
+        searchBar = fragmentView.findViewById(R.id.search_bar)
+        searchBtn = fragmentView.findViewById(R.id.search_btn)
+
         searchBtn.setOnClickListener {
             toolbar.visibility = View.GONE
             searchBar.visibility = View.VISIBLE
@@ -38,9 +44,7 @@ class ViewedReleasesFragment : Fragment() {
         }
 
         searchBar.setOnCloseListener {
-            toolbar.visibility = View.VISIBLE
-            searchBar.visibility = View.GONE
-            searchBtn.show()
+            hideSearch()
             true
         }
 
@@ -83,6 +87,20 @@ class ViewedReleasesFragment : Fragment() {
         }
 
         return fragmentView
+    }
+
+    private fun hideSearch() {
+        toolbar.visibility = View.VISIBLE
+        searchBar.visibility = View.GONE
+        searchBtn.show()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        // Check if new state is hidden and if toolbar is visible
+        if (hidden && toolbar.visibility == View.GONE) {
+            hideSearch()
+        }
     }
 
     companion object {
