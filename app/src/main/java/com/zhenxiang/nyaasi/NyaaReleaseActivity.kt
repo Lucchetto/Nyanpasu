@@ -16,6 +16,8 @@ import br.tiagohm.markdownview.css.styles.Github
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleaseDetails
+import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
+import com.zhenxiang.nyaasi.releasetracker.SubscribedUser
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,6 +46,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
         val nyaaRelease = intent.getSerializableExtra(RELEASE_INTENT_OBJ) as NyaaReleasePreview?
 
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
+        val releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
 
         nyaaRelease?.let {
             val releaseTitle = findViewById<TextView>(R.id.release_title)
@@ -73,6 +76,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            val addToTrackerBtn = findViewById<ImageButton>(R.id.add_to_tracker)
 
             val category = findViewById<TextView>(R.id.category)
             category.text = getString(R.string.release_category, getString(it.category.stringResId))
@@ -115,6 +120,16 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         setDetails(details)
+
+                        details.user?.let { usernameString ->
+                            addToTrackerBtn.setOnClickListener {
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    releasesTrackerViewModel.addUserToTracker(SubscribedUser(usernameString))
+                                }
+                            }
+                        } ?: run {
+                            addToTrackerBtn.visibility = View.GONE
+                        }
                     }
                 } catch(e: Exception) {
                     Log.w(TAG, e)

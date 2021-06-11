@@ -15,6 +15,12 @@
         android:enabled="true"
         android:icon="@drawable/ic_outline_history_24"
         android:title="@string/recently_viewed_fragment_bottom_nav"/>
+
+    <item
+        android:id="@+id/subscribedUsers"
+        android:enabled="true"
+        android:icon="@drawable/ic_outline_history_24"
+        android:title="Subscribed users"/>
     <!--<item
         android:id="@+id/settings"
         android:enabled="true"

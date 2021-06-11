@@ -2,6 +2,7 @@ package com.zhenxiang.nyaasi.db
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,13 +22,7 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
     }
     // Filtered list exposed for usage
     val viewedReleases = Transformations.switchMap(viewedReleasesSearchFilter) { query ->
-        if (query.isNullOrEmpty()) {
-            preFilterViewedReleases
-        } else {
-            Transformations.map(preFilterViewedReleases) { list ->
-                list.filter { item -> item.name.contains(query, true) }
-            }
-        }
+        preFilterViewedReleases.searchByName(query)
     }
 
     val savedReleasesSearchFilter = MutableLiveData<String>()
@@ -37,13 +32,7 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
     }
     // Filtered list exposed for usage
     val savedReleases = Transformations.switchMap(savedReleasesSearchFilter) { query ->
-        if (query.isNullOrEmpty()) {
-            preFilterSavedReleases
-        } else {
-            Transformations.map(preFilterSavedReleases) { list ->
-                list.filter { item -> item.name.contains(query, true) }
-            }
-        }
+        preFilterSavedReleases.searchByName(query)
     }
 
     init {
@@ -81,5 +70,15 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
 
     fun addDetails(details: NyaaReleaseDetails) {
         nyaaLocalRepo.detailsDao.insert(details)
+    }
+}
+
+private fun LiveData<List<NyaaReleasePreview>>.searchByName(query: String?): LiveData<List<NyaaReleasePreview>> {
+    return if (query.isNullOrEmpty()) {
+        this
+    } else {
+        Transformations.map(this) { list ->
+            list.filter { item -> item.name.contains(query, true) }
+        }
     }
 }

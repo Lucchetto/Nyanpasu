@@ -64,6 +64,11 @@
                 android:layout_weight="1"/>
 
             <ImageButton
+                android:id="@+id/add_to_tracker"
+                android:src="@drawable/ic_outline_add_to_queue_24"
+                style="@style/Theme.Nyaasi.ReleaseActionButton" />
+
+            <ImageButton
                 android:id="@+id/save_btn"
                 android:src="@drawable/bookmark_status"
                 style="@style/Theme.Nyaasi.ReleaseActionButton" />
