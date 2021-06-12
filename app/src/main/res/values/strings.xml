@@ -41,7 +41,8 @@
     <string name="category_software_games">Software games</string>
 
     <string name="release_category">Category: %1$s</string>
-    <string name="release_submitter">Submitter: %1$s</string>
+    <string name="release_submitter">Posted by %1$s</string>
     <string name="release_date">Date: %1$s</string>
     <string name="submitter_null">Anonymous</string>
+    <string name="track_release_title">Track release</string>
 </resources>

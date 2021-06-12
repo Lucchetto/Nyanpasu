@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         android:padding="15dp">
 
         <TextView
@@ -24,49 +26,55 @@
             tools:text="Release title, may be very long or short" />
 
         <TextView
-            android:id="@+id/category"
-            android:layout_marginTop="5dp"
+            android:id="@+id/release_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseSubtitle"
-            tools:text="Category: Literature non English translated"/>
+            android:layout_marginTop="2dp"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseId"
+            tools:text="ID: 1232213113"/>
 
         <TextView
+            android:layout_marginTop="15dp"
             android:id="@+id/submitter"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseSubtitle"
-            tools:text="Submitter: CapitainJack"/>
+            android:textAppearance="@style/TextAppearance.Nyaasi.Details"
+            android:breakStrategy="simple"
+            tools:text="Posted by Random_user" />
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseSubtitle"
-            tools:text="Date: 31 February -123"/>
+            android:textAppearance="@style/TextAppearance.Nyaasi.Details"
+            android:breakStrategy="simple"
+            tools:text="Date: 31 February -123" />
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.Details"
+            tools:text="Category: Literature non English translated"/>
 
         <LinearLayout
-            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
-            <TextView
-                android:id="@+id/release_id"
+            <Button
+                android:id="@+id/add_to_tracker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseID"
-                tools:text="ID: 1232213113"/>
+                android:visibility="gone"
+                android:text="@string/track_release_title"
+                tools:visibility="visible"/>
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
-
-            <ImageButton
-                android:id="@+id/add_to_tracker"
-                android:src="@drawable/ic_outline_add_to_queue_24"
-                style="@style/Theme.Nyaasi.ReleaseActionButton" />
 
             <ImageButton
                 android:id="@+id/save_btn"

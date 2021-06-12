@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -77,7 +78,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 }
             }
 
-            val addToTrackerBtn = findViewById<ImageButton>(R.id.add_to_tracker)
+            val addToTrackerBtn = findViewById<Button>(R.id.add_to_tracker)
 
             val category = findViewById<TextView>(R.id.category)
             category.text = getString(R.string.release_category, getString(it.category.stringResId))
@@ -128,8 +129,10 @@ class NyaaReleaseActivity : AppCompatActivity() {
                                 }
                             }
                         } ?: run {
-                            addToTrackerBtn.visibility = View.GONE
+                            addToTrackerBtn.isEnabled = false
                         }
+
+                        addToTrackerBtn.visibility = View.VISIBLE
                     }
                 } catch(e: Exception) {
                     Log.w(TAG, e)
