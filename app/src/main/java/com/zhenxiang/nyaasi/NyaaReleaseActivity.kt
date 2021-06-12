@@ -140,9 +140,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 } catch(e: Exception) {
                     Log.w(TAG, e)
                 }
-                withContext(Dispatchers.Main) {
-                    addToTrackerBtn.visibility = View.VISIBLE
-                }
             }
         } ?: run {
             finish()

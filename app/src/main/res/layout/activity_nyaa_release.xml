@@ -67,10 +67,8 @@
                 android:id="@+id/add_to_tracker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
                 android:enabled="false"
-                android:text="@string/track_release_title"
-                tools:visibility="visible"/>
+                android:text="@string/track_release_title"/>
 
             <Space
                 android:layout_width="0dp"
