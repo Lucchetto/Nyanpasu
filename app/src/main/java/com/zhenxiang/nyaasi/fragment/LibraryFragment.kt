@@ -35,10 +35,6 @@ class LibraryFragment : Fragment() {
         val viewPagerAdapter = LibraryPagerAdapter(childFragmentManager, viewPager.context)
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
-        val savedReleasesTab = tabLayout.getTabAt(0)
-        savedReleasesTab?.icon = viewPager.context.getDrawable(R.drawable.ic_outline_bookmarks_24)
-        val viewedReleasesTab = tabLayout.getTabAt(1)
-        viewedReleasesTab?.icon = viewPager.context.getDrawable(R.drawable.ic_outline_history_24)
         viewPager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
             var currentPage = 0
             override fun onPageScrolled(
@@ -92,7 +88,13 @@ class LibraryPagerAdapter(fragmentManager: FragmentManager, private val context:
         return 2
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return null
+    override fun getPageTitle(position: Int): CharSequence {
+        return when (position) {
+            0 -> context.getString(R.string.saved_fragment_bottom_nav)
+            1 -> context.getString(R.string.recently_viewed_fragment_bottom_nav)
+            else -> {
+                return context.getString(R.string.saved_fragment_bottom_nav)
+            }
+        }
     }
 }
