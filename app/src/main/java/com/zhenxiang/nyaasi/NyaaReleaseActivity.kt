@@ -43,6 +43,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
         markdownView = findViewById(R.id.release_details_markdown)
         markdownView.addStyleSheet(Github())
+        markdownView.clipToOutline = true
         submitter = findViewById(R.id.submitter)
 
         val nyaaRelease = intent.getSerializableExtra(RELEASE_INTENT_OBJ) as NyaaReleasePreview?
@@ -127,21 +128,20 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     if (details.user != null) {
                         val releasesOfUser = NyaaPageProvider.getPageItems(0, user = details.user)
                         releasesOfUser?.getOrNull(0)?.let { latestRelease ->
-                            addToTrackerBtn.setOnClickListener {
-                                releasesTrackerViewModel.addUserToTracker(
-                                    SubscribedUser(details.user, latestRelease.date.time))
+                            withContext(Dispatchers.Main) {
+                                addToTrackerBtn.setOnClickListener {
+                                    releasesTrackerViewModel.addUserToTracker(
+                                        SubscribedUser(details.user, latestRelease.date.time))
+                                }
+                                addToTrackerBtn.isEnabled = true
                             }
                         }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            addToTrackerBtn.isEnabled = false
-                        }
-                    }
-                    withContext(Dispatchers.Main) {
-                        addToTrackerBtn.visibility = View.VISIBLE
                     }
                 } catch(e: Exception) {
                     Log.w(TAG, e)
+                }
+                withContext(Dispatchers.Main) {
+                    addToTrackerBtn.visibility = View.VISIBLE
                 }
             }
         } ?: run {
