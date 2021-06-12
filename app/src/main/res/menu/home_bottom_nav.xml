@@ -6,15 +6,10 @@
         android:icon="@drawable/ic_travel_explore_24"
         android:title="Browse"/>
     <item
-        android:id="@+id/savedFragment"
+        android:id="@+id/libraryFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_outline_bookmarks_24"
-        android:title="@string/saved_fragment_bottom_nav"/>
-    <item
-        android:id="@+id/recentsFragment"
-        android:enabled="true"
-        android:icon="@drawable/ic_outline_history_24"
-        android:title="@string/recently_viewed_fragment_bottom_nav"/>
+        android:icon="@drawable/ic_library_28_regular"
+        android:title="@string/library_title"/>
 
     <item
         android:id="@+id/subscribedUsers"

@@ -6,15 +6,11 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
-import androidx.work.PeriodicWorkRequestBuilder
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zhenxiang.nyaasi.fragment.BrowseFragment
-import com.zhenxiang.nyaasi.fragment.SavedReleasesFragment
+import com.zhenxiang.nyaasi.fragment.LibraryFragment
 import com.zhenxiang.nyaasi.fragment.SubscribedUsersFragment
-import com.zhenxiang.nyaasi.fragment.ViewedReleasesFragment
-import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerBgWorker
 import dev.chrisbanes.insetter.applyInsetter
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,20 +33,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         val browseFragment: Fragment
-        val savedFragment: Fragment
-        val recentsFragment: Fragment
+        val libraryFragment: Fragment
         val subscribedUsersFragment: Fragment
 
         if (savedInstanceState == null) {
             browseFragment = setupFragment(BrowseFragment.newInstance(), "1")
-            recentsFragment = setupFragment(ViewedReleasesFragment.newInstance(), "2")
-            savedFragment = setupFragment(SavedReleasesFragment.newInstance(), "3")
+            libraryFragment = setupFragment(LibraryFragment.newInstance(), "3")
             subscribedUsersFragment = setupFragment(SubscribedUsersFragment.newInstance(), "4")
             switchActiveFragment(browseFragment)
         } else {
             browseFragment = supportFragmentManager.findFragmentByTag("1")!!
-            recentsFragment = supportFragmentManager.findFragmentByTag("2")!!
-            savedFragment = supportFragmentManager.findFragmentByTag("3")!!
+            libraryFragment = supportFragmentManager.findFragmentByTag("3")!!
             subscribedUsersFragment = supportFragmentManager.findFragmentByTag("4")!!
         }
 
@@ -59,8 +52,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.browseFragment -> switchActiveFragment(browseFragment)
-                R.id.recentsFragment -> switchActiveFragment(recentsFragment)
-                R.id.savedFragment -> switchActiveFragment(savedFragment)
+                R.id.libraryFragment -> switchActiveFragment(libraryFragment)
                 R.id.subscribedUsers -> switchActiveFragment(subscribedUsersFragment)
             }
             true

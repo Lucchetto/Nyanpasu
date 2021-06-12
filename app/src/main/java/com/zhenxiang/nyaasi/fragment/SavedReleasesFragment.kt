@@ -6,10 +6,6 @@ import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 
 class SavedReleasesFragment: ViewedReleasesFragment() {
 
-    override fun getTitleRes(): Int {
-        return R.string.saved_fragment_title
-    }
-
     override fun liveDataSource(): LiveData<List<NyaaReleasePreview>> {
         return localNyaaDbViewModel.savedReleases
     }
