@@ -19,6 +19,7 @@ import dev.chrisbanes.insetter.applyInsetter
 
 open class ViewedReleasesFragment : Fragment() {
 
+    private lateinit var releasesList: RecyclerView
     //private lateinit var toolbar: Toolbar
     //private lateinit var searchBar: SearchView
     //private lateinit var searchBtn: ExtendedFloatingActionButton
@@ -73,7 +74,7 @@ open class ViewedReleasesFragment : Fragment() {
 
         })*/
 
-        val releasesList = fragmentView.findViewById<RecyclerView>(R.id.viewed_releases_list)
+        releasesList = fragmentView.findViewById<RecyclerView>(R.id.viewed_releases_list)
         releasesList.applyInsetter {
             type(ime = true) {
                 margin()
@@ -100,6 +101,14 @@ open class ViewedReleasesFragment : Fragment() {
 
     open fun searchQuery(query: String?) {
         localNyaaDbViewModel.viewedReleasesSearchFilter.value = query
+    }
+
+    fun listHeight(): Int {
+        return if (this::releasesList.isInitialized) {
+            releasesList.height
+        } else {
+            0
+        }
     }
 
     /*private fun hideSearch() {

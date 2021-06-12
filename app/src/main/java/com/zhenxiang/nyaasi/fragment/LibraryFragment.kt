@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -26,6 +28,7 @@ class LibraryFragment : Fragment() {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_library, container, false)
 
+        val toolbar = fragmentView.findViewById<Toolbar>(R.id.library_toolbar)
         val appBar = fragmentView.findViewById<AppBarLayout>(R.id.app_bar)
         val tabLayout = fragmentView.findViewById<TabLayout>(R.id.library_tabs)
         val viewPager = fragmentView.findViewById<ViewPager>(R.id.library_pager)
@@ -40,7 +43,11 @@ class LibraryFragment : Fragment() {
                 positionOffsetPixels: Int
             ) {
                 if (currentPage != position && positionOffset < 0.1f) {
-                    appBar.setExpanded(true, true)
+                    // Hax to get fragment
+                    val fragment = childFragmentManager.findFragmentByTag("android:switcher:${R.id.library_pager}:$position")
+                    if (fragment != null && fragment is ViewedReleasesFragment && fragment.listHeight() < viewPager.height - toolbar.height) {
+                        appBar.setExpanded(true, true)
+                    }
                     currentPage = position
                 }
             }

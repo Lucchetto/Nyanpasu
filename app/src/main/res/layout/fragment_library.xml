@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- setting id to CoordinatorLayout prevents scroll
+ state to be lost on configuration change, WTF -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/library_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,6 +17,7 @@
         android:background="?android:colorBackground">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/library_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="@string/library_title"
@@ -32,7 +36,7 @@
         android:id="@+id/library_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="com.revengeos.revengeui.appbar.ConstrainedScrollBehavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/search_btn"
