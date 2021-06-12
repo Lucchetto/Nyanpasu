@@ -16,6 +16,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
     Worker(appContext, workerParams) {
 
     private val TAG = javaClass.name
+    private val RELEASE_TRACKER_NOTIF_ID = 1069
 
     private val subscribedUsersDao = NyaaDb(appContext).subscribedUsersDao()
 
@@ -29,7 +30,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
 
             with(NotificationManagerCompat.from(applicationContext)) {
                 // notificationId is a unique int for each notification that you must define
-                notify(System.currentTimeMillis().toInt(), noficationBuilder.build())
+                notify(RELEASE_TRACKER_NOTIF_ID, noficationBuilder.build())
             }
         }
         return Result.success()

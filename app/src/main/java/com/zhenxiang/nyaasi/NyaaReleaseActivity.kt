@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
+import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleaseDetails
@@ -121,17 +122,22 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         setDetails(details)
+                    }
 
-                        details.user?.let { usernameString ->
+                    if (details.user != null) {
+                        val releasesOfUser = NyaaPageProvider.getPageItems(0, user = details.user)
+                        releasesOfUser?.getOrNull(0)?.let { latestRelease ->
                             addToTrackerBtn.setOnClickListener {
-                                lifecycleScope.launch(Dispatchers.IO) {
-                                    releasesTrackerViewModel.addUserToTracker(SubscribedUser(usernameString))
-                                }
+                                releasesTrackerViewModel.addUserToTracker(
+                                    SubscribedUser(details.user, latestRelease.date.time))
                             }
-                        } ?: run {
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
                             addToTrackerBtn.isEnabled = false
                         }
-
+                    }
+                    withContext(Dispatchers.Main) {
                         addToTrackerBtn.visibility = View.VISIBLE
                     }
                 } catch(e: Exception) {
