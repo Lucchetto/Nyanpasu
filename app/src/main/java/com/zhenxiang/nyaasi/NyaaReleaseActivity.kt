@@ -14,14 +14,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleaseDetails
 import com.zhenxiang.nyaasi.fragment.ReleaseTrackerBottomFragment
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
-import com.zhenxiang.nyaasi.releasetracker.SubscribedUser
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,6 +37,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private lateinit var addToTrackerBtn: Button
 
     private lateinit var releasesTrackerViewModel: ReleaseTrackerViewModel
+    private var latestRelease: NyaaReleasePreview? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +51,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
         markdownView.clipToOutline = true
         submitter = findViewById(R.id.submitter)
 
-        val nyaaRelease = intent.getSerializableExtra(RELEASE_INTENT_OBJ) as NyaaReleasePreview?
+        val nyaaRelease = intent.getSerializableExtra(RELEASE_PREVIEW_INTENT_OBJ) as NyaaReleasePreview?
+        latestRelease = savedInstanceState?.getSerializable(USER_LATEST_RELEASE_INTENT_OBJ) as NyaaReleasePreview?
 
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
@@ -108,32 +108,29 @@ class NyaaReleaseActivity : AppCompatActivity() {
             releaseSizeView.setValue(it.releaseSize)
 
             lifecycleScope.launch(Dispatchers.IO) {
-                localNyaaDbViewModel.getDetailsById(it.id)?.let { details ->
-                    withContext(Dispatchers.Main) {
-                        setDetails(details)
-                    }
+                val localReleaseDetails = localNyaaDbViewModel.getDetailsById(it.id)
+                localReleaseDetails?.let { details ->
+                    setDetails(details)
                 }
 
-                try {
-                    val doc: Document = Jsoup.connect("https://nyaa.si/view/${it.id}").get()
-                    doc.outputSettings().prettyPrint(false)
+                if (localReleaseDetails == null && savedInstanceState == null) {
+                    try {
+                        val doc: Document = Jsoup.connect("https://nyaa.si/view/${it.id}").get()
+                        doc.outputSettings().prettyPrint(false)
 
-                    val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
-                    val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
-                    val descriptionMarkdown = doc.getElementById("torrent-description").html()
+                        val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
+                        val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
+                        val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
-                    val details = NyaaReleaseDetails(nyaaRelease.id, if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
+                        val details = NyaaReleaseDetails(nyaaRelease.id, if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
 
-                    localNyaaDbViewModel.addToViewed(nyaaRelease)
-                    localNyaaDbViewModel.addDetails(details)
+                        localNyaaDbViewModel.addToViewed(nyaaRelease)
+                        localNyaaDbViewModel.addDetails(details)
 
-                    withContext(Dispatchers.Main) {
                         setDetails(details)
+                    } catch(e: Exception) {
+                        Log.w(TAG, e)
                     }
-
-                    setupTrackerButton(details)
-                } catch(e: Exception) {
-                    Log.w(TAG, e)
                 }
             }
         } ?: run {
@@ -141,31 +138,40 @@ class NyaaReleaseActivity : AppCompatActivity() {
         }
     }
 
-    private fun setDetails(details: NyaaReleaseDetails) {
-        submitter.text = getString(R.string.release_submitter,
-            details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
-        markdownView.loadMarkdown(details.descriptionMarkdown)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(USER_LATEST_RELEASE_INTENT_OBJ, latestRelease)
+        super.onSaveInstanceState(outState)
+    }
 
-        val progressFrame = findViewById<View>(R.id.progress_frame)
-        if (progressFrame.visibility == View.VISIBLE) {
-            // Hide loading circle
-            findViewById<View>(R.id.progress_frame).visibility = View.GONE
-            findViewById<View>(R.id.release_extra_data).visibility = View.VISIBLE
-            markdownView.visibility = View.VISIBLE
+    private suspend fun setDetails(details: NyaaReleaseDetails) {
+        withContext(Dispatchers.Main) {
+            submitter.text = getString(R.string.release_submitter,
+                details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
+            markdownView.loadMarkdown(details.descriptionMarkdown)
+
+            val progressFrame = findViewById<View>(R.id.progress_frame)
+            if (progressFrame.visibility == View.VISIBLE) {
+                // Hide loading circle
+                findViewById<View>(R.id.progress_frame).visibility = View.GONE
+                findViewById<View>(R.id.release_extra_data).visibility = View.VISIBLE
+                markdownView.visibility = View.VISIBLE
+            }
         }
+        setupTrackerButton(details)
     }
 
     private suspend fun setupTrackerButton(details: NyaaReleaseDetails) {
         if (details.user != null) {
             val subscribedUser = releasesTrackerViewModel.getTrackedByUsername(details.user)
-            val latestRelease = NyaaPageProvider.getPageItems(
-                0, user = details.user)?.getOrNull(0)
-            val latestTimestamp = if (latestRelease != null) {
-                 latestRelease.date.time
-            } else if (subscribedUser != null) {
-                 subscribedUser.lastReleaseTimestamp
-            } else {
-                null
+            latestRelease?.let {
+            } ?: run {
+                latestRelease = NyaaPageProvider.getPageItems(
+                    0, user = details.user)?.getOrNull(0)
+            }
+            val latestTimestamp = latestRelease?.let {
+                it.date.time
+            } ?: run {
+                subscribedUser?.lastReleaseTimestamp
             }
             latestTimestamp?.let {
                 val isTrackedAtBeginning = subscribedUser != null
@@ -199,10 +205,11 @@ class NyaaReleaseActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val RELEASE_INTENT_OBJ = "nyaaRelease"
+        const val RELEASE_PREVIEW_INTENT_OBJ = "nyaaReleasePreview"
+        const val USER_LATEST_RELEASE_INTENT_OBJ = "userLatestRelease"
 
         fun startNyaaReleaseActivity(release: NyaaReleasePreview, activity: Activity) {
-            val intent = Intent(activity, NyaaReleaseActivity::class.java).putExtra(RELEASE_INTENT_OBJ, release)
+            val intent = Intent(activity, NyaaReleaseActivity::class.java).putExtra(RELEASE_PREVIEW_INTENT_OBJ, release)
             activity.startActivity(intent)
         }
     }
