@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
     }
 
-
     private fun setupFragment(fragment : Fragment, title : String) : Fragment {
         supportFragmentManager.beginTransaction().add(R.id.fragment_container, fragment, title).hide(fragment).commit()
         return fragment
