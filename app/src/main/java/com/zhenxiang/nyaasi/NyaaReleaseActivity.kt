@@ -31,8 +31,12 @@ import java.text.DateFormat
 class NyaaReleaseActivity : AppCompatActivity() {
 
     private val TAG = javaClass.name
+
     private lateinit var markdownView: MarkdownView
     private lateinit var submitter: TextView
+    private lateinit var addToTrackerBtn: Button
+
+    private lateinit var releasesTrackerViewModel: ReleaseTrackerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +53,11 @@ class NyaaReleaseActivity : AppCompatActivity() {
         val nyaaRelease = intent.getSerializableExtra(RELEASE_INTENT_OBJ) as NyaaReleasePreview?
 
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
-        val releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
+        releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
 
         nyaaRelease?.let {
+            addToTrackerBtn = findViewById(R.id.add_to_tracker)
+
             val releaseTitle = findViewById<TextView>(R.id.release_title)
             releaseTitle.text = it.name
 
@@ -79,8 +85,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     }
                 }
             }
-
-            val addToTrackerBtn = findViewById<Button>(R.id.add_to_tracker)
 
             val category = findViewById<TextView>(R.id.category)
             category.text = getString(R.string.release_category, getString(it.category.stringResId))
@@ -125,18 +129,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                         setDetails(details)
                     }
 
-                    if (details.user != null) {
-                        val releasesOfUser = NyaaPageProvider.getPageItems(0, user = details.user)
-                        releasesOfUser?.getOrNull(0)?.let { latestRelease ->
-                            withContext(Dispatchers.Main) {
-                                addToTrackerBtn.setOnClickListener {
-                                    releasesTrackerViewModel.addUserToTracker(
-                                        SubscribedUser(details.user, latestRelease.date.time))
-                                }
-                                addToTrackerBtn.isEnabled = true
-                            }
-                        }
-                    }
+                    setupTrackerButton(details)
                 } catch(e: Exception) {
                     Log.w(TAG, e)
                 }
@@ -157,6 +150,23 @@ class NyaaReleaseActivity : AppCompatActivity() {
             findViewById<View>(R.id.progress_frame).visibility = View.GONE
             findViewById<View>(R.id.release_extra_data).visibility = View.VISIBLE
             markdownView.visibility = View.VISIBLE
+        }
+    }
+
+    private suspend fun setupTrackerButton(details: NyaaReleaseDetails) {
+        if (details.user != null) {
+            val releasesOfUser = NyaaPageProvider.getPageItems(0, user = details.user)
+            releasesOfUser?.getOrNull(0)?.let { latestRelease ->
+                withContext(Dispatchers.Main) {
+                    addToTrackerBtn.setOnClickListener {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            releasesTrackerViewModel.addUserToTracker(
+                                SubscribedUser(details.user, latestRelease.date.time))
+                        }
+                    }
+                    addToTrackerBtn.isEnabled = true
+                }
+            }
         }
     }
 
