@@ -31,7 +31,7 @@ class NyaaSearchViewModel: ViewModel() {
     }
 
     fun loadSearchResults() {
-        job = viewModelScope.launch {
+        job = viewModelScope.launch(Dispatchers.IO) {
             busy = true
             if (repository.searchValue?.isNotEmpty() == true) {
                 repository.getLinks()

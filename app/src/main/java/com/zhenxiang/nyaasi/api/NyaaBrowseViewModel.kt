@@ -25,7 +25,7 @@ class NyaaBrowseViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun loadData() {
-        viewModelScope.launch() {
+        viewModelScope.launch(Dispatchers.IO) {
             busy = true
             // Request more items from repository
             repository.getLinks()

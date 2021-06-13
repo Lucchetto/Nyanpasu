@@ -29,6 +29,11 @@ class BrowseFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        browseViewModel = ViewModelProvider(this).get(NyaaBrowseViewModel::class.java)
+        if (savedInstanceState == null) {
+            browseViewModel.loadData()
+        }
     }
 
     override fun onCreateView(
@@ -45,7 +50,6 @@ class BrowseFragment : Fragment() {
         }
 
         val releasesListAdapter = ReleasesListAdapter()
-        browseViewModel = ViewModelProvider(this).get(NyaaBrowseViewModel::class.java)
         browseViewModel.itemsLiveData.observe(viewLifecycleOwner,  {
             releasesListAdapter.setItems(it)
             releasesListAdapter.setFooterVisible(!browseViewModel.isBottomReached())
@@ -74,8 +78,6 @@ class BrowseFragment : Fragment() {
                 AppUtils.openMagnetLink(fragmentView.context, item, fragmentView, searchBtn)
             }
         }
-
-        browseViewModel.loadData()
 
         val categoriesSpinner = fragmentView.findViewById<Spinner>(R.id.categories_selection)
         categoriesSpinner.adapter = AppUtils.getNyaaCategoriesSpinner(fragmentView.context)
