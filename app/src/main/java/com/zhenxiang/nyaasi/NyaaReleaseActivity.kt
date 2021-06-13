@@ -155,19 +155,45 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
     private suspend fun setupTrackerButton(details: NyaaReleaseDetails) {
         if (details.user != null) {
-            val releasesOfUser = NyaaPageProvider.getPageItems(0, user = details.user)
-            releasesOfUser?.getOrNull(0)?.let { latestRelease ->
+            val subscribedUser = releasesTrackerViewModel.getTrackedByUsername(details.user)
+            val latestRelease = NyaaPageProvider.getPageItems(
+                0, user = details.user)?.getOrNull(0)
+            val latestTimestamp = if (latestRelease != null) {
+                 latestRelease.date.time
+            } else if (subscribedUser != null) {
+                 subscribedUser.lastReleaseTimestamp
+            } else {
+                null
+            }
+            latestTimestamp?.let {
+                val isTrackedAtBeginning = subscribedUser != null
                 withContext(Dispatchers.Main) {
+                    setButtonTracked(isTrackedAtBeginning)
+                    addToTrackerBtn.isEnabled = true
+                    addToTrackerBtn.visibility = View.VISIBLE
                     addToTrackerBtn.setOnClickListener {
                         lifecycleScope.launch(Dispatchers.IO) {
-                            releasesTrackerViewModel.addUserToTracker(
-                                SubscribedUser(details.user, latestRelease.date.time))
+                            // Toggle tracked status
+                            val isTracked = releasesTrackerViewModel.getTrackedByUsername(details.user) != null
+                            if (isTracked) {
+                                releasesTrackerViewModel.deleteTrackedUser(details.user)
+                            } else {
+                                releasesTrackerViewModel.addUserToTracker(
+                                    SubscribedUser(details.user, latestTimestamp))
+                            }
+                            withContext(Dispatchers.Main) {
+                                setButtonTracked(!isTracked)
+                            }
                         }
                     }
-                    addToTrackerBtn.isEnabled = true
                 }
             }
         }
+    }
+
+    private fun setButtonTracked(tracked: Boolean) {
+        addToTrackerBtn.text = addToTrackerBtn.context.getString(
+            if (tracked) R.string.untrack_release_title else R.string.track_release_title)
     }
 
     companion object {

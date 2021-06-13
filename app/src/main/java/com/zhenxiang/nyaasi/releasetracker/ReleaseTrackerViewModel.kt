@@ -28,4 +28,12 @@ class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(appli
     fun addUserToTracker(user: SubscribedUser) {
         repo.subscribedUsersDao.insert(user)
     }
+
+    fun getTrackedByUsername(username: String): SubscribedUser? {
+        return repo.subscribedUsersDao.getByUsername(username)
+    }
+
+    fun deleteTrackedUser(username: String) {
+        repo.subscribedUsersDao.deleteByUsername(username)
+    }
 }
