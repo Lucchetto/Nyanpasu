@@ -47,6 +47,7 @@ class NyaaApplication: Application() {
             .build()
         val releaseTracker =
             PeriodicWorkRequestBuilder<ReleaseTrackerBgWorker>(15, TimeUnit.MINUTES)
+                .setInitialDelay(15, TimeUnit.MINUTES)
                 .setConstraints(constraints)
                 .build()
 
