@@ -14,10 +14,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleaseDetails
+import com.zhenxiang.nyaasi.fragment.ReleaseTrackerBottomFragment
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedUser
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
@@ -178,8 +180,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
                             if (isTracked) {
                                 releasesTrackerViewModel.deleteTrackedUser(details.user)
                             } else {
-                                releasesTrackerViewModel.addUserToTracker(
-                                    SubscribedUser(details.user, latestTimestamp))
+                                val bottomSheet = ReleaseTrackerBottomFragment.newInstance(details.user, latestTimestamp)
+                                bottomSheet.show(supportFragmentManager, null)
                             }
                             withContext(Dispatchers.Main) {
                                 setButtonTracked(!isTracked)

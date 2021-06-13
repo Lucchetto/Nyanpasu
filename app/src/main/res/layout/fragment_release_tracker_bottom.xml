@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingVertical="20dp"
+    tools:context=".fragment.ReleaseTrackerBottomFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.Title"
+        android:breakStrategy="simple"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp"
+        android:text="Add to release tracker" />
+    
+    <LinearLayout
+        android:id="@+id/track_all_from_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/ReleaseTrackerSheet.Mode">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeTitle"
+            android:text="Track all from this user"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeDescription"
+            android:text="You will get notified of all the new releases from this user"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/ReleaseTrackerSheet.Mode">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeTitle"
+            android:text="Track similar from this user"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeDescription"
+            android:text="You will get notified of all the new releases with similar name from this user"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/ReleaseTrackerSheet.Mode">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeTitle"
+            android:text="Track similar from all users"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeDescription"
+            android:text="You will get notified of all the new releases with similar name from all users of nyaa.si"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/ReleaseTrackerSheet.Mode"
+        android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeTitle"
+        android:text="Cancel"/>
+
+</LinearLayout>
