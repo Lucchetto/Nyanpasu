@@ -11,6 +11,7 @@ import com.zhenxiang.nyaasi.NyaaApplication.Companion.RELEASE_TRACKER_CHANNEL_ID
 import com.zhenxiang.nyaasi.R
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.db.NyaaDb
+import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -29,6 +30,8 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                 val newReleasesOfUser = getNewReleasesFromUser(it)
                 if (newReleasesOfUser.isNotEmpty()) {
                     usersWithNewReleases.add(it)
+                    it.lastReleaseTimestamp = newReleasesOfUser[0].date.time
+                    subscribedUsersDao.insert(it)
                 }
             }
         }
@@ -64,8 +67,8 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
         return Result.success()
     }
 
-    private suspend fun getNewReleasesFromUser(user: SubscribedUser): MutableList<Int> {
-        val newReleases = mutableListOf<Int>()
+    private suspend fun getNewReleasesFromUser(user: SubscribedUser): MutableList<NyaaReleasePreview> {
+        val newReleases = mutableListOf<NyaaReleasePreview>()
         var pageIndex = 0
         while(true) {
             // Parse pages until we hit null or empty page
@@ -80,7 +83,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                     if (user.lastReleaseTimestamp >= it.date.time) {
                         return newReleases
                     } else {
-                        newReleases.add(it.id)
+                        newReleases.add(it)
                     }
                 }
             }

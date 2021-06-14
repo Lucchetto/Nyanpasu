@@ -6,5 +6,5 @@ import androidx.room.PrimaryKey
 @Entity
 data class SubscribedUser(
     @PrimaryKey val username: String,
-    val lastReleaseTimestamp: Long,
+    var lastReleaseTimestamp: Long,
 )
