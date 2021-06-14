@@ -48,7 +48,7 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             itemData = item
             //id.text = item.id.toString()
             title.text = item.name
-            releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(item.date)
+            releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(item.timestamp)
         }
     }
 

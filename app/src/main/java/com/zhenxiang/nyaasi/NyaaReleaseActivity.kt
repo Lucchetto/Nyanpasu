@@ -93,7 +93,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val date = findViewById<TextView>(R.id.date)
             date.text = getString(R.string.release_date,
-                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(it.date))
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(it.timestamp))
 
             val seeders = findViewById<ReleaseDataItemView>(R.id.seeders)
             seeders.setValue(it.seeders.toString())
@@ -169,7 +169,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     0, user = details.user)?.getOrNull(0)
             }
             val latestTimestamp = latestRelease?.let {
-                it.date.time
+                it.timestamp
             } ?: run {
                 subscribedUser?.lastReleaseTimestamp
             }

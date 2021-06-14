@@ -10,7 +10,7 @@ data class NyaaReleasePreview(
     @PrimaryKey val id: Int,
     val name: String,
     val magnet: String,
-    val date: Date,
+    val timestamp: Long,
     val seeders: Int,
     val leechers: Int,
     val completed: Int,

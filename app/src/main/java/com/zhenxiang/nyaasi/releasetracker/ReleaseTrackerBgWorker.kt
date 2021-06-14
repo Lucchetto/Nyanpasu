@@ -30,7 +30,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                 val newReleasesOfUser = getNewReleasesFromUser(it)
                 if (newReleasesOfUser.isNotEmpty()) {
                     usersWithNewReleases.add(it)
-                    it.lastReleaseTimestamp = newReleasesOfUser[0].date.time
+                    it.lastReleaseTimestamp = newReleasesOfUser[0].timestamp
                     subscribedUsersDao.insert(it)
                 }
             }
@@ -80,7 +80,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                     // If release timestamp is smaller or equal than lastReleaseTimestamp
                     // we've hit a release than the last one saved in tracker,
                     // so let's exit and call it a day
-                    if (user.lastReleaseTimestamp >= it.date.time) {
+                    if (user.lastReleaseTimestamp >= it.timestamp) {
                         return newReleases
                     } else {
                         newReleases.add(it)
