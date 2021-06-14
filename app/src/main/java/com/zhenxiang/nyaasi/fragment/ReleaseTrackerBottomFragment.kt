@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -41,10 +42,11 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
         val trackAllFromUser = fragmentView.findViewById<View>(R.id.track_all_from_user)
         trackAllFromUser.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
-                releasesTrackerViewModel.addUserToTracker(
-                    SubscribedUser(username, latestTimestamp)
-                )
+                val newTracked = SubscribedUser(username, latestTimestamp)
+                releasesTrackerViewModel.addUserToTracker(newTracked)
                 withContext(Dispatchers.Main) {
+                    parentFragmentManager.setFragmentResult(NEW_TRACKED_USER, bundleOf(
+                        NEW_TRACKED_USER to newTracked))
                     dismiss()
                 }
             }
@@ -53,6 +55,9 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
+
+        const val NEW_TRACKED_USER = "newTrackerUser"
+
         @JvmStatic
         fun newInstance(username: String, latestTimestamp: Long) =
             ReleaseTrackerBottomFragment().apply {
