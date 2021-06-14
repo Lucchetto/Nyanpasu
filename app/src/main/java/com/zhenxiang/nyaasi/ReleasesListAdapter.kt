@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import java.text.DateFormat
+import java.util.*
 
 class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -48,7 +49,9 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             itemData = item
             //id.text = item.id.toString()
             title.text = item.name
-            releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(item.timestamp)
+            releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
+                Date(item.timestamp * 1000)
+            )
         }
     }
 

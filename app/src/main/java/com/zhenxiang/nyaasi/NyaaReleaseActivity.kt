@@ -28,6 +28,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.text.DateFormat
+import java.util.*
 
 class NyaaReleaseActivity : AppCompatActivity() {
 
@@ -94,7 +95,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val date = findViewById<TextView>(R.id.date)
             date.text = getString(R.string.release_date,
-                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(it.timestamp))
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(it.timestamp * 1000)))
 
             val seeders = findViewById<ReleaseDataItemView>(R.id.seeders)
             seeders.setValue(it.seeders.toString())
