@@ -55,7 +55,10 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
         val toDelete = nyaaLocalRepo.viewedDao.getExcessiveRecentsIds()
         if (toDelete.isNotEmpty()) {
             nyaaLocalRepo.viewedDao.deleteByIdList(toDelete)
-            nyaaLocalRepo.previewsDao.deleteByIdList(toDelete)
+            // Catch any SQLITE_CONSTRAINT_TRIGGER caused by constraints of saved table foreign key
+            try {
+                nyaaLocalRepo.previewsDao.deleteByIdList(toDelete)
+            } catch (e: Exception) {}
         }
     }
 
@@ -66,6 +69,7 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
     fun toggleSaved(release: NyaaReleasePreview): Boolean {
         nyaaLocalRepo.savedDao.getById(release.id)?.let {
             nyaaLocalRepo.savedDao.delete(it)
+            // Catch any SQLITE_CONSTRAINT_TRIGGER caused by constraints of viewed table foreign key
             try {
                 nyaaLocalRepo.previewsDao.deleteById(it.releaseId)
             } catch (e: Exception) {}
