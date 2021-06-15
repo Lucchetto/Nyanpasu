@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaasi.db
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -51,6 +52,11 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
     fun addToViewed(release: NyaaReleasePreview) {
         nyaaLocalRepo.previewsDao.insert(release)
         nyaaLocalRepo.viewedDao.insert(ViewedNyaaRelease(release.id, System.currentTimeMillis()))
+        val toDelete = nyaaLocalRepo.viewedDao.getExcessiveRecentsIds()
+        if (toDelete.isNotEmpty()) {
+            nyaaLocalRepo.viewedDao.deleteByIdList(toDelete)
+            nyaaLocalRepo.previewsDao.deleteByIdList(toDelete)
+        }
     }
 
     fun isSaved(release: NyaaReleasePreview): Boolean {

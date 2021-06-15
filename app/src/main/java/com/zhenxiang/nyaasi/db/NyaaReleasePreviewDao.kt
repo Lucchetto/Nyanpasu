@@ -16,6 +16,9 @@ interface NyaaReleasePreviewDao {
 
     @Update
     fun update(release: NyaaReleasePreview)
+
+    @Query("delete from nyaareleasepreview where id in (:list)")
+    fun deleteByIdList(list: List<Int>)
 }
 
 @Dao
