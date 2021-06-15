@@ -1,11 +1,12 @@
 package com.zhenxiang.nyaasi.db
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
+import androidx.room.*
 
-@Entity
+@Entity(foreignKeys = [
+    ForeignKey(entity = NyaaReleasePreview::class,
+        parentColumns = ["id"], childColumns = ["releaseId"],
+        onDelete = ForeignKey.RESTRICT, onUpdate = ForeignKey.CASCADE)
+])
 data class SavedNyaaRelease(
     @PrimaryKey val releaseId: Int,
     val timestamp: Long,

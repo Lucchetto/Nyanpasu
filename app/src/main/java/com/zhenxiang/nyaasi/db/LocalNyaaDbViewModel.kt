@@ -60,6 +60,7 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
     fun toggleSaved(release: NyaaReleasePreview): Boolean {
         nyaaLocalRepo.savedDao.getById(release.id)?.let {
             nyaaLocalRepo.savedDao.delete(it)
+            nyaaLocalRepo.previewsDao.deleteById(it.releaseId)
             return false
         } ?: run {
             nyaaLocalRepo.previewsDao.insert(release)

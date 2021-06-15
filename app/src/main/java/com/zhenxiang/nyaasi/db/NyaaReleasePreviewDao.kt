@@ -11,8 +11,8 @@ interface NyaaReleasePreviewDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(release: NyaaReleasePreview)
 
-    @Delete
-    fun delete(release: NyaaReleasePreview)
+    @Query("DELETE FROM nyaareleasepreview WHERE id = :id")
+    fun deleteById(id: Int)
 
     @Update
     fun update(release: NyaaReleasePreview)
