@@ -50,7 +50,7 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
     }
 
     fun addToViewed(release: NyaaReleasePreview) {
-        nyaaLocalRepo.previewsDao.insert(release)
+        nyaaLocalRepo.previewsDao.upsert(release)
         nyaaLocalRepo.viewedDao.insert(ViewedNyaaRelease(release.id, System.currentTimeMillis()))
         val toDelete = nyaaLocalRepo.viewedDao.getExcessiveRecentsIds()
         if (toDelete.isNotEmpty()) {
@@ -66,10 +66,11 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
     fun toggleSaved(release: NyaaReleasePreview): Boolean {
         nyaaLocalRepo.savedDao.getById(release.id)?.let {
             nyaaLocalRepo.savedDao.delete(it)
-            nyaaLocalRepo.previewsDao.deleteById(it.releaseId)
+            try {
+                nyaaLocalRepo.previewsDao.deleteById(it.releaseId)
+            } catch (e: Exception) {}
             return false
         } ?: run {
-            nyaaLocalRepo.previewsDao.insert(release)
             nyaaLocalRepo.savedDao.insert(SavedNyaaRelease(release.id, System.currentTimeMillis()))
             return true
         }

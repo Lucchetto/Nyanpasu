@@ -1,6 +1,12 @@
 package com.zhenxiang.nyaasi.db
 
 import androidx.room.*
+import android.provider.SyncStateContract.Helpers.update
+
+import android.provider.SyncStateContract.Helpers.insert
+
+
+
 
 @Dao
 interface NyaaReleasePreviewDao {
@@ -8,14 +14,22 @@ interface NyaaReleasePreviewDao {
     @Query("SELECT * FROM nyaareleasepreview")
     fun getAll(): List<NyaaReleasePreview>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(release: NyaaReleasePreview)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(release: NyaaReleasePreview): Long
 
     @Query("DELETE FROM nyaareleasepreview WHERE id = :id")
     fun deleteById(id: Int)
 
     @Update
     fun update(release: NyaaReleasePreview)
+
+    @Transaction
+    fun upsert(release: NyaaReleasePreview) {
+        val id: Long = insert(release)
+        if (id == -1L) {
+            update(release)
+        }
+    }
 
     @Query("delete from nyaareleasepreview where id in (:list)")
     fun deleteByIdList(list: List<Int>)

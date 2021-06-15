@@ -73,23 +73,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 AppUtils.openMagnetLink(this, it, scrollRoot)
             }
 
-            val saveBtn = findViewById<ImageButton>(R.id.save_btn)
-            lifecycleScope.launch(Dispatchers.IO) {
-                val active = localNyaaDbViewModel.isSaved(it)
-                withContext(Dispatchers.Main) {
-                    saveBtn.isActivated = active
-                }
-            }
-
-            saveBtn.setOnClickListener { view ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val active = localNyaaDbViewModel.toggleSaved(it)
-                    withContext(Dispatchers.Main) {
-                        view.isActivated = active
-                    }
-                }
-            }
-
             val category = findViewById<TextView>(R.id.category)
             category.text = getString(R.string.release_category, getString(it.category.stringResId))
 
@@ -118,6 +101,22 @@ class NyaaReleaseActivity : AppCompatActivity() {
             }
 
             lifecycleScope.launch(Dispatchers.IO) {
+                localNyaaDbViewModel.addToViewed(nyaaRelease)
+
+                val saveBtn = findViewById<ImageButton>(R.id.save_btn)
+                val active = localNyaaDbViewModel.isSaved(it)
+                withContext(Dispatchers.Main) {
+                    saveBtn.isActivated = active
+                }
+                saveBtn.setOnClickListener { view ->
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val active = localNyaaDbViewModel.toggleSaved(it)
+                        withContext(Dispatchers.Main) {
+                            view.isActivated = active
+                        }
+                    }
+                }
+
                 val localReleaseDetails = localNyaaDbViewModel.getDetailsById(it.id)
                 localReleaseDetails?.let { details ->
                     setDetails(details)
@@ -133,8 +132,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
                         val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
                         val details = NyaaReleaseDetails(nyaaRelease.id, if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
-
-                        localNyaaDbViewModel.addToViewed(nyaaRelease)
                         localNyaaDbViewModel.addDetails(details)
 
                         setDetails(details)
