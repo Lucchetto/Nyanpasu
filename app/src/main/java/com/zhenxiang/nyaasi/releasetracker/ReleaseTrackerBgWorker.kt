@@ -18,18 +18,28 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
     CoroutineWorker(appContext, workerParams) {
 
     private val TAG = javaClass.name
-    private val RELEASE_TRACKER_NOTIF_ID = 1069
+    private val RELEASE_TRACKER_FOR_USERS_NOTIF_ID = 1069
+    private val RELEASE_TRACKER_NOTIF_ID = 1072
 
     private val subscribedUsersDao = NyaaDb(appContext).subscribedTrackersDao()
 
     override suspend fun doWork(): Result {
         val usersWithNewReleases = mutableListOf<SubscribedUser>()
+        val newReleasesForSubscribedRelease = mutableListOf<SubscribedRelease>()
         withContext(Dispatchers.IO) {
             subscribedUsersDao.getAllTrackedUsers().forEach {
-                val newReleasesOfUser = getNewReleasesFromUser(it)
+                val newReleasesOfUser = getNewReleasesFromTracker(SubscribedTracker(it.id, username = it.username, lastReleaseTimestamp = it.lastReleaseTimestamp))
                 if (newReleasesOfUser.isNotEmpty()) {
                     usersWithNewReleases.add(it)
                     subscribedUsersDao.updateLatestTimestamp(it.id, newReleasesOfUser[0].timestamp)
+                }
+            }
+
+            subscribedUsersDao.getAllTrackedReleases().forEach {
+                val newReleases = getNewReleasesFromTracker(SubscribedTracker(it.id, username = it.username, searchQuery = it.searchQuery, lastReleaseTimestamp = it.lastReleaseTimestamp))
+                if (newReleases.isNotEmpty()) {
+                    newReleasesForSubscribedRelease.add(it)
+                    subscribedUsersDao.updateLatestTimestamp(it.id, newReleases[0].timestamp)
                 }
             }
         }
@@ -47,30 +57,46 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                         usersListString += applicationContext.getString(R.string.comma_word, subscribedUser.username)
                     }
                 }
-                applicationContext.getString(R.string.release_tracker_new_releases, usersListString)
+                applicationContext.getString(R.string.release_tracker_new_releases_from_user, usersListString)
             }
             notifcationContent?.let {
-                val notificationBuilder = NotificationCompat.Builder(applicationContext, RELEASE_TRACKER_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_magnet)
-                    .setContentTitle("New releases")
-                    .setContentText(it)
-                    .setAutoCancel(true)
+                generateNotif(RELEASE_TRACKER_FOR_USERS_NOTIF_ID, it)
+            }
 
-                with(NotificationManagerCompat.from(applicationContext)) {
-                    // notificationId is a unique int for each notification that you must define
-                    notify(RELEASE_TRACKER_NOTIF_ID, notificationBuilder.build())
+            if (newReleasesForSubscribedRelease.isNotEmpty()) {
+                var expandedText = applicationContext.getString(R.string.release_tracker_new_releases_expanded) + "\n"
+                newReleasesForSubscribedRelease.forEach {
+                    expandedText += it.searchQuery + "\n"
                 }
+                generateNotif(RELEASE_TRACKER_NOTIF_ID, applicationContext.getString(R.string.release_tracker_new_releases), expandedText)
             }
         }
         return Result.success()
     }
 
-    private suspend fun getNewReleasesFromUser(tracker: SubscribedUser): MutableList<NyaaReleasePreview> {
+    private fun generateNotif(id: Int, content: String, expandedText: String? = null) {
+        val notificationBuilder = NotificationCompat.Builder(applicationContext, RELEASE_TRACKER_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_magnet)
+            .setContentTitle("New releases")
+            .setContentText(content)
+            .setAutoCancel(true)
+
+        expandedText?.let {
+            notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(it))
+        }
+
+        with(NotificationManagerCompat.from(applicationContext)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(id, notificationBuilder.build())
+        }
+    }
+
+    private suspend fun getNewReleasesFromTracker(tracker: SubscribedTracker): MutableList<NyaaReleasePreview> {
         val newReleases = mutableListOf<NyaaReleasePreview>()
         var pageIndex = 0
         while(true) {
             // Parse pages until we hit null or empty page
-            val releases = NyaaPageProvider.getPageItems(pageIndex, user = tracker.username)
+            val releases = NyaaPageProvider.getPageItems(pageIndex, user = tracker.username, searchQuery = tracker.searchQuery)
             if (releases == null || releases.isEmpty()) {
                 return newReleases
             } else {

@@ -48,7 +48,9 @@
     <string name="track_release_title">Track release</string>
 
     <string name="release_tracker_notif_name">Release tracker</string>
-    <string name="release_tracker_new_releases">New releases from %1$s</string>
+    <string name="release_tracker_new_releases_from_user">New releases from %1$s</string>
+    <string name="release_tracker_new_releases">New releases available</string>
+    <string name="release_tracker_new_releases_expanded">New releases for</string>
     <string name="comma_word">, %1$s</string>
-    <string name="and_conjunction_word"> and %1$s</string>
+    <string name="and_conjunction_word">\u0020and %1$s</string>
 </resources>
