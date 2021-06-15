@@ -1,7 +1,6 @@
 package com.zhenxiang.nyaasi.releasetracker
 
 import android.content.Context
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
@@ -21,17 +20,16 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
     private val TAG = javaClass.name
     private val RELEASE_TRACKER_NOTIF_ID = 1069
 
-    private val subscribedUsersDao = NyaaDb(appContext).subscribedUsersDao()
+    private val subscribedUsersDao = NyaaDb(appContext).subscribedTrackersDao()
 
     override suspend fun doWork(): Result {
         val usersWithNewReleases = mutableListOf<SubscribedUser>()
         withContext(Dispatchers.IO) {
-            subscribedUsersDao.getAll().forEach {
+            subscribedUsersDao.getAllTrackedUsers().forEach {
                 val newReleasesOfUser = getNewReleasesFromUser(it)
                 if (newReleasesOfUser.isNotEmpty()) {
                     usersWithNewReleases.add(it)
-                    it.lastReleaseTimestamp = newReleasesOfUser[0].timestamp
-                    subscribedUsersDao.insert(it)
+                    subscribedUsersDao.updateLatestTimestamp(it.id, newReleasesOfUser[0].timestamp)
                 }
             }
         }
@@ -67,12 +65,12 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
         return Result.success()
     }
 
-    private suspend fun getNewReleasesFromUser(user: SubscribedUser): MutableList<NyaaReleasePreview> {
+    private suspend fun getNewReleasesFromUser(tracker: SubscribedUser): MutableList<NyaaReleasePreview> {
         val newReleases = mutableListOf<NyaaReleasePreview>()
         var pageIndex = 0
         while(true) {
             // Parse pages until we hit null or empty page
-            val releases = NyaaPageProvider.getPageItems(pageIndex, user = user.username)
+            val releases = NyaaPageProvider.getPageItems(pageIndex, user = tracker.username)
             if (releases == null || releases.isEmpty()) {
                 return newReleases
             } else {
@@ -80,7 +78,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                     // If release timestamp is smaller or equal than lastReleaseTimestamp
                     // we've hit a release than the last one saved in tracker,
                     // so let's exit and call it a day
-                    if (user.lastReleaseTimestamp >= it.timestamp) {
+                    if (tracker.lastReleaseTimestamp >= it.timestamp) {
                         return newReleases
                     } else {
                         newReleases.add(it)

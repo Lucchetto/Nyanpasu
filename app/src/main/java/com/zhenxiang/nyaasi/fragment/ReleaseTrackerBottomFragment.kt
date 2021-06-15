@@ -1,7 +1,6 @@
 package com.zhenxiang.nyaasi.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zhenxiang.nyaasi.R
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
-import com.zhenxiang.nyaasi.releasetracker.SubscribedUser
+import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,7 +41,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
         val trackAllFromUser = fragmentView.findViewById<View>(R.id.track_all_from_user)
         trackAllFromUser.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
-                val newTracked = SubscribedUser(username, latestTimestamp)
+                val newTracked = SubscribedTracker(username = username, lastReleaseTimestamp = latestTimestamp)
                 releasesTrackerViewModel.addUserToTracker(newTracked)
                 withContext(Dispatchers.Main) {
                     parentFragmentManager.setFragmentResult(NEW_TRACKED_USER, bundleOf(

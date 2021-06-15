@@ -6,21 +6,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.R
-import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 
-class SubscribedUsersAdapter(): RecyclerView.Adapter<SubscribedUsersAdapter.ViewHolder>() {
+class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapter.ViewHolder>() {
 
-    val users = mutableListOf<SubscribedUser>()
+    val users = mutableListOf<SubscribedTracker>()
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         private val username = view.findViewById<TextView>(R.id.username)
 
-        fun bind(user: SubscribedUser) {
-            username.text = user.username
+        fun bind(tracker: SubscribedTracker) {
+            username.text = tracker.username
         }
     }
 
-    fun setData(newData: List<SubscribedUser>) {
+    fun setData(newData: List<SubscribedTracker>) {
         users.clear()
         users.addAll(newData)
         notifyDataSetChanged()

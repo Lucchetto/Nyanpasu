@@ -20,7 +20,7 @@ import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleaseDetails
 import com.zhenxiang.nyaasi.fragment.ReleaseTrackerBottomFragment
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
-import com.zhenxiang.nyaasi.releasetracker.SubscribedUser
+import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -112,7 +112,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             // Listen for bottom sheet fragment result to change button text
             supportFragmentManager.setFragmentResultListener(ReleaseTrackerBottomFragment.NEW_TRACKED_USER, this) { _, bundle ->
                 val subscribedUser = bundle.getSerializable(ReleaseTrackerBottomFragment.NEW_TRACKED_USER)
-                if (subscribedUser != null && subscribedUser is SubscribedUser) {
+                if (subscribedUser != null && subscribedUser is SubscribedTracker) {
                     setButtonTracked(true)
                 }
             }

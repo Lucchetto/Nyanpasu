@@ -9,9 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.R
-import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
-import com.zhenxiang.nyaasi.releasetracker.SubscribedUsersAdapter
+import com.zhenxiang.nyaasi.releasetracker.SubscribedTrackersAdapter
 
 class SubscribedUsersFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +25,8 @@ class SubscribedUsersFragment : Fragment() {
         val fragmentView = inflater.inflate(R.layout.fragment_subscribed_users, container, false)
 
         val releaseTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
-        val subscribedUsersAdapter = SubscribedUsersAdapter()
-        releaseTrackerViewModel.subscribedUsers.observe(viewLifecycleOwner, {
+        val subscribedUsersAdapter = SubscribedTrackersAdapter()
+        releaseTrackerViewModel.subscribedTrackers.observe(viewLifecycleOwner, {
             subscribedUsersAdapter.setData(it)
         })
 
