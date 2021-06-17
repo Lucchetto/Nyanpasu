@@ -1,7 +1,6 @@
 package com.zhenxiang.nyaasi.releasetracker
 
 import android.content.Context
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
@@ -67,7 +66,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
             if (newReleasesForSubscribedRelease.isNotEmpty()) {
                 var expandedText = applicationContext.getString(R.string.release_tracker_new_releases_expanded) + "\n"
                 newReleasesForSubscribedRelease.forEach {
-                    expandedText += "- " + it.searchQuery + "\n"
+                    expandedText += it.searchQuery + "\n"
                 }
                 generateNotif(RELEASE_TRACKER_NOTIF_ID, applicationContext.getString(R.string.release_tracker_new_releases), expandedText)
             }

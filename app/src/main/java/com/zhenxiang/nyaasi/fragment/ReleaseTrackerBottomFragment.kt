@@ -7,11 +7,8 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zhenxiang.nyaasi.R
-import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerBgWorker
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
@@ -49,23 +46,6 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                 withContext(Dispatchers.Main) {
                     parentFragmentManager.setFragmentResult(NEW_TRACKED_USER, bundleOf(
                         NEW_TRACKED_USER to newTracked))
-                    dismiss()
-                }
-            }
-        }
-
-        val trackAllFromUserForQuery = fragmentView.findViewById<View>(R.id.track_all_from_user_for_query)
-        trackAllFromUserForQuery.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val newTracked = SubscribedTracker(searchQuery = "zettai makenai", lastReleaseTimestamp = 1619010092)
-                releasesTrackerViewModel.addUserToTracker(newTracked)
-                withContext(Dispatchers.Main) {
-                    parentFragmentManager.setFragmentResult(NEW_TRACKED_USER, bundleOf(
-                        NEW_TRACKED_USER to newTracked))
-                    val releaseTracker =
-                        OneTimeWorkRequestBuilder<ReleaseTrackerBgWorker>()
-                            .build()
-                    WorkManager.getInstance(fragmentView.context).enqueue(releaseTracker)
                     dismiss()
                 }
             }
