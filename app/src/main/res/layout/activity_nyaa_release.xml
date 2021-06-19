@@ -15,12 +15,13 @@
         android:orientation="vertical"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:padding="@dimen/activity_insets">
+        android:paddingTop="@dimen/activity_insets">
 
         <TextView
             android:id="@+id/release_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_insets"
             android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTitle"
             android:breakStrategy="simple"
             tools:text="Release title, may be very long or short" />
@@ -30,6 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            android:layout_marginHorizontal="@dimen/activity_insets"
             android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseId"
             tools:text="ID: 1232213113"/>
 
@@ -38,6 +40,7 @@
             android:id="@+id/submitter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_insets"
             android:textAppearance="@style/TextAppearance.Nyaasi.Details"
             android:breakStrategy="simple"
             tools:text="Posted by Random_user" />
@@ -46,6 +49,7 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_insets"
             android:textAppearance="@style/TextAppearance.Nyaasi.Details"
             android:breakStrategy="simple"
             tools:text="Date: 31 February -123" />
@@ -54,6 +58,7 @@
             android:id="@+id/category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_insets"
             android:textAppearance="@style/TextAppearance.Nyaasi.Details"
             tools:text="Category: Literature non English translated"/>
 
@@ -61,6 +66,7 @@
             android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_insets"
             android:layout_marginTop="10dp">
 
             <Button
@@ -95,6 +101,7 @@
             android:id="@+id/release_extra_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/activity_insets"
             android:visibility="gone"
             tools:visibility="visible"
             app:justifyContent="center"

@@ -9,11 +9,13 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
+import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
@@ -23,6 +25,7 @@ import com.zhenxiang.nyaasi.fragment.ReleaseTrackerFragmentSharedViewModel
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
+import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,9 +49,15 @@ class NyaaReleaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nyaa_release)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val scrollRoot = findViewById<NestedScrollView>(R.id.scroll_root)
         scrollRoot.isNestedScrollingEnabled = false
+        scrollRoot.applyInsetter {
+            type(navigationBars = !NavigationModeUtils.isFullGestures(scrollRoot.context), statusBars = true) {
+                margin()
+            }
+        }
 
         markdownView = findViewById(R.id.release_details_markdown)
         markdownView.addStyleSheet(Github())
