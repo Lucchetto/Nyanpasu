@@ -25,12 +25,20 @@ class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(appli
         subscribedTrackerSearch.value = null
     }
 
-    fun addUserToTracker(tracker: SubscribedTracker) {
+    fun addReleaseTracker(tracker: SubscribedTracker) {
         repo.subscribedUsersDao.insert(tracker)
     }
 
     fun getTrackedByUsername(username: String): SubscribedUser? {
         return repo.subscribedUsersDao.getByUsername(username)
+    }
+
+    fun getTrackedByUsernameAndQuery(username: String?, query: String): SubscribedRelease? {
+        return if (username.isNullOrBlank()) {
+            repo.subscribedUsersDao.getByQueryWithNullUsername(query)
+        } else {
+            repo.subscribedUsersDao.getByUsernameAndQuery(username, query)
+        }
     }
 
     fun deleteTrackedUser(username: String) {

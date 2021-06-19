@@ -15,6 +15,12 @@ interface SubscribedTrackerDao {
     @Query("SELECT * FROM subscribedtracker WHERE searchQuery IS NOT NULL")
     fun getAllTrackedReleases(): List<SubscribedRelease>
 
+    @Query("SELECT * FROM subscribedtracker WHERE searchQuery=:query AND username IS NULL")
+    fun getByQueryWithNullUsername(query: String): SubscribedRelease?
+
+    @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery=:query")
+    fun getByUsernameAndQuery(username: String, query: String): SubscribedRelease?
+
     @Query("SELECT * FROM subscribedtracker WHERE username=:userName")
     fun getByUsername(userName: String): SubscribedUser?
 

@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zhenxiang.nyaasi.CreateTrackerActivity
-import com.zhenxiang.nyaasi.NyaaSearchActivity
 import com.zhenxiang.nyaasi.R
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
@@ -46,7 +45,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
         trackAllFromUser.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 val newTracked = SubscribedTracker(username = username, lastReleaseTimestamp = latestTimestamp)
-                releasesTrackerViewModel.addUserToTracker(newTracked)
+                releasesTrackerViewModel.addReleaseTracker(newTracked)
                 withContext(Dispatchers.Main) {
                     parentFragmentManager.setFragmentResult(NEW_TRACKED_USER, bundleOf(
                         NEW_TRACKED_USER to newTracked))

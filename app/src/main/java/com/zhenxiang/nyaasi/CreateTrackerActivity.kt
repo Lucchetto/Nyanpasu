@@ -3,21 +3,27 @@ package com.zhenxiang.nyaasi
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
+import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
+import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CreateTrackerActivity : AppCompatActivity() {
+
+    private val TAG = javaClass.name
 
     private enum class Status {
         TO_VALIDATE,
@@ -25,6 +31,7 @@ class CreateTrackerActivity : AppCompatActivity() {
         VALIDATED,
         VALIDATED_EMPTY,
         FAILED,
+        FAILED_ALREADY_EXISTS,
     }
 
     private lateinit var createBtn: Button
@@ -36,10 +43,14 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var latestReleasesList: RecyclerView
 
     private var currentStatus = Status.TO_VALIDATE
+    // Used to guard status change on bundle restored (rotation change and stuff)
+    private var statusRestored = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_tracker)
+
+        val releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
 
         hintText = findViewById(R.id.hint_text)
         errorHint = findViewById(R.id.error_hint)
@@ -56,41 +67,70 @@ class CreateTrackerActivity : AppCompatActivity() {
 
         // Initially this button will be validate and not enabled
         createBtn = findViewById(R.id.create_btn)
-        val searchQuery = findViewById<TextInputEditText>(R.id.search_query_input)
-        val username = findViewById<TextInputEditText>(R.id.username_input)
+        val searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
+        val usernameInput = findViewById<TextInputEditText>(R.id.username_input)
 
-        searchQuery.doOnTextChanged { text, start, before, count ->
+        searchQueryInput.doOnTextChanged { text, start, before, count ->
             setStatus(Status.TO_VALIDATE)
-            createBtn.isEnabled = text?.isNotEmpty() == true
+            createBtn.isEnabled = text?.isNotBlank() == true
         }
 
-        username.doOnTextChanged { text, start, before, count ->
-            createBtn.isEnabled = searchQuery.text?.isNotEmpty() == true
+        usernameInput.doOnTextChanged { text, start, before, count ->
+            createBtn.isEnabled = searchQueryInput.text?.isNotBlank() == true
             setStatus(Status.TO_VALIDATE)
         }
 
-        createBtn.setOnClickListener {
+        createBtn.setOnClickListener { _ ->
             if (currentStatus == Status.TO_VALIDATE) {
                 setStatus(Status.LOADING)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val releases = NyaaPageProvider.getPageItems(0, searchQuery = searchQuery.text.toString(), user = username.text.toString())
-                    withContext(Dispatchers.Main) {
-                        if (releases == null) {
-                            setStatus(Status.FAILED)
-                        } else if (releases.isEmpty()) {
-                            setStatus(Status.VALIDATED_EMPTY)
-                        } else {
-                            // Hax to hide keyboard
-                            searchQuery.clearFocus()
-                            username.clearFocus()
-                            val imm: InputMethodManager =
-                                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            imm.hideSoftInputFromWindow(searchQuery.windowToken, 0)
+                    val username = usernameInput.text.toString().trim()
+                    val searchQuery = searchQueryInput.text.toString().trim()
+                    releasesTrackerViewModel.getTrackedByUsernameAndQuery(username, searchQuery)?.let {
+                        withContext(Dispatchers.Main) {
+                            setStatus(Status.FAILED_ALREADY_EXISTS)
+                        }
+                    } ?: run {
+                        val releases = NyaaPageProvider.getPageItems(0, searchQuery = searchQuery, user = username)
+                        withContext(Dispatchers.Main) {
+                            if (releases == null) {
+                                setStatus(Status.FAILED)
+                            } else if (releases.isEmpty()) {
+                                setStatus(Status.VALIDATED_EMPTY)
+                            } else {
+                                // Hax to hide keyboard
+                                searchQueryInput.clearFocus()
+                                usernameInput.clearFocus()
+                                val imm: InputMethodManager =
+                                    getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                imm.hideSoftInputFromWindow(searchQueryInput.windowToken, 0)
 
-                            latestReleasesAdapter.setItems(releases)
-                            setStatus(Status.VALIDATED)
+                                latestReleasesAdapter.setItems(releases)
+                                setStatus(Status.VALIDATED)
+                            }
                         }
                     }
+                }
+            } else if (currentStatus == Status.VALIDATED) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    latestReleasesAdapter.items.getOrNull(0)?.let {
+                        val username = usernameInput.text.toString().trim()
+                        val searchQuery = searchQueryInput.text.toString().trim()
+                        val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,
+                            searchQuery = searchQuery, lastReleaseTimestamp = it.timestamp)
+                        releasesTrackerViewModel.addReleaseTracker(newTracker)
+                        finish()
+                    }
+                }
+            } else if (currentStatus == Status.VALIDATED_EMPTY) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val username = usernameInput.text.toString().trim()
+                    val searchQuery = searchQueryInput.text.toString().trim()
+                    // Current millis must be divided by 1000 since nyaa.si use seconds as unit
+                    val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,
+                        searchQuery = searchQuery, lastReleaseTimestamp = System.currentTimeMillis() / 1000)
+                    releasesTrackerViewModel.addReleaseTracker(newTracker)
+                    finish()
                 }
             }
         }
@@ -101,9 +141,25 @@ class CreateTrackerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        // Restore saved bundle
+        savedInstanceState?.let {
+            setStatus(it.getSerializable("currentState") as Status)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable("currentState", currentStatus)
+        super.onSaveInstanceState(outState)
+    }
+
     private fun setStatus(status: Status) {
         if (status == currentStatus) {
             return
+        }
+        if (BuildConfig.DEBUG) {
+            Log.w(TAG, status.toString())
         }
         if (status == Status.TO_VALIDATE || status == Status.VALIDATED_EMPTY) {
             hintText.visibility = View.VISIBLE
@@ -123,17 +179,18 @@ class CreateTrackerActivity : AppCompatActivity() {
             createBtn.text = getString(if (status == Status.TO_VALIDATE || status == Status.LOADING) R.string.validate else R.string.create)
         }
 
-        if (status == Status.FAILED) {
+        if (status == Status.FAILED || status == Status.FAILED_ALREADY_EXISTS) {
             errorHint.visibility = View.VISIBLE
             when (status) {
                 Status.FAILED -> errorHint.text = getString(R.string.tracker_validation_failed_error)
+                Status.FAILED_ALREADY_EXISTS -> errorHint.text = getString(R.string.tracker_already_exists_error)
             }
         } else {
             errorHint.visibility = View.GONE
         }
 
         if (status != Status.TO_VALIDATE) {
-            createBtn.isEnabled = status != Status.FAILED
+            createBtn.isEnabled = status != Status.FAILED && status != Status.FAILED_ALREADY_EXISTS
         }
         currentStatus = status
     }
