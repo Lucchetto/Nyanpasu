@@ -75,6 +75,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
         val keywordsTrackerForUser = fragmentView.findViewById<View>(R.id.track_by_keywords)
         keywordsTrackerForUser.setOnClickListener {
             val intent = Intent(activity, CreateTrackerActivity::class.java)
+            intent.putExtra(CreateTrackerActivity.PRESET_USERNAME, username)
             startActivity(intent)
             dismiss()
         }

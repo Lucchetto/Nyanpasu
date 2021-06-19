@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
+import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +51,7 @@ class CreateTrackerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_tracker)
 
+        val username = intent.getStringExtra(PRESET_USERNAME)
         val releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
 
         hintText = findViewById(R.id.hint_text)
@@ -69,6 +71,13 @@ class CreateTrackerActivity : AppCompatActivity() {
         createBtn = findViewById(R.id.create_btn)
         val searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
         val usernameInput = findViewById<TextInputEditText>(R.id.username_input)
+
+        username?.let {
+            usernameInput.setText(it)
+            searchQueryInput.requestFocus()
+        } ?: run {
+            usernameInput.requestFocus()
+        }
 
         searchQueryInput.doOnTextChanged { text, start, before, count ->
             setStatus(Status.TO_VALIDATE)
@@ -193,5 +202,9 @@ class CreateTrackerActivity : AppCompatActivity() {
             createBtn.isEnabled = status != Status.FAILED && status != Status.FAILED_ALREADY_EXISTS
         }
         currentStatus = status
+    }
+
+    companion object {
+        const val PRESET_USERNAME = "presetUsername"
     }
 }
