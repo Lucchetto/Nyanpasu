@@ -21,7 +21,7 @@ interface SubscribedTrackerDao {
     @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery=:query")
     fun getByUsernameAndQuery(username: String, query: String): SubscribedRelease?
 
-    @Query("SELECT * FROM subscribedtracker WHERE username=:userName")
+    @Query("SELECT * FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL")
     fun getByUsername(userName: String): SubscribedUser?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -30,6 +30,6 @@ interface SubscribedTrackerDao {
     @Query("UPDATE subscribedtracker SET lastReleaseTimestamp = :timestamp WHERE id = :id")
     fun updateLatestTimestamp(id: Int, timestamp: Long)
 
-    @Query("DELETE FROM subscribedtracker WHERE username=:userName")
+    @Query("DELETE FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL")
     fun deleteByUsername(userName: String)
 }

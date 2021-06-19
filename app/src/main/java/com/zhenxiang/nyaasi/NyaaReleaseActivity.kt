@@ -19,6 +19,7 @@ import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleaseDetails
 import com.zhenxiang.nyaasi.fragment.ReleaseTrackerBottomFragment
+import com.zhenxiang.nyaasi.fragment.ReleaseTrackerFragmentSharedViewModel
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
@@ -36,9 +37,10 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
     private lateinit var markdownView: MarkdownView
     private lateinit var submitter: TextView
-    private lateinit var addToTrackerBtn: Button
+    private lateinit var manageTrackerBtn: Button
 
     private lateinit var releasesTrackerViewModel: ReleaseTrackerViewModel
+    private lateinit var releaseTrackerFragmentSharedViewModel: ReleaseTrackerFragmentSharedViewModel
     private var latestRelease: NyaaReleasePreview? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,9 +60,13 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
+        releaseTrackerFragmentSharedViewModel = ViewModelProvider(this).get(ReleaseTrackerFragmentSharedViewModel::class.java)
 
         nyaaRelease?.let {
-            addToTrackerBtn = findViewById(R.id.add_to_tracker)
+            manageTrackerBtn = findViewById(R.id.add_to_tracker)
+            releaseTrackerFragmentSharedViewModel.currentUserTracked.observe(this) {
+                setButtonTracked(it)
+            }
 
             val releaseTitle = findViewById<TextView>(R.id.release_title)
             releaseTitle.text = it.name
@@ -91,14 +97,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val releaseSizeView = findViewById<ReleaseDataItemView>(R.id.release_size)
             releaseSizeView.setValue(it.releaseSize)
-
-            // Listen for bottom sheet fragment result to change button text
-            supportFragmentManager.setFragmentResultListener(ReleaseTrackerBottomFragment.NEW_TRACKED_USER, this) { _, bundle ->
-                val subscribedUser = bundle.getSerializable(ReleaseTrackerBottomFragment.NEW_TRACKED_USER)
-                if (subscribedUser != null && subscribedUser is SubscribedTracker) {
-                    setButtonTracked(true)
-                }
-            }
 
             lifecycleScope.launch(Dispatchers.IO) {
                 localNyaaDbViewModel.addToViewed(nyaaRelease)
@@ -151,10 +149,16 @@ class NyaaReleaseActivity : AppCompatActivity() {
     }
 
     private suspend fun setDetails(details: NyaaReleaseDetails) {
+        val isTracked = details.user?.let {
+                releasesTrackerViewModel.getTrackedByUsername(it) != null
+        }
+
         withContext(Dispatchers.Main) {
             submitter.text = getString(R.string.release_submitter,
                 details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
             markdownView.loadMarkdown(details.descriptionMarkdown)
+
+            releaseTrackerFragmentSharedViewModel.currentUserTracked.value = isTracked == true
 
             val progressFrame = findViewById<View>(R.id.progress_frame)
             if (progressFrame.visibility == View.VISIBLE) {
@@ -184,22 +188,11 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 val isTrackedAtBeginning = subscribedUser != null
                 withContext(Dispatchers.Main) {
                     setButtonTracked(isTrackedAtBeginning)
-                    addToTrackerBtn.isEnabled = true
-                    addToTrackerBtn.visibility = View.VISIBLE
-                    addToTrackerBtn.setOnClickListener {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            // Toggle tracked status
-                            val isTracked = releasesTrackerViewModel.getTrackedByUsername(details.user) != null
-                            if (isTracked) {
-                                releasesTrackerViewModel.deleteTrackedUser(details.user)
-                                withContext(Dispatchers.Main) {
-                                    setButtonTracked(false)
-                                }
-                            } else {
-                                val bottomSheet = ReleaseTrackerBottomFragment.newInstance(details.user, latestTimestamp)
-                                bottomSheet.show(supportFragmentManager, null)
-                            }
-                        }
+                    manageTrackerBtn.isEnabled = true
+                    manageTrackerBtn.visibility = View.VISIBLE
+                    manageTrackerBtn.setOnClickListener {
+                        val bottomSheet = ReleaseTrackerBottomFragment.newInstance(details.user, latestTimestamp)
+                        bottomSheet.show(supportFragmentManager, null)
                     }
                 }
             }
@@ -207,8 +200,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
     }
 
     private fun setButtonTracked(tracked: Boolean) {
-        addToTrackerBtn.text = addToTrackerBtn.context.getString(
-            if (tracked) R.string.untrack_release_title else R.string.track_release_title)
+        manageTrackerBtn.text = manageTrackerBtn.context.getString(
+            if (tracked) R.string.manage_trackers_title else R.string.add_tracker_title)
     }
 
     companion object {

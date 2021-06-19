@@ -25,16 +25,18 @@
         style="@style/ReleaseTrackerSheet.Mode">
 
         <TextView
+            android:id="@+id/track_all_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeTitle"
-            android:text="Track all from this user"/>
+            android:text="@string/track_all_from_user_title"/>
 
         <TextView
+            android:id="@+id/track_all_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTrackerSheet.ModeDescription"
-            android:text="You will get notified of all the new releases from this user"/>
+            android:text="@string/track_all_from_user_desc"/>
     </LinearLayout>
 
     <LinearLayout

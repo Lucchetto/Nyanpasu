@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:enabled="false"
                 android:visibility="invisible"
-                android:text="@string/track_release_title"/>
+                android:text="@string/add_tracker_title"/>
 
             <Space
                 android:layout_width="0dp"

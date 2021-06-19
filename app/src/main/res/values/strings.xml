@@ -39,8 +39,13 @@
     <string name="release_submitter">Posted by %1$s</string>
     <string name="release_date">Date: %1$s</string>
     <string name="submitter_null">Anonymous</string>
-    <string name="untrack_release_title">Untrack release</string>
-    <string name="track_release_title">Track release</string>
+    <string name="manage_trackers_title">Manage tracker</string>
+    <string name="add_tracker_title">Add tracker</string>
+
+    <string name="track_all_from_user_title">Track all from this user</string>
+    <string name="track_all_from_user_desc">You will get notified of all the new releases from this user</string>
+    <string name="untrack_all_from_user_title">Untrack all from this user</string>
+    <string name="untrack_all_from_user_desc">You won\'t get notified about new releases from this user anymore</string>
 
     <string name="release_tracker_notif_name">Release tracker</string>
     <string name="release_tracker_new_releases_from_user">New releases from %1$s</string>
