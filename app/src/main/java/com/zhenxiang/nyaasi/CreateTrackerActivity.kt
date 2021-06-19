@@ -40,7 +40,6 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var errorHint: TextView
     private lateinit var finishHint: TextView
     private lateinit var loading: View
-    private lateinit var latestReleasesHeader: View
     private lateinit var latestReleasesList: RecyclerView
 
     private var currentStatus = Status.TO_VALIDATE
@@ -59,7 +58,6 @@ class CreateTrackerActivity : AppCompatActivity() {
         finishHint = findViewById(R.id.finish_hint)
         loading = findViewById(R.id.loading)
 
-        latestReleasesHeader = findViewById(R.id.last_releases_header)
         latestReleasesList = findViewById(R.id.last_releases_list)
         val listLayoutManager = LinearLayoutManager(this)
         val latestReleasesAdapter = ReleasesListAdapter(false)
@@ -181,7 +179,6 @@ class CreateTrackerActivity : AppCompatActivity() {
         }
         loading.visibility = if (status == Status.LOADING) View.VISIBLE else View.GONE
         finishHint.visibility = if (status == Status.VALIDATED) View.VISIBLE else View.GONE
-        latestReleasesHeader.visibility = if (status == Status.VALIDATED) View.VISIBLE else View.GONE
         latestReleasesList.visibility = if (status == Status.VALIDATED) View.VISIBLE else View.GONE
 
         if (status != currentStatus && (status == Status.TO_VALIDATE || currentStatus == Status.TO_VALIDATE || status == Status.LOADING || currentStatus == Status.LOADING)) {

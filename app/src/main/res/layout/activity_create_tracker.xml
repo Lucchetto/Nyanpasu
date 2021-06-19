@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingVertical="@dimen/activity_insets"
+    android:paddingTop="@dimen/activity_insets"
     android:orientation="vertical"
     tools:context=".CreateTrackerActivity">
 
@@ -92,13 +92,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </FrameLayout>
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/last_releases_header"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:title="@string/latest_releases_found_title"/>
 
     <TextView
         android:id="@+id/finish_hint"
