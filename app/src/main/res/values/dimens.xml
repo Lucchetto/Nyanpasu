@@ -1,3 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="activity_insets">16dp</dimen>
+    <dimen name="hint_text_max_width">320dp</dimen>
 </resources>

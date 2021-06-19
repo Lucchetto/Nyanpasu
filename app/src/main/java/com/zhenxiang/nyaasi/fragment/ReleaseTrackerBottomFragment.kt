@@ -1,5 +1,6 @@
 package com.zhenxiang.nyaasi.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.zhenxiang.nyaasi.CreateTrackerActivity
+import com.zhenxiang.nyaasi.NyaaSearchActivity
 import com.zhenxiang.nyaasi.R
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
@@ -25,6 +28,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         requireArguments().let {
             username = it.getString(ARG_USERNAME)!!
             latestTimestamp = it.getLong(ARG_LATEST_TIMESTAMP)!!
@@ -49,6 +53,13 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                     dismiss()
                 }
             }
+        }
+
+        val keywordsTrackerForUser = fragmentView.findViewById<View>(R.id.track_by_keywords)
+        keywordsTrackerForUser.setOnClickListener {
+            val intent = Intent(activity, CreateTrackerActivity::class.java)
+            startActivity(intent)
+            dismiss()
         }
         return fragmentView
     }

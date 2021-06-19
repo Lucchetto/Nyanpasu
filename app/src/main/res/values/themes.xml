@@ -19,4 +19,8 @@
         <item name="android:colorBackground">@color/white</item>
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+
+    <style name="Theme.Nyaasi.CreateTrackerDialog" parent="Theme.MaterialComponents.DayNight.Dialog.MinWidth">
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
 </resources>

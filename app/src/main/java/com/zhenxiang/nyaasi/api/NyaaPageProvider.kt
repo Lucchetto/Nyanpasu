@@ -18,8 +18,8 @@ class NyaaPageProvider {
                                  searchQuery: String? = null,
                                  user: String? = null): List<NyaaReleasePreview>? {
             var url = "https://nyaa.si/"
-            user?.let {
-                url += "user/$it"
+            if (!user.isNullOrEmpty()) {
+                url += "user/$user"
             }
             url += "?p=${pageIndex}"
             searchQuery?.let {

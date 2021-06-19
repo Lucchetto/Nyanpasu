@@ -15,7 +15,7 @@
         android:orientation="vertical"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:padding="15dp">
+        android:padding="@dimen/activity_insets">
 
         <TextView
             android:id="@+id/release_title"

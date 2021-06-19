@@ -9,7 +9,7 @@ import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import java.text.DateFormat
 import java.util.*
 
-class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_DOWNLOAD_ITEM = 0
     private val TYPE_FOOTER_ITEM = 1
@@ -29,6 +29,10 @@ class ReleasesListAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private var itemData: NyaaReleasePreview? = null
 
         init {
+            if (!showActions) {
+                view.findViewById<View>(R.id.magnet_btn).visibility = View.GONE
+                view.findViewById<View>(R.id.download_btn).visibility = View.GONE
+            }
             view.setOnClickListener {
                 val itemData = itemData
                 val listener = listener

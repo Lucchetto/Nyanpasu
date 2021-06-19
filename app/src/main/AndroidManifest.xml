@@ -6,22 +6,25 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".NyaaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".NyaaApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Nyaasi">
         <activity
+            android:name=".CreateTrackerActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".NyaaReleaseActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/title_activity_nyaa_release" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NyaaSearchActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
