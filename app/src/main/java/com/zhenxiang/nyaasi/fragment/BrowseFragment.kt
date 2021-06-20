@@ -51,7 +51,8 @@ class BrowseFragment : Fragment() {
 
         val releasesListAdapter = ReleasesListAdapter()
         browseViewModel.itemsLiveData.observe(viewLifecycleOwner,  {
-            releasesListAdapter.setItems(it)
+            // Hax until we handle livedata properly
+            releasesListAdapter.setItems(it.toList())
             releasesListAdapter.setFooterVisible(!browseViewModel.isBottomReached())
         })
 
@@ -59,6 +60,7 @@ class BrowseFragment : Fragment() {
         val listLayoutManager = LinearLayoutManager(fragmentView.context)
         releasesList.layoutManager = listLayoutManager
         releasesList.adapter = releasesListAdapter
+        releasesList.itemAnimator = null
 
         releasesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

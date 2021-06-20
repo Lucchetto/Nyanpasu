@@ -17,13 +17,31 @@ import java.util.*
 import androidx.annotation.ColorInt
 
 import android.util.TypedValue
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+
 
 class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TYPE_DOWNLOAD_ITEM = 0
     private val TYPE_FOOTER_ITEM = 1
 
-    val items = mutableListOf<NyaaReleasePreview>()
+    private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<NyaaReleasePreview>() {
+        override fun areItemsTheSame(
+            oldItem: NyaaReleasePreview,
+            newItem: NyaaReleasePreview
+        ): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(
+            oldItem: NyaaReleasePreview,
+            newItem: NyaaReleasePreview
+        ): Boolean {
+            return oldItem == newItem
+        }
+    }
+    private val differ: AsyncListDiffer<NyaaReleasePreview> = AsyncListDiffer(this, DIFF_CALLBACK)
 
     var listener: ItemClickedListener? = null
 
@@ -91,8 +109,8 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is DownloadItemViewHolder && items[position] != null) {
-            holder.bind(items[position])
+        if (holder is DownloadItemViewHolder) {
+            holder.bind(differ.currentList[position])
         } else if (holder is FooterViewHolder) {
             holder.setVisible(showFooter)
         }
@@ -104,13 +122,15 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
 
     override fun getItemCount(): Int {
         // All data plus one for footer
-        return items.size + 1
+        return differ.currentList.size + 1
     }
 
     fun setItems(newItems: List<NyaaReleasePreview>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
+        differ.submitList(newItems)
+    }
+
+    fun getItems(): List<NyaaReleasePreview> {
+        return differ.currentList
     }
 
     interface ItemClickedListener {

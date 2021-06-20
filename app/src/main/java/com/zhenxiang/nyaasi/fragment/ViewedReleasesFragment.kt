@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.*
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
+import com.zhenxiang.nyaasi.widget.ReleaseItemAnimator
 import dev.chrisbanes.insetter.applyInsetter
 
 open class ViewedReleasesFragment : Fragment() {
@@ -72,7 +74,8 @@ open class ViewedReleasesFragment : Fragment() {
 
         })*/
 
-        releasesList = fragmentView.findViewById<RecyclerView>(R.id.viewed_releases_list)
+        releasesList = fragmentView.findViewById(R.id.viewed_releases_list)
+        releasesList.itemAnimator = ReleaseItemAnimator()
         releasesList.applyInsetter {
             type(ime = true) {
                 margin()
@@ -83,8 +86,7 @@ open class ViewedReleasesFragment : Fragment() {
             val swipedCallback = SwipedCallback(releasesList.context, swipeDirection())
             swipedCallback.listener = object: SwipedCallback.ItemDeleteListener {
                 override fun onDeleteItem(position: Int) {
-                    val releaseToDelete = releasesListAdapter.items[position]
-                    releasesListAdapter.items.removeAt(position)
+                    val releaseToDelete = releasesListAdapter.getItems()[position]
                     localNyaaDbViewModel.removeViewed(releaseToDelete)
                 }
             }

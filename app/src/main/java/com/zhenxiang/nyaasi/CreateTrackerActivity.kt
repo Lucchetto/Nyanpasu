@@ -118,7 +118,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                 }
             } else if (currentStatus == Status.VALIDATED) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    latestReleasesAdapter.items.getOrNull(0)?.let {
+                    latestReleasesAdapter.getItems().getOrNull(0)?.let {
                         val username = usernameInput.text.toString().trim()
                         val searchQuery = searchQueryInput.text.toString().trim()
                         val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,

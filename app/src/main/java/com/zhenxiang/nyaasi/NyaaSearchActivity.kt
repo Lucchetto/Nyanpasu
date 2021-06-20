@@ -46,7 +46,8 @@ class NyaaSearchActivity : AppCompatActivity() {
                 val hintText = findViewById<View>(R.id.search_hint)
                 hintText.visibility = View.GONE
             }
-            resultsAdapter.setItems(it)
+            // Hax until we handle livedata properly
+            resultsAdapter.setItems(it.toList())
             resultsAdapter.setFooterVisible(!searchViewModel.isBottomReached())
         })
         if (savedInstanceState == null) {
@@ -56,6 +57,7 @@ class NyaaSearchActivity : AppCompatActivity() {
         val listLayoutManager = LinearLayoutManager(this)
         resultsList.layoutManager = listLayoutManager
         resultsList.adapter = resultsAdapter
+        resultsList.itemAnimator = null
 
         resultsList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
