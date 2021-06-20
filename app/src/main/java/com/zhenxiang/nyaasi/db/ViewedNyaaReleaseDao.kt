@@ -25,6 +25,9 @@ interface ViewedNyaaReleaseDao {
     @Delete
     fun delete(release: ViewedNyaaRelease)
 
+    @Query("delete from viewednyaarelease where releaseId=:id")
+    fun deleteById(id: Int)
+
     @Query("delete from viewednyaarelease where releaseId in (:list)")
     fun deleteByIdList(list: List<Int>)
 }

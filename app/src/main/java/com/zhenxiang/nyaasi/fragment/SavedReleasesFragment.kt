@@ -6,6 +6,10 @@ import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 
 class SavedReleasesFragment: ViewedReleasesFragment() {
 
+    override fun hasDelete(): Boolean {
+        return false
+    }
+
     override fun liveDataSource(): LiveData<List<NyaaReleasePreview>> {
         return localNyaaDbViewModel.savedReleases
     }

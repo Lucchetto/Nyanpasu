@@ -7,12 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.zhenxiang.nyaasi.AppUtils
-import com.zhenxiang.nyaasi.NyaaReleaseActivity
-import com.zhenxiang.nyaasi.R
-import com.zhenxiang.nyaasi.ReleasesListAdapter
+import com.zhenxiang.nyaasi.*
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import dev.chrisbanes.insetter.applyInsetter
@@ -80,6 +78,19 @@ open class ViewedReleasesFragment : Fragment() {
                 margin()
             }
         }
+
+        if (hasDelete()) {
+            val swipedCallback = SwipedCallback(releasesList.context, swipeDirection())
+            swipedCallback.listener = object: SwipedCallback.ItemDeleteListener {
+                override fun onDeleteItem(position: Int) {
+                    val releaseToDelete = releasesListAdapter.items[position]
+                    releasesListAdapter.items.removeAt(position)
+                    localNyaaDbViewModel.removeViewed(releaseToDelete)
+                }
+            }
+            val itemTouchHelper = ItemTouchHelper(swipedCallback)
+            itemTouchHelper.attachToRecyclerView(releasesList)
+        }
         releasesList.layoutManager = LinearLayoutManager(fragmentView.context)
         releasesList.adapter = releasesListAdapter
         releasesListAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
@@ -93,6 +104,14 @@ open class ViewedReleasesFragment : Fragment() {
         }
 
         return fragmentView
+    }
+
+    open fun hasDelete(): Boolean {
+        return true
+    }
+
+    open fun swipeDirection(): Int {
+        return ItemTouchHelper.LEFT
     }
 
     open fun liveDataSource(): LiveData<List<NyaaReleasePreview>> {

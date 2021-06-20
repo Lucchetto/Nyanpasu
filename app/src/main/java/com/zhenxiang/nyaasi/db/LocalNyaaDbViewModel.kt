@@ -2,14 +2,10 @@ package com.zhenxiang.nyaasi.db
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.lifecycle.MutableLiveData
-
-
 
 
 class LocalNyaaDbViewModel(application: Application): AndroidViewModel(application) {
@@ -58,6 +54,16 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
             // Catch any SQLITE_CONSTRAINT_TRIGGER caused by constraints of saved table foreign key
             try {
                 nyaaLocalRepo.previewsDao.deleteByIdList(toDelete)
+            } catch (e: Exception) {}
+        }
+    }
+
+    fun removeViewed(release: NyaaReleasePreview) {
+        viewModelScope.launch(Dispatchers.IO) {
+            nyaaLocalRepo.viewedDao.deleteById(release.id)
+            // Catch any SQLITE_CONSTRAINT_TRIGGER caused by constraints of viewed table foreign key
+            try {
+                nyaaLocalRepo.previewsDao.deleteById(release.id)
             } catch (e: Exception) {}
         }
     }
