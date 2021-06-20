@@ -9,7 +9,7 @@ interface SubscribedTrackerDao {
     @Query("SELECT * FROM subscribedtracker")
     fun getAllLive(): LiveData<List<SubscribedTracker>>
 
-    @Query("SELECT * FROM subscribedtracker WHERE username IS NOT NULL")
+    @Query("SELECT * FROM subscribedtracker WHERE username IS NOT NULL AND searchQuery IS NULL")
     fun getAllTrackedUsers(): List<SubscribedUser>
 
     @Query("SELECT * FROM subscribedtracker WHERE searchQuery IS NOT NULL")
