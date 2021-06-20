@@ -18,6 +18,7 @@
         <entry key="app/src/main/res/layout/fragment_browse.xml" value="0.11770833333333333" />
         <entry key="app/src/main/res/layout/fragment_library.xml" value="0.16032608695652173" />
         <entry key="app/src/main/res/layout/fragment_release_tracker_bottom.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_releases_tracker.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_search_dialog.xml" value="0.5244791666666667" />
         <entry key="app/src/main/res/layout/fragment_subscribed_users.xml" value="0.12135416666666667" />
         <entry key="app/src/main/res/layout/fragment_viewed_releases.xml" value="0.11770833333333333" />

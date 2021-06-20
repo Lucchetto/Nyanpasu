@@ -43,8 +43,6 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var latestReleasesList: RecyclerView
 
     private var currentStatus = Status.TO_VALIDATE
-    // Used to guard status change on bundle restored (rotation change and stuff)
-    private var statusRestored = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

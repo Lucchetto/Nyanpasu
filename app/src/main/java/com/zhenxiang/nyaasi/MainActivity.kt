@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zhenxiang.nyaasi.fragment.BrowseFragment
 import com.zhenxiang.nyaasi.fragment.LibraryFragment
-import com.zhenxiang.nyaasi.fragment.SubscribedUsersFragment
+import com.zhenxiang.nyaasi.fragment.ReleasesTrackerFragment
 import dev.chrisbanes.insetter.applyInsetter
 
 class MainActivity : AppCompatActivity() {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             browseFragment = setupFragment(BrowseFragment.newInstance(), "1")
             libraryFragment = setupFragment(LibraryFragment.newInstance(), "3")
-            subscribedUsersFragment = setupFragment(SubscribedUsersFragment.newInstance(), "4")
+            subscribedUsersFragment = setupFragment(ReleasesTrackerFragment.newInstance(), "4")
             switchActiveFragment(browseFragment)
         } else {
             browseFragment = supportFragmentManager.findFragmentByTag("1")!!

@@ -138,7 +138,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                         val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
                         val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
-                        val details = NyaaReleaseDetails(nyaaRelease.id, if (userName.isNullOrEmpty()) null else userName, hash, descriptionMarkdown)
+                        val details = NyaaReleaseDetails(nyaaRelease.id, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
                         localNyaaDbViewModel.addDetails(details)
 
                         setDetails(details)

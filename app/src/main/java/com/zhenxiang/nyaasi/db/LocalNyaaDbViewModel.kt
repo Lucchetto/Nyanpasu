@@ -86,7 +86,7 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
 }
 
 private fun LiveData<List<NyaaReleasePreview>>.searchByName(query: String?): LiveData<List<NyaaReleasePreview>> {
-    return if (query.isNullOrEmpty()) {
+    return if (query.isNullOrBlank()) {
         this
     } else {
         Transformations.map(this) { list ->

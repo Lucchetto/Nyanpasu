@@ -6,14 +6,18 @@ import androidx.room.*
 @Dao
 interface SubscribedTrackerDao {
 
-    @Query("SELECT * FROM subscribedtracker")
-    fun getAllLive(): LiveData<List<SubscribedTracker>>
 
     @Query("SELECT * FROM subscribedtracker WHERE username IS NOT NULL AND searchQuery IS NULL")
     fun getAllTrackedUsers(): List<SubscribedUser>
 
+    @Query("SELECT * FROM subscribedtracker WHERE username IS NOT NULL AND searchQuery IS NULL")
+    fun getAllTrackedUsersLive(): LiveData<List<SubscribedTracker>>
+
     @Query("SELECT * FROM subscribedtracker WHERE searchQuery IS NOT NULL")
     fun getAllTrackedReleases(): List<SubscribedRelease>
+
+    @Query("SELECT * FROM subscribedtracker WHERE searchQuery IS NOT NULL")
+    fun getAllTrackedReleasesLive(): LiveData<List<SubscribedTracker>>
 
     @Query("SELECT * FROM subscribedtracker WHERE searchQuery=:query AND username IS NULL")
     fun getByQueryWithNullUsername(query: String): SubscribedRelease?

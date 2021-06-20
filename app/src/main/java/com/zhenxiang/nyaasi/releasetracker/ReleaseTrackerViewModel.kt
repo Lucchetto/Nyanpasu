@@ -10,9 +10,9 @@ class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(appli
     private val repo = ReleaseTrackerRepo(application)
 
     val subscribedTrackerSearch = MutableLiveData<String>()
-    private val preFilterSubscribedTrackers = repo.subscribedUsersDao.getAllLive()
+    private val preFilterSubscribedTrackers = repo.subscribedUsersDao.getAllTrackedReleasesLive()
     val subscribedTrackers = Transformations.switchMap(subscribedTrackerSearch) { query ->
-        if (query.isNullOrEmpty()) {
+        if (query.isNullOrBlank()) {
             preFilterSubscribedTrackers
         } else {
             Transformations.map(preFilterSubscribedTrackers) {
@@ -21,8 +21,21 @@ class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    val subscribedUserSearch = MutableLiveData<String>()
+    private val preFilterSubscribedUsers = repo.subscribedUsersDao.getAllTrackedUsersLive()
+    val subscribedUsers = Transformations.switchMap(subscribedUserSearch) { query ->
+        if (query.isNullOrBlank()) {
+            preFilterSubscribedUsers
+        } else {
+            Transformations.map(preFilterSubscribedUsers) {
+                it.filter { item -> item.username?.contains(query, true) == true }
+            }
+        }
+    }
+
     init {
         subscribedTrackerSearch.value = null
+        subscribedUserSearch.value = null
     }
 
     fun addReleaseTracker(tracker: SubscribedTracker) {
