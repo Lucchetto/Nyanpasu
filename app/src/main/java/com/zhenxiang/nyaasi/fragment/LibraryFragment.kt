@@ -6,16 +6,29 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.zhenxiang.nyaasi.R
 
+
+
+
 class LibraryFragment : Fragment() {
+
+    private var searchMode = false
+    private lateinit var searchBtn: ExtendedFloatingActionButton
+    private lateinit var appBar: AppBarLayout
+    private lateinit var toolbar: Toolbar
+    private lateinit var searchBar: SearchView
+    private lateinit var toolbarContainer: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +41,18 @@ class LibraryFragment : Fragment() {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_library, container, false)
 
-        val toolbar = fragmentView.findViewById<Toolbar>(R.id.library_toolbar)
-        val appBar = fragmentView.findViewById<AppBarLayout>(R.id.app_bar)
+        toolbar = fragmentView.findViewById(R.id.library_toolbar)
+        appBar = fragmentView.findViewById(R.id.app_bar)
+        toolbarContainer = fragmentView.findViewById(R.id.toolbar_container)
+        searchBtn = fragmentView.findViewById(R.id.search_btn)
+        searchBar = fragmentView.findViewById(R.id.search_bar)
+
         val tabLayout = fragmentView.findViewById<TabLayout>(R.id.library_tabs)
+
+        searchBtn.setOnClickListener {
+            setSearchMode(true)
+        }
+
         val viewPager = fragmentView.findViewById<ViewPager>(R.id.library_pager)
         val viewPagerAdapter = LibraryPagerAdapter(childFragmentManager, viewPager.context)
         viewPager.adapter = viewPagerAdapter
@@ -61,6 +83,23 @@ class LibraryFragment : Fragment() {
         })
 
         return fragmentView
+    }
+
+    fun setSearchMode(search: Boolean) {
+        if (search == searchMode) {
+            return
+        }
+        searchBar.visibility = if (search) View.VISIBLE else View.GONE
+        if (search) {
+            appBar.setExpanded(true, true)
+            searchBar.requestFocus()
+            searchBtn.hide()
+        } else {
+            searchBtn.show()
+        }
+        val scrollLayoutParams = toolbarContainer.layoutParams as AppBarLayout.LayoutParams
+        scrollLayoutParams.scrollFlags = if (search) AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP else AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS.or(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL)
+        searchMode = search
     }
 
     companion object {

@@ -16,13 +16,28 @@
         android:layout_height="wrap_content"
         android:background="?android:colorBackground">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/library_toolbar"
+        <FrameLayout
+            android:id="@+id/toolbar_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="@string/library_title"
-            android:background="@android:color/transparent"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/library_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="@string/library_title"
+                android:background="@android:color/transparent"/>
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_bar"
+                style="@style/Widget.AppCompat.SearchView.ActionBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:iconifiedByDefault="false"
+                app:searchIcon="@null" />
+        </FrameLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/library_tabs"

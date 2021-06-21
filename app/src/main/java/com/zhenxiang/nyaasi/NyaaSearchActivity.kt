@@ -28,7 +28,6 @@ class NyaaSearchActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val searchBar = findViewById<SearchView>(R.id.search_bar)
-        searchBar.setIconifiedByDefault(false)
         searchBar.requestFocus()
 
         val resultsList = findViewById<RecyclerView>(R.id.search_results)
