@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.R
+import java.text.DateFormat
+import java.util.*
 
 class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapter.ViewHolder>() {
 
@@ -17,15 +19,18 @@ class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapte
 
         fun bind(tracker: SubscribedTracker) {
             if (tracker.searchQuery != null) {
+                // First line the query
                 usernameOrTrackerTitle.text = tracker.searchQuery
+                // Second line is username is present
                 tracker.username?.let {
-                    username.text = it
+                    username.text = username.context.getString(R.string.user_title, it)
                     username.visibility = View.VISIBLE
                 } ?: run {
                     username.text = null
                     username.visibility = View.GONE
                 }
             } else if (tracker.username != null) {
+                // First line the username
                 usernameOrTrackerTitle.text = tracker.username
                 username.text = null
                 username.visibility = View.GONE

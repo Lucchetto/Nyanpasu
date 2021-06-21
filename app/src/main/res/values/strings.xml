@@ -66,6 +66,7 @@
     <string name="latest_releases_found_title">Latest releases</string>
     <string name="search_query_title">Keywords</string>
 
-    <string name="user_title">User %1$s</string>
+    <string name="user_title">From %1$s</string>
+    <string name="latest_release_on_title">Latest release on %1$s</string>
 
 </resources>
