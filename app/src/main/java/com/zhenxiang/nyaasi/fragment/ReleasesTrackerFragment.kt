@@ -35,13 +35,23 @@ class ReleasesTrackerFragment : Fragment() {
             startActivity(intent)
         }
         val trackedUsersCount = fragmentView.findViewById<TextView>(R.id.tracked_users_count)
+        val trackedUsersList = fragmentView.findViewById<RecyclerView>(R.id.tracked_users_list)
+        trackedUsersList.layoutManager = LinearLayoutManager(fragmentView.context)
+        val trackedUsersAdapter = SubscribedTrackersAdapter()
+        trackedUsersList.adapter = trackedUsersAdapter
         val trackedKeywordsCount = fragmentView.findViewById<TextView>(R.id.query_trackers_count)
+        val trackedKeywordsList = fragmentView.findViewById<RecyclerView>(R.id.keywords_trackers_list)
+        trackedKeywordsList.layoutManager = LinearLayoutManager(fragmentView.context)
+        val trackedKeywordsAdapter = SubscribedTrackersAdapter()
+        trackedKeywordsList.adapter = trackedKeywordsAdapter
         //val subscribedUsersAdapter = SubscribedTrackersAdapter()
         releaseTrackerViewModel.subscribedTrackers.observe(viewLifecycleOwner, {
             trackedKeywordsCount.text = it.size.toString()
+            trackedKeywordsAdapter.setData(it)
         })
         releaseTrackerViewModel.subscribedUsers.observe(viewLifecycleOwner, {
             trackedUsersCount.text = it.size.toString()
+            trackedUsersAdapter.setData(it)
         })
 
         /*val subscribedUsersList = fragmentView.findViewById<RecyclerView>(R.id.subscribed_users_list)

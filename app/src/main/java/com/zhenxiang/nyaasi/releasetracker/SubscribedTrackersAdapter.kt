@@ -12,10 +12,29 @@ class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapte
     val users = mutableListOf<SubscribedTracker>()
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        private val usernameOrTrackerTitle = view.findViewById<TextView>(R.id.username_or_tracker_title)
         private val username = view.findViewById<TextView>(R.id.username)
 
         fun bind(tracker: SubscribedTracker) {
-            username.text = tracker.username
+            if (tracker.searchQuery != null) {
+                usernameOrTrackerTitle.text = tracker.searchQuery
+                tracker.username?.let {
+                    username.text = it
+                    username.visibility = View.VISIBLE
+                } ?: run {
+                    username.text = null
+                    username.visibility = View.GONE
+                }
+            } else if (tracker.username != null) {
+                usernameOrTrackerTitle.text = tracker.username
+                username.text = null
+                username.visibility = View.GONE
+            } else {
+                // else condition should never happen
+                usernameOrTrackerTitle.text = null
+                username.text = null
+                username.visibility = View.GONE
+            }
         }
     }
 
