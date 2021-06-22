@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zhenxiang.nyaasi.fragment.BrowseFragment
@@ -30,6 +32,24 @@ class MainActivity : AppCompatActivity() {
             type(statusBars = true) {
                 padding()
             }
+        }
+
+        /*findViewById<View>(R.id.fragment_container).applyInsetter {
+            type(ime = true) {
+                margin()
+            }
+        }*/
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fragment_container)) { v, inset ->
+            val imeInset = WindowInsetsCompat(inset).getInsets(WindowInsetsCompat.Type.ime()).bottom
+            if (imeInset > 0) {
+                val navInset = WindowInsetsCompat(inset).getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+                v.setPadding(0,0,0, imeInset - bottomNav.height - navInset)
+            } else {
+                v.setPadding(0)
+            }
+
+            return@setOnApplyWindowInsetsListener inset
         }
 
         val browseFragment: Fragment

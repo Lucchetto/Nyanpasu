@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -20,6 +21,7 @@ import com.google.android.material.tabs.TabLayout
 import com.zhenxiang.nyaasi.R
 import com.zhenxiang.nyaasi.widget.DisableScrollingTabLayout
 import com.zhenxiang.nyaasi.widget.DisableScrollingViewPager
+import dev.chrisbanes.insetter.applyInsetter
 
 
 class LibraryFragment : Fragment() {

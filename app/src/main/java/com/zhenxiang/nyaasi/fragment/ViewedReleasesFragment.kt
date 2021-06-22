@@ -78,7 +78,7 @@ open class ViewedReleasesFragment : Fragment() {
         releasesList.itemAnimator = ReleaseItemAnimator()
         releasesList.applyInsetter {
             type(ime = true) {
-                margin()
+                //margin()
             }
         }
 
