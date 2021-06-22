@@ -79,6 +79,15 @@ class NyaaSearchActivity : AppCompatActivity() {
                 AppUtils.openMagnetLink(this@NyaaSearchActivity, item, resultsList)
             }
         }
+        // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
+        resultsAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                if (!resultsList.canScrollVertically(-1)) {
+                    resultsList.scrollToPosition(0)
+                }
+            }
+        })
 
         val categoriesSpinner = findViewById<Spinner>(R.id.categories_selection)
         categoriesSpinner.adapter = AppUtils.getNyaaCategoriesSpinner(this)

@@ -83,6 +83,15 @@ class BrowseFragment : Fragment() {
                 AppUtils.openMagnetLink(fragmentView.context, item, fragmentView, searchBtn)
             }
         }
+        // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
+        releasesListAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                if (!releasesList.canScrollVertically(-1)) {
+                    releasesList.scrollToPosition(0)
+                }
+            }
+        })
 
         val categoriesSpinner = fragmentView.findViewById<Spinner>(R.id.categories_selection)
         categoriesSpinner.adapter = AppUtils.getNyaaCategoriesSpinner(fragmentView.context)
