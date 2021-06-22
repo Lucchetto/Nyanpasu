@@ -59,7 +59,6 @@ class CreateTrackerActivity : AppCompatActivity() {
         latestReleasesList = findViewById(R.id.last_releases_list)
         val listLayoutManager = LinearLayoutManager(this)
         val latestReleasesAdapter = ReleasesListAdapter(false)
-        latestReleasesAdapter.setFooterVisible(false)
         latestReleasesList.layoutManager = listLayoutManager
         latestReleasesList.adapter = latestReleasesAdapter
 

@@ -55,7 +55,6 @@ open class ViewedReleasesFragment : Fragment() {
 
         localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         val releasesListAdapter = ReleasesListAdapter()
-        releasesListAdapter.setFooterVisible(false)
 
         liveDataSource().observe(viewLifecycleOwner, {
             releasesListAdapter.setItems(it)

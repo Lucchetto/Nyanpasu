@@ -21,10 +21,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 
 
-class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private val TYPE_DOWNLOAD_ITEM = 0
-    private val TYPE_FOOTER_ITEM = 1
+class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView.Adapter<ReleasesListAdapter.DownloadItemViewHolder>() {
 
     private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<NyaaReleasePreview>() {
         override fun areItemsTheSame(
@@ -44,8 +41,6 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
     private val differ: AsyncListDiffer<NyaaReleasePreview> = AsyncListDiffer(this, DIFF_CALLBACK)
 
     var listener: ItemClickedListener? = null
-
-    private var showFooter = true
 
     inner class DownloadItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //private val id: TextView = view.findViewById(R.id.release_id)
@@ -86,43 +81,18 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
         }
     }
 
-    class FooterViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        private val loadingCircle = view.findViewById<View>(R.id.footer_loading_circle)
-        fun setVisible(visible: Boolean) {
-            loadingCircle.visibility = if (visible) View.VISIBLE else View.GONE
-        }
-    }
-
-    fun setFooterVisible(visible: Boolean) {
-        if (visible != showFooter) {
-            showFooter = visible
-            // Update last item which is footer
-            notifyItemChanged(itemCount - 1)
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val isFooterItem = viewType == TYPE_FOOTER_ITEM
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DownloadItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(if (isFooterItem) R.layout.loading_circle_footer else R.layout.release_preview_item, parent, false)
-        return if (isFooterItem) FooterViewHolder(view) else DownloadItemViewHolder(view)
+            .inflate(R.layout.release_preview_item, parent, false)
+        return DownloadItemViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is DownloadItemViewHolder) {
-            holder.bind(differ.currentList[position])
-        } else if (holder is FooterViewHolder) {
-            holder.setVisible(showFooter)
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if (position < itemCount - 1) TYPE_DOWNLOAD_ITEM else TYPE_FOOTER_ITEM
+    override fun onBindViewHolder(holder: DownloadItemViewHolder, position: Int) {
+        holder.bind(differ.currentList[position])
     }
 
     override fun getItemCount(): Int {
-        // All data plus one for footer
-        return differ.currentList.size + 1
+        return differ.currentList.size
     }
 
     fun setItems(newItems: List<NyaaReleasePreview>) {

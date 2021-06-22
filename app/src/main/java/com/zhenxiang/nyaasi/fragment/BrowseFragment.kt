@@ -13,9 +13,11 @@ import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import android.content.Intent
 import android.widget.AdapterView
 import android.widget.Spinner
+import androidx.recyclerview.widget.ConcatAdapter
 import com.zhenxiang.nyaasi.*
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
+import com.zhenxiang.nyaasi.util.FooterAdapter
 
 
 /**
@@ -50,16 +52,17 @@ class BrowseFragment : Fragment() {
         }
 
         val releasesListAdapter = ReleasesListAdapter()
+        val footerAdapter = FooterAdapter()
         browseViewModel.itemsLiveData.observe(viewLifecycleOwner,  {
             // Hax until we handle livedata properly
             releasesListAdapter.setItems(it.toList())
-            releasesListAdapter.setFooterVisible(!browseViewModel.isBottomReached())
+            footerAdapter.showLoading(!browseViewModel.isBottomReached())
         })
 
         val releasesList = fragmentView.findViewById<RecyclerView>(R.id.releases_list)
         val listLayoutManager = LinearLayoutManager(fragmentView.context)
         releasesList.layoutManager = listLayoutManager
-        releasesList.adapter = releasesListAdapter
+        releasesList.adapter = ConcatAdapter(releasesListAdapter, footerAdapter)
         releasesList.itemAnimator = null
 
         releasesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {

@@ -9,12 +9,14 @@ import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
+import com.zhenxiang.nyaasi.util.FooterAdapter
 import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity() {
@@ -37,6 +39,7 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
         }
         val resultsAdapter = ReleasesListAdapter()
+        val footerAdapter = FooterAdapter()
         searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
 
         searchViewModel.searchResultsLiveData.observe(this,  {
@@ -47,7 +50,7 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
             // Hax until we handle livedata properly
             resultsAdapter.setItems(it.toList())
-            resultsAdapter.setFooterVisible(!searchViewModel.isBottomReached())
+            footerAdapter.showLoading(!searchViewModel.isBottomReached())
         })
         if (savedInstanceState == null) {
             searchViewModel.setSearchText(null)
@@ -55,7 +58,7 @@ class NyaaSearchActivity : AppCompatActivity() {
 
         val listLayoutManager = LinearLayoutManager(this)
         resultsList.layoutManager = listLayoutManager
-        resultsList.adapter = resultsAdapter
+        resultsList.adapter = ConcatAdapter(resultsAdapter, footerAdapter)
         resultsList.itemAnimator = null
 
         resultsList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
