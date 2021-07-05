@@ -22,6 +22,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
     private val RELEASE_TRACKER_NOTIF_ID = 1072
 
     private val subscribedUsersDao = NyaaDb(appContext).subscribedTrackersDao()
+    private val newReleasesDao = NyaaDb(appContext).newReleasesDao()
 
     override suspend fun doWork(): Result {
         val usersWithNewReleases = mutableListOf<SubscribedUser>()
@@ -64,9 +65,15 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
             }
 
             if (newReleasesForSubscribedRelease.isNotEmpty()) {
-                var expandedText = applicationContext.getString(R.string.release_tracker_new_releases_expanded) + "\n"
+                var expandedText = applicationContext.getString(R.string.release_tracker_new_releases_expanded)
                 newReleasesForSubscribedRelease.forEach {
-                    expandedText += it.searchQuery + "\n"
+                    // Make sure to break line
+                    expandedText += "\n"
+                    expandedText += if (it.username != null) {
+                        applicationContext.getString(R.string.release_tracker_new_releases_line, it.searchQuery, it.username)
+                    } else {
+                        applicationContext.getString(R.string.release_tracker_new_releases_line_no_username, it.searchQuery)
+                    }
                 }
                 generateNotif(RELEASE_TRACKER_NOTIF_ID, applicationContext.getString(R.string.release_tracker_new_releases), expandedText)
             }
@@ -77,7 +84,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
     private fun generateNotif(id: Int, content: String, expandedText: String? = null) {
         val notificationBuilder = NotificationCompat.Builder(applicationContext, RELEASE_TRACKER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_magnet)
-            .setContentTitle("New releases")
+            .setContentTitle(applicationContext.getString(R.string.release_tracker_notif_name))
             .setContentText(content)
             .setAutoCancel(true)
 
@@ -108,6 +115,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                         return newReleases
                     } else {
                         newReleases.add(it)
+                        newReleasesDao.insertAll(NewRelease(it.id, tracker.id))
                     }
                 }
             }
