@@ -88,6 +88,11 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 AppUtils.openMagnetLink(this, it, scrollRoot)
             }
 
+            val downloadBtn = findViewById<View>(R.id.download_btn)
+            downloadBtn.setOnClickListener { _ ->
+                AppUtils.enqueueDownload(this, it.id, scrollRoot)
+            }
+
             val category = findViewById<TextView>(R.id.category)
             category.text = getString(R.string.release_category, getString(it.category.stringResId))
 

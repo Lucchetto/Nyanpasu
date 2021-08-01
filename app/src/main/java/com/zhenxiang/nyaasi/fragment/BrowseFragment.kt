@@ -82,6 +82,10 @@ class BrowseFragment : Fragment() {
             override fun downloadMagnet(item: NyaaReleasePreview) {
                 AppUtils.openMagnetLink(fragmentView.context, item, fragmentView, searchBtn)
             }
+
+            override fun downloadTorrent(item: NyaaReleasePreview) {
+                AppUtils.enqueueDownload(fragmentView.context, item.id, fragmentView, searchBtn)
+            }
         }
         // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
         releasesListAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {

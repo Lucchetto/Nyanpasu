@@ -47,6 +47,7 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
         private val title: TextView = view.findViewById(R.id.release_title)
         private val releaseDate: TextView = view.findViewById(R.id.release_date)
         private val magnetBtn: View = view.findViewById(R.id.magnet_btn)
+        private val downloadBtn: View = view.findViewById(R.id.download_btn)
 
         private var itemData: NyaaReleasePreview? = null
 
@@ -67,6 +68,14 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
                 val listener = listener
                 if (itemData != null && listener != null) {
                     listener.downloadMagnet(itemData)
+                }
+            }
+
+            downloadBtn.setOnClickListener {
+                val itemData = itemData
+                val listener = listener
+                if (itemData != null && listener != null) {
+                    listener.downloadTorrent(itemData)
                 }
             }
         }
@@ -106,6 +115,7 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
     interface ItemClickedListener {
         fun itemClicked(item: NyaaReleasePreview)
         fun downloadMagnet(item: NyaaReleasePreview)
+        fun downloadTorrent(item: NyaaReleasePreview)
     }
 }
 

@@ -93,6 +93,7 @@
                 style="@style/Theme.Nyaasi.ReleaseActionButton" />
 
             <ImageButton
+                android:id="@+id/download_btn"
                 android:src="@drawable/ic_outline_download_24"
                 style="@style/Theme.Nyaasi.ReleaseActionButton" />
         </LinearLayout>

@@ -102,6 +102,10 @@ open class ViewedReleasesFragment : Fragment() {
             override fun downloadMagnet(item: NyaaReleasePreview) {
                 AppUtils.openMagnetLink(fragmentView.context, item, fragmentView)
             }
+
+            override fun downloadTorrent(item: NyaaReleasePreview) {
+                AppUtils.enqueueDownload(fragmentView.context, item.id, fragmentView)
+            }
         }
 
         return fragmentView

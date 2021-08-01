@@ -78,6 +78,10 @@ class NyaaSearchActivity : AppCompatActivity() {
             override fun downloadMagnet(item: NyaaReleasePreview) {
                 AppUtils.openMagnetLink(this@NyaaSearchActivity, item, resultsList)
             }
+
+            override fun downloadTorrent(item: NyaaReleasePreview) {
+                AppUtils.enqueueDownload(this@NyaaSearchActivity, item.id, resultsList)
+            }
         }
         // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
         resultsAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
