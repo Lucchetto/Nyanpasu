@@ -29,7 +29,7 @@ class NyaaSearchActivity : AppCompatActivity() {
     private val storagePermissionGuard = createPermissionRequestLauncher {
         waitingDownload?.let { releaseId ->
             if (it) {
-                AppUtils.enqueueDownload(this, releaseId, activityRoot)
+                AppUtils.enqueueDownload(releaseId, activityRoot)
             } else {
                 AppUtils.storagePermissionForDownloadDenied(activityRoot)
             }
@@ -92,12 +92,12 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
 
             override fun downloadMagnet(item: NyaaReleasePreview) {
-                AppUtils.openMagnetLink(this@NyaaSearchActivity, item, activityRoot)
+                AppUtils.openMagnetLink(item, activityRoot)
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
                 AppUtils.guardDownloadPermission(this@NyaaSearchActivity, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(this@NyaaSearchActivity, item.id, activityRoot)
+                    AppUtils.enqueueDownload(item.id, activityRoot)
                 }, {
                     waitingDownload = item.id
                 })

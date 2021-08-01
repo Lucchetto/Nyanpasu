@@ -38,7 +38,7 @@ class BrowseFragment : Fragment() {
     private val storagePermissionGuard = createPermissionRequestLauncher {
         waitingDownload?.let { releaseId ->
             if (it) {
-                AppUtils.enqueueDownload(fragmentView.context, releaseId, fragmentView, searchBtn)
+                AppUtils.enqueueDownload(releaseId, fragmentView, searchBtn)
             } else {
                 storagePermissionForDownloadDenied(fragmentView, searchBtn)
             }
@@ -97,12 +97,12 @@ class BrowseFragment : Fragment() {
             }
 
             override fun downloadMagnet(item: NyaaReleasePreview) {
-                AppUtils.openMagnetLink(fragmentView.context, item, fragmentView, searchBtn)
+                AppUtils.openMagnetLink(item, fragmentView, searchBtn)
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
                 guardDownloadPermission(fragmentView.context, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(fragmentView.context, item.id, fragmentView, searchBtn)
+                    AppUtils.enqueueDownload(item.id, fragmentView, searchBtn)
                 }, {
                     waitingDownload = item.id
                 })

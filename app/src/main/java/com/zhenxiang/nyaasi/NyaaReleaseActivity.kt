@@ -51,7 +51,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private val storagePermissionGuard = createPermissionRequestLauncher {
         waitingDownload?.let { releaseId ->
             if (it) {
-                AppUtils.enqueueDownload(this, releaseId, scrollRoot)
+                AppUtils.enqueueDownload(releaseId, scrollRoot)
             } else {
                 AppUtils.storagePermissionForDownloadDenied(scrollRoot)
             }
@@ -98,13 +98,13 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val magnetBtn = findViewById<View>(R.id.magnet_btn)
             magnetBtn.setOnClickListener { _ ->
-                AppUtils.openMagnetLink(this, it, scrollRoot)
+                AppUtils.openMagnetLink(it, scrollRoot)
             }
 
             val downloadBtn = findViewById<View>(R.id.download_btn)
             downloadBtn.setOnClickListener { _ ->
                 AppUtils.guardDownloadPermission(this, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(this, it.id, scrollRoot)
+                    AppUtils.enqueueDownload(it.id, scrollRoot)
                 }, {
                     waitingDownload = it.id
                 })

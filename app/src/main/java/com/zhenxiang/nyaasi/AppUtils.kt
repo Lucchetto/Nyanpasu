@@ -31,9 +31,9 @@ class AppUtils {
             }
         }
 
-        fun openMagnetLink(context: Context, item: NyaaReleasePreview, parentView: View, anchorView: View? = null) {
+        fun openMagnetLink(item: NyaaReleasePreview, parentView: View, anchorView: View? = null) {
             try {
-                context.startActivity(
+                parentView.context.startActivity(
                     Intent(Intent.ACTION_VIEW, Uri.parse(item.magnet))
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 )
@@ -82,9 +82,9 @@ class AppUtils {
             snackbar.show()
         }
 
-        fun enqueueDownload(context: Context, releaseId: Int, parentView: View, anchorView: View? = null): Long? {
+        fun enqueueDownload(releaseId: Int, parentView: View, anchorView: View? = null): Long? {
             return try {
-                val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                val manager = parentView.context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 val uri = Uri.parse("http://nyaa.si/download/$releaseId.torrent")
                 val request = DownloadManager.Request(uri)
                 request.setVisibleInDownloadsUi(true)
