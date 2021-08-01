@@ -15,10 +15,12 @@ import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.recyclerview.widget.ConcatAdapter
 import com.zhenxiang.nyaasi.*
+import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
+import com.zhenxiang.nyaasi.AppUtils.Companion.guardDownloadPermission
+import com.zhenxiang.nyaasi.AppUtils.Companion.storagePermissionForDownloadDenied
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.util.FooterAdapter
-
 
 /**
  * A simple [Fragment] subclass.
@@ -28,6 +30,21 @@ import com.zhenxiang.nyaasi.util.FooterAdapter
 class BrowseFragment : Fragment() {
 
     private lateinit var browseViewModel: NyaaBrowseViewModel
+
+    private lateinit var fragmentView: View
+    private lateinit var searchBtn: ExtendedFloatingActionButton
+
+    private var waitingDownload: Int? = null
+    private val storagePermissionGuard = createPermissionRequestLauncher {
+        waitingDownload?.let { releaseId ->
+            if (it) {
+                AppUtils.enqueueDownload(fragmentView.context, releaseId, fragmentView, searchBtn)
+            } else {
+                storagePermissionForDownloadDenied(fragmentView, searchBtn)
+            }
+        }
+        waitingDownload = null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +61,9 @@ class BrowseFragment : Fragment() {
     ): View? {
 
         // Inflate the layout for this fragment
-        val fragmentView = inflater.inflate(R.layout.fragment_browse, container, false)
+        fragmentView = inflater.inflate(R.layout.fragment_browse, container, false)
 
-        val searchBtn = fragmentView.findViewById<ExtendedFloatingActionButton>(R.id.search_btn)
+        searchBtn = fragmentView.findViewById<ExtendedFloatingActionButton>(R.id.search_btn)
         searchBtn.setOnClickListener {
             openNyaaSearch()
         }
@@ -84,7 +101,11 @@ class BrowseFragment : Fragment() {
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
-                AppUtils.enqueueDownload(fragmentView.context, item.id, fragmentView, searchBtn)
+                guardDownloadPermission(fragmentView.context, storagePermissionGuard, {
+                    AppUtils.enqueueDownload(fragmentView.context, item.id, fragmentView, searchBtn)
+                }, {
+                    waitingDownload = item.id
+                })
             }
         }
         // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed

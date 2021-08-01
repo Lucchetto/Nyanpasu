@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
 import com.revengeos.revengeui.utils.NavigationModeUtils
+import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
@@ -23,7 +24,6 @@ import com.zhenxiang.nyaasi.db.NyaaReleaseDetails
 import com.zhenxiang.nyaasi.fragment.ReleaseTrackerBottomFragment
 import com.zhenxiang.nyaasi.fragment.ReleaseTrackerFragmentSharedViewModel
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
-import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaasi.view.ReleaseDataItemView
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +38,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
     private val TAG = javaClass.name
 
+    private lateinit var scrollRoot: NestedScrollView
     private lateinit var markdownView: MarkdownView
     private lateinit var submitter: TextView
     private lateinit var manageTrackerBtn: Button
@@ -46,12 +47,24 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private lateinit var releaseTrackerFragmentSharedViewModel: ReleaseTrackerFragmentSharedViewModel
     private var latestRelease: NyaaReleasePreview? = null
 
+    private var waitingDownload: Int? = null
+    private val storagePermissionGuard = createPermissionRequestLauncher {
+        waitingDownload?.let { releaseId ->
+            if (it) {
+                AppUtils.enqueueDownload(this, releaseId, scrollRoot)
+            } else {
+                AppUtils.storagePermissionForDownloadDenied(scrollRoot)
+            }
+        }
+        waitingDownload = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nyaa_release)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val scrollRoot = findViewById<NestedScrollView>(R.id.scroll_root)
+        scrollRoot = findViewById(R.id.scroll_root)
         scrollRoot.isNestedScrollingEnabled = false
         scrollRoot.applyInsetter {
             type(navigationBars = !NavigationModeUtils.isFullGestures(scrollRoot.context), statusBars = true) {
@@ -90,7 +103,11 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val downloadBtn = findViewById<View>(R.id.download_btn)
             downloadBtn.setOnClickListener { _ ->
-                AppUtils.enqueueDownload(this, it.id, scrollRoot)
+                AppUtils.guardDownloadPermission(this, storagePermissionGuard, {
+                    AppUtils.enqueueDownload(this, it.id, scrollRoot)
+                }, {
+                    waitingDownload = it.id
+                })
             }
 
             val category = findViewById<TextView>(R.id.category)

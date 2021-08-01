@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.*
+import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaasi.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.widget.ReleaseItemAnimator
@@ -25,6 +25,20 @@ open class ViewedReleasesFragment : Fragment() {
     //private lateinit var searchBtn: ExtendedFloatingActionButton
     lateinit var localNyaaDbViewModel: LocalNyaaDbViewModel
 
+    private lateinit var fragmentView: View
+
+    private var waitingDownload: Int? = null
+    private val storagePermissionGuard = createPermissionRequestLauncher {
+        waitingDownload?.let { releaseId ->
+            if (it) {
+                AppUtils.enqueueDownload(fragmentView.context, releaseId, fragmentView)
+            } else {
+                AppUtils.storagePermissionForDownloadDenied(fragmentView)
+            }
+        }
+        waitingDownload = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -34,7 +48,7 @@ open class ViewedReleasesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val fragmentView = inflater.inflate(R.layout.fragment_viewed_releases, container, false)
+        fragmentView = inflater.inflate(R.layout.fragment_viewed_releases, container, false)
         /*toolbar = fragmentView.findViewById(R.id.toolbar)
         toolbar.setTitle(getTitleRes())
         searchBar = fragmentView.findViewById(R.id.search_bar)
@@ -104,7 +118,11 @@ open class ViewedReleasesFragment : Fragment() {
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
-                AppUtils.enqueueDownload(fragmentView.context, item.id, fragmentView)
+                AppUtils.guardDownloadPermission(fragmentView.context, storagePermissionGuard, {
+                    AppUtils.enqueueDownload(fragmentView.context, item.id, fragmentView)
+                }, {
+                    waitingDownload = item.id
+                })
             }
         }
 

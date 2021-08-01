@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
+import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
@@ -23,11 +24,26 @@ class NyaaSearchActivity : AppCompatActivity() {
 
     private lateinit var searchViewModel: NyaaSearchViewModel
 
+    private lateinit var activityRoot: View
+    private var waitingDownload: Int? = null
+    private val storagePermissionGuard = createPermissionRequestLauncher {
+        waitingDownload?.let { releaseId ->
+            if (it) {
+                AppUtils.enqueueDownload(this, releaseId, activityRoot)
+            } else {
+                AppUtils.storagePermissionForDownloadDenied(activityRoot)
+            }
+        }
+        waitingDownload = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nyaa_search)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        activityRoot = findViewById(R.id.search_activity_root)
 
         val searchBar = findViewById<SearchView>(R.id.search_bar)
         searchBar.requestFocus()
@@ -76,11 +92,15 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
 
             override fun downloadMagnet(item: NyaaReleasePreview) {
-                AppUtils.openMagnetLink(this@NyaaSearchActivity, item, resultsList)
+                AppUtils.openMagnetLink(this@NyaaSearchActivity, item, activityRoot)
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
-                AppUtils.enqueueDownload(this@NyaaSearchActivity, item.id, resultsList)
+                AppUtils.guardDownloadPermission(this@NyaaSearchActivity, storagePermissionGuard, {
+                    AppUtils.enqueueDownload(this@NyaaSearchActivity, item.id, activityRoot)
+                }, {
+                    waitingDownload = item.id
+                })
             }
         }
         // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
@@ -109,7 +129,6 @@ class NyaaSearchActivity : AppCompatActivity() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-
         }
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
