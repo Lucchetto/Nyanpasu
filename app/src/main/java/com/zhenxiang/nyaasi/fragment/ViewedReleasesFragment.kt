@@ -31,9 +31,9 @@ open class ViewedReleasesFragment : Fragment() {
     private val storagePermissionGuard = createPermissionRequestLauncher {
         waitingDownload?.let { releaseId ->
             if (it) {
-                AppUtils.enqueueDownload(releaseId, fragmentView)
+                AppUtils.enqueueDownload(releaseId, fragmentView, parentSearchBtn())
             } else {
-                AppUtils.storagePermissionForDownloadDenied(fragmentView)
+                AppUtils.storagePermissionForDownloadDenied(fragmentView, parentSearchBtn())
             }
         }
         waitingDownload = null
@@ -114,12 +114,12 @@ open class ViewedReleasesFragment : Fragment() {
             }
 
             override fun downloadMagnet(item: NyaaReleasePreview) {
-                AppUtils.openMagnetLink(item, fragmentView)
+                AppUtils.openMagnetLink(item, fragmentView, parentSearchBtn())
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
                 AppUtils.guardDownloadPermission(fragmentView.context, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(item.id, fragmentView)
+                    AppUtils.enqueueDownload(item.id, fragmentView, parentSearchBtn())
                 }, {
                     waitingDownload = item.id
                 })
@@ -128,6 +128,8 @@ open class ViewedReleasesFragment : Fragment() {
 
         return fragmentView
     }
+
+    private fun parentSearchBtn(): View? = activity?.findViewById(R.id.search_btn)
 
     open fun hasDelete(): Boolean {
         return true
