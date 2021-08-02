@@ -6,7 +6,6 @@ import androidx.room.*
 @Dao
 interface SubscribedTrackerDao {
 
-
     @Query("SELECT * FROM subscribedtracker WHERE username IS NOT NULL AND searchQuery IS NULL")
     fun getAllTrackedUsers(): List<SubscribedUser>
 
@@ -31,7 +30,7 @@ interface SubscribedTrackerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(release: SubscribedTracker)
 
-    @Query("UPDATE subscribedtracker SET lastReleaseTimestamp = :timestamp WHERE id = :id")
+    @Query("UPDATE subscribedtracker SET lastReleaseTimestamp = :timestamp, hasNewReleases = 1 WHERE id = :id")
     fun updateLatestTimestamp(id: Int, timestamp: Long)
 
     @Query("DELETE FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL")

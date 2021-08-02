@@ -10,7 +10,6 @@ import com.zhenxiang.nyaasi.NyaaApplication.Companion.RELEASE_TRACKER_CHANNEL_ID
 import com.zhenxiang.nyaasi.R
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.db.NyaaDb
-import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -22,25 +21,26 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
     private val RELEASE_TRACKER_NOTIF_ID = 1072
 
     private val subscribedUsersDao = NyaaDb(appContext).subscribedTrackersDao()
-    private val newReleasesDao = NyaaDb(appContext).newReleasesDao()
 
     override suspend fun doWork(): Result {
         val usersWithNewReleases = mutableListOf<SubscribedUser>()
         val newReleasesForSubscribedRelease = mutableListOf<SubscribedRelease>()
         withContext(Dispatchers.IO) {
             subscribedUsersDao.getAllTrackedUsers().forEach {
-                val newReleasesOfUser = getNewReleasesFromTracker(SubscribedTracker(it.id, username = it.username, lastReleaseTimestamp = it.lastReleaseTimestamp))
-                if (newReleasesOfUser.isNotEmpty()) {
+                val newLastestReleaseTimestamp = getServerLatestReleaseTimestamp(SubscribedTracker(it.id, username = it.username, lastReleaseTimestamp = it.lastReleaseTimestamp))
+                if (newLastestReleaseTimestamp > it.lastReleaseTimestamp) {
+                    subscribedUsersDao.updateLatestTimestamp(it.id, newLastestReleaseTimestamp)
+                    it.lastReleaseTimestamp = newLastestReleaseTimestamp
                     usersWithNewReleases.add(it)
-                    subscribedUsersDao.updateLatestTimestamp(it.id, newReleasesOfUser[0].timestamp)
                 }
             }
 
             subscribedUsersDao.getAllTrackedReleases().forEach {
-                val newReleases = getNewReleasesFromTracker(SubscribedTracker(it.id, username = it.username, searchQuery = it.searchQuery, lastReleaseTimestamp = it.lastReleaseTimestamp))
-                if (newReleases.isNotEmpty()) {
+                val newLastestReleaseTimestamp = getServerLatestReleaseTimestamp(SubscribedTracker(it.id, username = it.username, searchQuery = it.searchQuery, lastReleaseTimestamp = it.latestReleaseTimestamp))
+                if (newLastestReleaseTimestamp > it.latestReleaseTimestamp) {
+                    subscribedUsersDao.updateLatestTimestamp(it.id, newLastestReleaseTimestamp)
+                    it.latestReleaseTimestamp = newLastestReleaseTimestamp
                     newReleasesForSubscribedRelease.add(it)
-                    subscribedUsersDao.updateLatestTimestamp(it.id, newReleases[0].timestamp)
                 }
             }
         }
@@ -98,28 +98,12 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
         }
     }
 
-    private suspend fun getNewReleasesFromTracker(tracker: SubscribedTracker): MutableList<NyaaReleasePreview> {
-        val newReleases = mutableListOf<NyaaReleasePreview>()
-        var pageIndex = 0
-        while(true) {
-            // Parse pages until we hit null or empty page
-            val releases = NyaaPageProvider.getPageItems(pageIndex, user = tracker.username, searchQuery = tracker.searchQuery)
-            if (releases == null || releases.isEmpty()) {
-                return newReleases
-            } else {
-                releases.forEach {
-                    // If release timestamp is smaller or equal than lastReleaseTimestamp
-                    // we've hit a release than the last one saved in tracker,
-                    // so let's exit and call it a day
-                    if (tracker.lastReleaseTimestamp >= it.timestamp) {
-                        return newReleases
-                    } else {
-                        newReleases.add(it)
-                        newReleasesDao.insertAll(NewRelease(it.id, tracker.id))
-                    }
-                }
-            }
-            pageIndex ++
+    private suspend fun getServerLatestReleaseTimestamp(tracker: SubscribedTracker): Long {
+        val releases = NyaaPageProvider.getPageItems(0, user = tracker.username, searchQuery = tracker.searchQuery)
+        return if (releases.isNullOrEmpty()) {
+            -1
+        } else {
+            releases[0].timestamp
         }
     }
 
