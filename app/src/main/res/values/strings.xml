@@ -5,6 +5,8 @@
     <string name="cancel">Close</string>
     <string name="grant_permission">Grant</string>
     <string name="permission_denied_hint">Grant storage permission to download</string>
+    <string name="cannot_download_release_hint">Can\'t download the selected release</string>
+    <string name="no_magnet_supported_app_installed">No installed application can handle magnet links</string>
 
     <string name="recently_viewed_fragment_bottom_nav">Recents</string>
     <string name="recently_viewed_fragment_title">Recently viewed</string>

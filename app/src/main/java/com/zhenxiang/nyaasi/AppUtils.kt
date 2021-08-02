@@ -1,7 +1,6 @@
 package com.zhenxiang.nyaasi
 
 import android.Manifest
-import android.R
 import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -38,7 +37,7 @@ class AppUtils {
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 )
             } catch (e: ActivityNotFoundException) {
-                val snack = Snackbar.make(parentView, "No installed application can handle magnet links", Snackbar.LENGTH_SHORT)
+                val snack = Snackbar.make(parentView, R.string.no_magnet_supported_app_installed, Snackbar.LENGTH_SHORT)
                 anchorView?.let {
                     snack.anchorView = it
                 }
@@ -67,11 +66,11 @@ class AppUtils {
         }
 
         fun storagePermissionForDownloadDenied(parentView: View, anchorView: View? = null) {
-            val snackbar = Snackbar.make(parentView, com.zhenxiang.nyaasi.R.string.permission_denied_hint, Snackbar.LENGTH_SHORT)
+            val snackbar = Snackbar.make(parentView, R.string.permission_denied_hint, Snackbar.LENGTH_SHORT)
             anchorView?.let {
                 snackbar.anchorView = it
             }
-            snackbar.setAction(com.zhenxiang.nyaasi.R.string.grant_permission) { _ ->
+            snackbar.setAction(R.string.grant_permission) { _ ->
                 parentView.context.startActivity(
                     Intent(
                         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -92,7 +91,7 @@ class AppUtils {
                 request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, uri.lastPathSegment)
                 manager.enqueue(request)
             } catch (e: Exception) {
-                val snack = Snackbar.make(parentView, "Can't download the selected release", Snackbar.LENGTH_SHORT)
+                val snack = Snackbar.make(parentView, R.string.cannot_download_release_hint, Snackbar.LENGTH_SHORT)
                 anchorView?.let {
                     snack.anchorView = it
                 }
@@ -104,7 +103,7 @@ class AppUtils {
         fun getNyaaCategoriesSpinner(context: Context): ArrayAdapter<String> {
             return ArrayAdapter(
                 context,
-                R.layout.simple_list_item_1,
+                android.R.layout.simple_list_item_1,
                 NyaaReleaseCategory.values().map { context.getString(it.stringResId) }
             )
         }
