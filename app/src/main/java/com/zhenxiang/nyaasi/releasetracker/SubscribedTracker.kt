@@ -10,20 +10,17 @@ data class SubscribedTracker(
     val username: String? = null,
     val searchQuery: String? = null,
     var lastReleaseTimestamp: Long,
-    val hasNewReleases: Boolean = false,
 ): Serializable
 
 data class SubscribedUser(
     val id: Int,
     val username: String,
     var lastReleaseTimestamp: Long,
-    val hasNewReleases: Boolean = false,
 )
 
 data class SubscribedRelease(
     val id: Int,
     val username: String? = null,
     val searchQuery: String,
-    var latestReleaseTimestamp: Long,
-    val hasNewReleases: Boolean = false,
+    var lastReleaseTimestamp: Long,
 )
