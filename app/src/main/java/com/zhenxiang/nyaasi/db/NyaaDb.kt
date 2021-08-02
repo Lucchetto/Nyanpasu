@@ -10,12 +10,13 @@ import com.zhenxiang.nyaasi.releasetracker.NewReleaseDao
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTrackerDao
 
-@Database(entities = [NyaaReleasePreview::class, NyaaReleaseDetails::class,
+@Database(entities = [NyaaReleasePreview::class, NyaaReleaseDetails::class, NyaaSearchHistoryItem::class,
     ViewedNyaaRelease::class, SavedNyaaRelease::class, SubscribedTracker::class, NewRelease::class], version = 1)
 @TypeConverters(DateConverters::class)
 abstract class NyaaDb : RoomDatabase() {
     abstract fun nyaaReleasesPreviewDao(): NyaaReleasePreviewDao
     abstract fun nyaaReleasesDetailsDao(): NyaaReleaseDetailsDao
+    abstract fun nyaaSearchHistoryDao(): NyaaSearchHistoryDao
     abstract fun viewedNyaaReleasesDao(): ViewedNyaaReleaseDao
     abstract fun savedNyaaReleasesDao(): SavedNyaaReleaseDao
 

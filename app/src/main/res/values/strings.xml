@@ -2,6 +2,7 @@
     <string name="app_name">nyaa.si</string>
 
     <!-- Generic -->
+    <string name="search_hint">Search</string>
     <string name="cancel">Close</string>
     <string name="grant_permission">Grant</string>
     <string name="permission_denied_hint">Grant storage permission to download</string>

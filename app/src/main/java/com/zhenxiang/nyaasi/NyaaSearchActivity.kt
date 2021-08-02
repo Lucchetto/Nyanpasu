@@ -1,7 +1,11 @@
 package com.zhenxiang.nyaasi
 
+import android.app.SearchManager
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.SearchRecentSuggestions
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
@@ -17,12 +21,15 @@ import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
+import com.zhenxiang.nyaasi.db.NyaaSearchHistoryItem
+import com.zhenxiang.nyaasi.db.NyaaSearchHistoryViewModel
 import com.zhenxiang.nyaasi.util.FooterAdapter
 import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity() {
 
     private lateinit var searchViewModel: NyaaSearchViewModel
+    private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
 
     private lateinit var activityRoot: View
     private var waitingDownload: Int? = null
@@ -46,6 +53,7 @@ class NyaaSearchActivity : AppCompatActivity() {
         activityRoot = findViewById(R.id.search_activity_root)
 
         val searchBar = findViewById<SearchView>(R.id.search_bar)
+        searchBar.setSearchableInfo((getSystemService(Context.SEARCH_SERVICE) as SearchManager).getSearchableInfo(componentName))
         searchBar.requestFocus()
 
         val resultsList = findViewById<RecyclerView>(R.id.search_results)
@@ -57,8 +65,12 @@ class NyaaSearchActivity : AppCompatActivity() {
         val resultsAdapter = ReleasesListAdapter()
         val footerAdapter = FooterAdapter()
         searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
+        searchHistoryViewModel = ViewModelProvider(this).get(NyaaSearchHistoryViewModel::class.java)
+        searchHistoryViewModel.searchHistory.observe(this, {
+            Log.w("asdad", it.toString())
+        })
 
-        searchViewModel.searchResultsLiveData.observe(this,  {
+        searchViewModel.searchResultsLiveData.observe(this, {
             if (it.size > 0 && resultsList.visibility == View.GONE) {
                 resultsList.visibility = View.VISIBLE
                 val hintText = findViewById<View>(R.id.search_hint)
@@ -133,14 +145,17 @@ class NyaaSearchActivity : AppCompatActivity() {
 
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (resultsList.visibility == View.GONE) {
-                    resultsList.visibility = View.VISIBLE
-                    val hintText = findViewById<View>(R.id.search_hint)
-                    hintText.visibility = View.GONE
+                query?.let {
+                    if (resultsList.visibility == View.GONE) {
+                        resultsList.visibility = View.VISIBLE
+                        val hintText = findViewById<View>(R.id.search_hint)
+                        hintText.visibility = View.GONE
+                    }
+                    searchViewModel.setSearchText(it)
+                    searchViewModel.loadSearchResults()
+                    searchHistoryViewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))
+                    searchBar.clearFocus()
                 }
-                searchViewModel.setSearchText(query)
-                searchViewModel.loadSearchResults()
-                searchBar.clearFocus()
                 return true
             }
 
