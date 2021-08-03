@@ -43,6 +43,7 @@ class NyaaSearchHistoryViewModel(application: Application): AndroidViewModel(app
         val formattedItem = NyaaSearchHistoryItem(item.searchQuery.trim(), item.searchTimestamp)
         viewModelScope.launch(Dispatchers.IO) {
             dao.insert(formattedItem)
+            dao.deleteExcessiveRecents()
         }
     }
 }

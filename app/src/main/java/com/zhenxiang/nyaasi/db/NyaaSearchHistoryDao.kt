@@ -18,4 +18,7 @@ interface NyaaSearchHistoryDao {
 
     @Query("SELECT *, 0 AS _id FROM nyaasearchhistoryitem WHERE LOWER(searchQuery) LIKE LOWER(:query) ORDER BY searchTimestamp DESC")
     fun searchByQueryAsCursor(query: String): Cursor
+
+    @Query("DELETE FROM nyaasearchhistoryitem WHERE searchQuery NOT IN (SELECT searchQuery FROM nyaasearchhistoryitem ORDER BY searchTimestamp DESC LIMIT 25)")
+    fun deleteExcessiveRecents(): Int
 }
