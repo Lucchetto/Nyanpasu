@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaasi.db
 
 import android.app.Application
+import android.database.Cursor
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -13,7 +14,7 @@ class NyaaSearchHistoryViewModel(application: Application): AndroidViewModel(app
 
     val searchHistoryFilter = MutableLiveData<String>()
     // Source of data
-    private val preFilterSearchHistory = dao.getAll()
+    private val preFilterSearchHistory = dao.getAllLive()
 
     val searchHistory = Transformations.switchMap(searchHistoryFilter) { query ->
         if (query.isNullOrBlank()) {
@@ -28,6 +29,14 @@ class NyaaSearchHistoryViewModel(application: Application): AndroidViewModel(app
     init {
         // Required to emit value for searchHistory on start
         searchHistoryFilter.value = null
+    }
+
+    suspend fun getSearchCursor(query: String? = null): Cursor {
+        return if (query.isNullOrBlank()) {
+            dao.getAllAsCursor()
+        } else {
+            dao.searchByQueryAsCursor(query)
+        }
     }
 
     fun insert(item: NyaaSearchHistoryItem) {

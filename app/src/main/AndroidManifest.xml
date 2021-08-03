@@ -28,6 +28,13 @@
             android:name=".NyaaSearchActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/search_history_config" />
         </activity>
         <activity
             android:name=".MainActivity"

@@ -7,12 +7,13 @@ import android.os.Bundle
 import android.provider.SearchRecentSuggestions
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
+import androidx.cursoradapter.widget.SimpleCursorAdapter
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,9 @@ import com.zhenxiang.nyaasi.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaasi.db.NyaaSearchHistoryViewModel
 import com.zhenxiang.nyaasi.util.FooterAdapter
 import dev.chrisbanes.insetter.applyInsetter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NyaaSearchActivity : AppCompatActivity() {
 
@@ -66,9 +70,6 @@ class NyaaSearchActivity : AppCompatActivity() {
         val footerAdapter = FooterAdapter()
         searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
         searchHistoryViewModel = ViewModelProvider(this).get(NyaaSearchHistoryViewModel::class.java)
-        searchHistoryViewModel.searchHistory.observe(this, {
-            Log.w("asdad", it.toString())
-        })
 
         searchViewModel.searchResultsLiveData.observe(this, {
             if (it.size > 0 && resultsList.visibility == View.GONE) {
@@ -82,6 +83,42 @@ class NyaaSearchActivity : AppCompatActivity() {
         })
         if (savedInstanceState == null) {
             searchViewModel.setSearchText(null)
+        }
+
+        /*val searchSuggestionsAdapter = SimpleCursorAdapter(searchBar.context, android.R.layout.simple_list_item_1, null, arrayOf("searchQuery"), intArrayOf(android.R.id.text1), CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val newCursor = searchHistoryViewModel.getSearchCursor()
+            withContext(Dispatchers.Main) {
+                searchSuggestionsAdapter.changeCursor(newCursor)
+            }
+        }
+        searchBar.suggestionsAdapter = searchSuggestionsAdapter
+        searchBar.setOnSuggestionListener(object: SearchView.OnSuggestionListener {
+            override fun onSuggestionSelect(position: Int): Boolean {
+                return true
+            }
+
+            override fun onSuggestionClick(position: Int): Boolean {
+                return false
+            }
+
+        })*/
+        val suggestionsAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
+        searchHistoryViewModel.searchHistory.observe(this, {
+            suggestionsAdapter.clear()
+            suggestionsAdapter.addAll(it.map { item -> item.searchQuery })
+        })
+        val searchBarTextField = searchBar.findViewById<AutoCompleteTextView>(androidx.appcompat.R.id.search_src_text)
+        searchBarTextField.threshold = 0
+        searchBarTextField.setAdapter(suggestionsAdapter)
+        searchBarTextField.setOnItemClickListener { parent, view, position, id ->
+            searchBar.setQuery(suggestionsAdapter.getItem(position), true)
+        }
+
+        searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                //searchBar.suggestionsAdapter = searchSuggestionsAdapter
+            }
         }
 
         val listLayoutManager = LinearLayoutManager(this)
@@ -160,6 +197,13 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                /*lifecycleScope.launch(Dispatchers.IO) {
+                    Log.w("asdsasd", newText.toString())
+                    val newCursor = searchHistoryViewModel.getSearchCursor(newText)
+                    withContext(Dispatchers.Main) {
+                        //searchBar.suggestionsAdapter = SimpleCursorAdapter(searchBar.context, android.R.layout.simple_list_item_1, newCursor, arrayOf("searchQuery"), intArrayOf(android.R.id.text1), CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
+                    }
+                }*/
                 return false
             }
 

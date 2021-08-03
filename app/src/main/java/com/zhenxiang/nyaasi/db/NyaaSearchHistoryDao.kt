@@ -1,5 +1,6 @@
 package com.zhenxiang.nyaasi.db
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
@@ -10,5 +11,11 @@ interface NyaaSearchHistoryDao {
     fun insert(item: NyaaSearchHistoryItem)
 
     @Query("SELECT * FROM nyaasearchhistoryitem ORDER BY searchTimestamp DESC")
-    fun getAll(): LiveData<List<NyaaSearchHistoryItem>>
+    fun getAllLive(): LiveData<List<NyaaSearchHistoryItem>>
+
+    @Query("SELECT *, 0 AS _id FROM nyaasearchhistoryitem ORDER BY searchTimestamp DESC")
+    fun getAllAsCursor(): Cursor
+
+    @Query("SELECT *, 0 AS _id FROM nyaasearchhistoryitem WHERE LOWER(searchQuery) LIKE LOWER(:query) ORDER BY searchTimestamp DESC")
+    fun searchByQueryAsCursor(query: String): Cursor
 }
