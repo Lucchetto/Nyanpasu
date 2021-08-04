@@ -1,5 +1,6 @@
 package com.zhenxiang.nyaasi
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zhenxiang.nyaasi.fragment.BrowseFragment
 import com.zhenxiang.nyaasi.fragment.LibraryFragment
 import com.zhenxiang.nyaasi.fragment.ReleasesTrackerFragment
+import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerBgWorker
 import dev.chrisbanes.insetter.applyInsetter
 
 class MainActivity : AppCompatActivity() {
@@ -77,6 +79,8 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        handleIntent(intent)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -87,6 +91,11 @@ class MainActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         bottomNav.selectedItemId = savedInstanceState.getInt("selectedTab")
         super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
     }
 
     private fun setupFragment(fragment : Fragment, title : String) : Fragment {
@@ -100,6 +109,13 @@ class MainActivity : AppCompatActivity() {
             activeFragment?.let { transaction.hide(it) }
             transaction.show(newFragment).commit()
             activeFragment = newFragment
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (intent.hasExtra(ReleaseTrackerBgWorker.MAIN_ACTIVITY_BOTTOM_NAV_SELECTED_ID)) {
+            val itemId = intent.getIntExtra(ReleaseTrackerBgWorker.MAIN_ACTIVITY_BOTTOM_NAV_SELECTED_ID, -1)
+            bottomNav.selectedItemId = itemId
         }
     }
 }

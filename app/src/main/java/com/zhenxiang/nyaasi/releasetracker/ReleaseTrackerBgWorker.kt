@@ -13,6 +13,14 @@ import com.zhenxiang.nyaasi.db.NyaaDb
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import android.app.PendingIntent
+
+import com.zhenxiang.nyaasi.MainActivity
+
+import android.content.Intent
+
+
+
 
 class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters):
     CoroutineWorker(appContext, workerParams) {
@@ -82,10 +90,20 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
     }
 
     private fun generateNotif(id: Int, content: String, expandedText: String? = null) {
+        val activityIntent = Intent(applicationContext, MainActivity::class.java)
+        // Select releases tracker tab in bottom nav
+        activityIntent.putExtra(MAIN_ACTIVITY_BOTTOM_NAV_SELECTED_ID, R.id.subscribedUsers)
         val notificationBuilder = NotificationCompat.Builder(applicationContext, RELEASE_TRACKER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_magnet)
             .setContentTitle(applicationContext.getString(R.string.release_tracker_notif_name))
             .setContentText(content)
+            .setContentIntent(
+                PendingIntent.getActivity(
+                    applicationContext,
+                    0,
+                    activityIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                ))
             .setAutoCancel(true)
 
         expandedText?.let {
@@ -125,5 +143,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
 
     companion object {
         const val WORK_NAME = "releaseTrackerWork"
+
+        const val MAIN_ACTIVITY_BOTTOM_NAV_SELECTED_ID = "selectedItemId"
     }
 }
