@@ -4,16 +4,12 @@ import android.app.SearchManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.SearchRecentSuggestions
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
-import androidx.cursoradapter.widget.SimpleCursorAdapter
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,9 +22,6 @@ import com.zhenxiang.nyaasi.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaasi.db.NyaaSearchHistoryViewModel
 import com.zhenxiang.nyaasi.util.FooterAdapter
 import dev.chrisbanes.insetter.applyInsetter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class NyaaSearchActivity : AppCompatActivity() {
 
@@ -79,7 +72,7 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
             // Hax until we handle livedata properly
             resultsAdapter.setItems(it.toList())
-            footerAdapter.showLoading(!searchViewModel.isBottomReached())
+            footerAdapter.showLoading(!searchViewModel.endReached())
         })
         if (savedInstanceState == null) {
             searchViewModel.setSearchText(null)

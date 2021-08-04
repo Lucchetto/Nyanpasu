@@ -73,7 +73,7 @@ class BrowseFragment : Fragment() {
         browseViewModel.itemsLiveData.observe(viewLifecycleOwner,  {
             // Hax until we handle livedata properly
             releasesListAdapter.setItems(it.toList())
-            footerAdapter.showLoading(!browseViewModel.isBottomReached())
+            footerAdapter.showLoading(!browseViewModel.endReached())
         })
 
         val releasesList = fragmentView.findViewById<RecyclerView>(R.id.releases_list)

@@ -1,6 +1,5 @@
 package com.zhenxiang.nyaasi.api
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +24,7 @@ class NyaaSearchViewModel: ViewModel() {
     }
 
     fun loadMore() {
-        if (repository.items.size > 0 && !isBottomReached() && !busy) {
+        if (repository.items.size > 0 && !endReached() && !busy) {
             loadSearchResults()
         }
     }
@@ -48,5 +47,5 @@ class NyaaSearchViewModel: ViewModel() {
         this.repository.category = category
     }
 
-    fun isBottomReached() = this.repository.bottomReached
+    fun endReached() = this.repository.endReached
 }

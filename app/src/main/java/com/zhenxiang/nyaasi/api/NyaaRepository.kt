@@ -10,14 +10,14 @@ class NyaaRepository {
 
     val items = mutableListOf<NyaaReleasePreview>()
     private var pageIndex = 0
-    var bottomReached = false
+    var endReached = false
         private set
 
     var searchValue: String? = null
         set(value) {
             field = value
             clearRepo()
-            bottomReached = value == null || value.isEmpty()
+            endReached = value == null || value.isEmpty()
         }
 
     var category: NyaaReleaseCategory = NyaaReleaseCategory.ALL
@@ -25,24 +25,24 @@ class NyaaRepository {
     fun clearRepo() {
         pageIndex = 0
         items.clear()
-        bottomReached = false
+        endReached = false
     }
 
     suspend fun getLinks(): Boolean = withContext(Dispatchers.IO) {
-        if (!bottomReached) {
+        if (!endReached) {
             pageIndex++
             val newItems = NyaaPageProvider.getPageItems(pageIndex, category, searchValue)
             newItems?.let {
-                bottomReached = if (it.isNotEmpty()) {
-                    items.addAll(it)
+                items.addAll(it.items)
+                endReached = if (it.bottomReached) {
+                    true
+                } else {
                     // Prevent loading too many items in the repository
                     items.size > MAX_LOADABLE_ITEMS
-                } else {
-                    true
                 }
             }
         }
-        bottomReached
+        endReached
     }
 
     companion object {

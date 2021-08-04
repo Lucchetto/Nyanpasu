@@ -99,7 +99,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                         withContext(Dispatchers.Main) {
                             if (releases == null) {
                                 setStatus(Status.FAILED)
-                            } else if (releases.isEmpty()) {
+                            } else if (releases.items.isEmpty()) {
                                 setStatus(Status.VALIDATED_EMPTY)
                             } else {
                                 // Hax to hide keyboard
@@ -109,7 +109,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                                     getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                                 imm.hideSoftInputFromWindow(searchQueryInput.windowToken, 0)
 
-                                latestReleasesAdapter.setItems(releases)
+                                latestReleasesAdapter.setItems(releases.items)
                                 setStatus(Status.VALIDATED)
                             }
                         }

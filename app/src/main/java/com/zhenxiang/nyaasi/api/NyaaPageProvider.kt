@@ -6,7 +6,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.net.URLEncoder
-import java.util.*
+
+data class NyaaPageResults(val items: List<NyaaReleasePreview>, val bottomReached: Boolean)
 
 class NyaaPageProvider {
 
@@ -16,7 +17,7 @@ class NyaaPageProvider {
         suspend fun getPageItems(pageIndex: Int,
                                  category: NyaaReleaseCategory = NyaaReleaseCategory.ALL,
                                  searchQuery: String? = null,
-                                 user: String? = null): List<NyaaReleasePreview>? {
+                                 user: String? = null): NyaaPageResults? {
             var url = "https://nyaa.si/"
             if (!user.isNullOrBlank()) {
                 url += "user/$user"
@@ -30,8 +31,9 @@ class NyaaPageProvider {
             }
 
             val pageItems: Elements
+            val doc: Document
             try {
-                val doc: Document = Jsoup.connect(url).get()
+                doc = Jsoup.connect(url).get()
                  pageItems = doc.select("tr >td > a[href~=^\\/view\\/\\d+\$]")
             } catch (e: Exception) {
                 Log.e(TAG, "exception", e)
@@ -60,7 +62,8 @@ class NyaaPageProvider {
                     foundReleases.add(nyaaItem)
                 } catch (e: Exception) {}
             }
-            return foundReleases
+            val endReached = doc.selectFirst("ul.pagination") == null || doc.selectFirst("ul.pagination > li.next.disabled") != null
+            return NyaaPageResults(foundReleases, endReached)
         }
     }
 }

@@ -35,5 +35,6 @@ class FooterAdapter: RecyclerView.Adapter<FooterAdapter.ViewHolder>() {
 
     fun showLoading(loading: Boolean) {
         footer[0] = loading
+        notifyItemChanged(0)
     }
 }

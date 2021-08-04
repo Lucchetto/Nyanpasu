@@ -208,7 +208,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             latestRelease?.let {
             } ?: run {
                 latestRelease = NyaaPageProvider.getPageItems(
-                    0, user = details.user)?.getOrNull(0)
+                    0, user = details.user)?.items?.getOrNull(0)
             }
             val latestTimestamp = latestRelease?.let {
                 it.timestamp

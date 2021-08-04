@@ -122,10 +122,10 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
         while(true) {
             // Parse pages until we hit null or empty page
             val releases = NyaaPageProvider.getPageItems(pageIndex, user = tracker.username, searchQuery = tracker.searchQuery)
-            if (releases == null || releases.isEmpty()) {
+            if (releases == null || releases.items.isEmpty()) {
                 return newReleases
             } else {
-                releases.forEach {
+                releases.items.forEach {
                     // If release timestamp is smaller or equal than lastReleaseTimestamp
                     // we've hit a release than the last one saved in tracker,
                     // so let's exit and call it a day
