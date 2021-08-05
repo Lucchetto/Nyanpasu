@@ -51,7 +51,6 @@ class NyaaSearchActivity : AppCompatActivity() {
 
         val searchBar = findViewById<SearchView>(R.id.search_bar)
         searchBar.setSearchableInfo((getSystemService(Context.SEARCH_SERVICE) as SearchManager).getSearchableInfo(componentName))
-        searchBar.requestFocus()
 
         val resultsList = findViewById<RecyclerView>(R.id.search_results)
         findViewById<CoordinatorLayout>(R.id.search_activity_root).applyInsetter {
@@ -76,6 +75,7 @@ class NyaaSearchActivity : AppCompatActivity() {
         })
         if (savedInstanceState == null) {
             searchViewModel.setSearchText(null)
+            searchBar.requestFocus()
         }
 
         /*val searchSuggestionsAdapter = SimpleCursorAdapter(searchBar.context, android.R.layout.simple_list_item_1, null, arrayOf("searchQuery"), intArrayOf(android.R.id.text1), CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
@@ -108,11 +108,11 @@ class NyaaSearchActivity : AppCompatActivity() {
             searchBar.setQuery(suggestionsAdapter.getItem(position), true)
         }
 
-        searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
+        /*searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 //searchBar.suggestionsAdapter = searchSuggestionsAdapter
             }
-        }
+        }*/
 
         val listLayoutManager = LinearLayoutManager(this)
         resultsList.layoutManager = listLayoutManager
