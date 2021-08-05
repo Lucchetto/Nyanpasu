@@ -100,11 +100,13 @@ class AppUtils {
             }
         }
 
+        fun getNyaaCategoriesArray(context: Context) = NyaaReleaseCategory.values().map { context.getString(it.stringResId) }
+
         fun getNyaaCategoriesSpinner(context: Context): ArrayAdapter<String> {
             return ArrayAdapter(
                 context,
                 android.R.layout.simple_list_item_1,
-                NyaaReleaseCategory.values().map { context.getString(it.stringResId) }
+                getNyaaCategoriesArray(context)
             )
         }
     }

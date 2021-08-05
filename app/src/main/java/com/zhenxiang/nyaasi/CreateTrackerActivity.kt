@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
@@ -13,9 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
-import com.zhenxiang.nyaasi.db.NyaaReleasePreview
+import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +44,7 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var loading: View
     private lateinit var latestReleasesList: RecyclerView
 
+    private var selectedCategoryIndex = -1
     private var currentStatus = Status.TO_VALIDATE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,12 +69,28 @@ class CreateTrackerActivity : AppCompatActivity() {
         createBtn = findViewById(R.id.create_btn)
         val searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
         val usernameInput = findViewById<TextInputEditText>(R.id.username_input)
+        val categories = AppUtils.getNyaaCategoriesArray(this)
+        val categoriesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.categories_selection)
+        // Hax to always show all items, we'll never reach that threshold so filter is never triggered
+        categoriesDropdown.threshold = Int.MAX_VALUE
+        categoriesDropdown.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_list_item_1,
+                categories
+            )
+        )
+
+        categoriesDropdown.setOnItemClickListener { _, _, position, _ ->
+            selectedCategoryIndex = position
+        }
+
+        // We'll saved and restore selectedCategoryIndex in bundle
+        if (savedInstanceState == null) {
+            categoriesDropdown.setText(categories[0], false)
+            selectedCategoryIndex = 0
+        }
 
         username?.let {
             usernameInput.setText(it)
-            searchQueryInput.requestFocus()
-        } ?: run {
-            usernameInput.requestFocus()
         }
 
         searchQueryInput.doOnTextChanged { text, start, before, count ->
@@ -80,6 +99,11 @@ class CreateTrackerActivity : AppCompatActivity() {
         }
 
         usernameInput.doOnTextChanged { text, start, before, count ->
+            createBtn.isEnabled = searchQueryInput.text?.isNotBlank() == true
+            setStatus(Status.TO_VALIDATE)
+        }
+
+        categoriesDropdown.doOnTextChanged { text, start, before, count ->
             createBtn.isEnabled = searchQueryInput.text?.isNotBlank() == true
             setStatus(Status.TO_VALIDATE)
         }
@@ -95,7 +119,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                             setStatus(Status.FAILED_ALREADY_EXISTS)
                         }
                     } ?: run {
-                        val releases = NyaaPageProvider.getPageItems(0, searchQuery = searchQuery, user = username)
+                        val releases = NyaaPageProvider.getPageItems(0, searchQuery = searchQuery, user = username, category = NyaaReleaseCategory.values()[selectedCategoryIndex])
                         withContext(Dispatchers.Main) {
                             if (releases == null) {
                                 setStatus(Status.FAILED)
@@ -105,6 +129,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                                 // Hax to hide keyboard
                                 searchQueryInput.clearFocus()
                                 usernameInput.clearFocus()
+                                categoriesDropdown.clearFocus()
                                 val imm: InputMethodManager =
                                     getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                                 imm.hideSoftInputFromWindow(searchQueryInput.windowToken, 0)
@@ -121,7 +146,8 @@ class CreateTrackerActivity : AppCompatActivity() {
                         val username = usernameInput.text.toString().trim()
                         val searchQuery = searchQueryInput.text.toString().trim()
                         val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,
-                            searchQuery = searchQuery, lastReleaseTimestamp = it.timestamp)
+                            searchQuery = searchQuery, lastReleaseTimestamp = it.timestamp,
+                            category = NyaaReleaseCategory.values()[selectedCategoryIndex])
                         releasesTrackerViewModel.addReleaseTracker(newTracker)
                         finish()
                     }
@@ -132,7 +158,8 @@ class CreateTrackerActivity : AppCompatActivity() {
                     val searchQuery = searchQueryInput.text.toString().trim()
                     // Current millis must be divided by 1000 since nyaa.si use seconds as unit
                     val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,
-                        searchQuery = searchQuery, lastReleaseTimestamp = System.currentTimeMillis() / 1000)
+                        searchQuery = searchQuery, lastReleaseTimestamp = System.currentTimeMillis() / 1000,
+                        category = NyaaReleaseCategory.values()[selectedCategoryIndex])
                     releasesTrackerViewModel.addReleaseTracker(newTracker)
                     finish()
                 }
@@ -148,13 +175,13 @@ class CreateTrackerActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         // Restore saved bundle
-        savedInstanceState?.let {
-            setStatus(it.getSerializable("currentState") as Status)
-        }
+        setStatus(savedInstanceState.getSerializable("currentState") as Status)
+        selectedCategoryIndex = savedInstanceState.getInt("selectedCategoryIndex")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable("currentState", currentStatus)
+        outState.putInt("selectedCategoryIndex", selectedCategoryIndex)
         super.onSaveInstanceState(outState)
     }
 
