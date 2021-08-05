@@ -75,7 +75,6 @@ class NyaaSearchActivity : AppCompatActivity() {
         })
         if (savedInstanceState == null) {
             searchViewModel.setSearchText(null)
-            searchBar.requestFocus()
         }
 
         /*val searchSuggestionsAdapter = SimpleCursorAdapter(searchBar.context, android.R.layout.simple_list_item_1, null, arrayOf("searchQuery"), intArrayOf(android.R.id.text1), CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
