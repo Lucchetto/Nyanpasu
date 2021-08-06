@@ -87,6 +87,7 @@ class CreateTrackerActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             categoriesDropdown.setText(categories[0], false)
             selectedCategoryIndex = 0
+            searchQueryInput.requestFocus()
         }
 
         username?.let {
