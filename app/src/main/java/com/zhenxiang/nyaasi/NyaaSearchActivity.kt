@@ -148,8 +148,10 @@ class NyaaSearchActivity : AppCompatActivity() {
         resultsAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-                if (!resultsList.canScrollVertically(-1)) {
+                // When items are inserted at the beginning and it's the first insert make sure we jump to the top
+                if (positionStart == 0 && searchViewModel.firstInsert) {
                     resultsList.scrollToPosition(0)
+                    searchViewModel.firstInsert = false
                 }
             }
         })

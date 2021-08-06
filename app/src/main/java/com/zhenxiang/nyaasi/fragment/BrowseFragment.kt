@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import android.content.Intent
+import android.util.Log
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.recyclerview.widget.ConcatAdapter
@@ -84,6 +85,7 @@ class BrowseFragment : Fragment() {
 
         releasesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                Log.w("asdasd", "asdasdsaidosadj")
                 super.onScrolled(recyclerView, dx, dy)
                 if (listLayoutManager.findLastVisibleItemPosition() == releasesListAdapter.itemCount - 1) {
                     browseViewModel.loadMore()
@@ -108,12 +110,13 @@ class BrowseFragment : Fragment() {
                 })
             }
         }
-        // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
         releasesListAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-                if (!releasesList.canScrollVertically(-1)) {
+                // When items are inserted at the beginning and it's the first insert make sure we jump to the top
+                if (positionStart == 0 && browseViewModel.firstInsert) {
                     releasesList.scrollToPosition(0)
+                    browseViewModel.firstInsert = false
                 }
             }
         })
