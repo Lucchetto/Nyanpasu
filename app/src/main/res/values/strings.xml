@@ -2,6 +2,8 @@
     <string name="app_name">nyaa.si</string>
 
     <!-- Generic -->
+    <string name="comma_word">, %1$s</string>
+    <string name="and_conjunction_word">\u0020and %1$s</string>
     <string name="search_hint">Search</string>
     <string name="cancel">Close</string>
     <string name="grant_permission">Grant</string>
@@ -52,14 +54,15 @@
     <string name="untrack_all_from_user_title">Untrack all from this user</string>
     <string name="untrack_all_from_user_desc">You won\'t get notified about new releases from this user anymore</string>
 
-    <string name="release_tracker_notif_name">Release tracker</string>
-    <string name="release_tracker_new_releases_from_user">New releases from %1$s</string>
-    <string name="release_tracker_new_releases">New releases available</string>
-    <string name="release_tracker_new_releases_expanded">New releases for:</string>
-    <string name="release_tracker_new_releases_line_no_username">- %1$s</string>
-    <string name="release_tracker_new_releases_line">- %1$s from %2$s</string>
-    <string name="comma_word">, %1$s</string>
-    <string name="and_conjunction_word">\u0020and %1$s</string>
+    <string name="release_tracker_notif_name">Release trackers</string>
+    <plurals name="release_tracker_notif_content">
+        <item quantity="one">New releases found for one tracker</item>
+        <item quantity="other">New releases found for %d trackers</item>
+    </plurals>
+    <string name="release_tracker_notif_expanded_content_first_line">New release found for</string>
+    <string name="release_tracker_new_releases_from_user">- User %1$s</string>
+    <string name="release_tracker_new_releases_only_search_query">- %1$s</string>
+    <string name="release_tracker_new_releases_from_user_with_search_query">- %1$s from user %2$s</string>
 
     <!-- Create tracker -->
     <string name="create">Create</string>

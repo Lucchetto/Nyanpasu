@@ -5,5 +5,5 @@ import com.zhenxiang.nyaasi.db.NyaaDb
 
 class ReleaseTrackerRepo(application: Application) {
 
-    val subscribedUsersDao = NyaaDb(application.applicationContext).subscribedTrackersDao()
+    val dao = NyaaDb(application.applicationContext).subscribedTrackersDao()
 }

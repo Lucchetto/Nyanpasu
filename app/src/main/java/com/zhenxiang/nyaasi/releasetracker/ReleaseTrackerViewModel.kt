@@ -10,7 +10,7 @@ class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(appli
     private val repo = ReleaseTrackerRepo(application)
 
     val subscribedTrackerSearch = MutableLiveData<String>()
-    private val preFilterSubscribedTrackers = repo.subscribedUsersDao.getAllTrackedReleasesLive()
+    private val preFilterSubscribedTrackers = repo.dao.getAllTrackersLive()
     val subscribedTrackers = Transformations.switchMap(subscribedTrackerSearch) { query ->
         if (query.isNullOrBlank()) {
             preFilterSubscribedTrackers
@@ -21,40 +21,27 @@ class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    val subscribedUserSearch = MutableLiveData<String>()
-    private val preFilterSubscribedUsers = repo.subscribedUsersDao.getAllTrackedUsersLive()
-    val subscribedUsers = Transformations.switchMap(subscribedUserSearch) { query ->
-        if (query.isNullOrBlank()) {
-            preFilterSubscribedUsers
-        } else {
-            Transformations.map(preFilterSubscribedUsers) {
-                it.filter { item -> item.username?.contains(query, true) == true }
-            }
-        }
-    }
-
     init {
         subscribedTrackerSearch.value = null
-        subscribedUserSearch.value = null
     }
 
     fun addReleaseTracker(tracker: SubscribedTracker) {
-        repo.subscribedUsersDao.insert(tracker)
+        repo.dao.insert(tracker)
     }
 
-    fun getTrackedByUsername(username: String): SubscribedUser? {
-        return repo.subscribedUsersDao.getByUsername(username)
+    fun getTrackedByUsername(username: String): SubscribedTracker? {
+        return repo.dao.getByUsername(username)
     }
 
-    fun getTrackedByUsernameAndQuery(username: String?, query: String): SubscribedRelease? {
+    fun getTrackedByUsernameAndQuery(username: String?, query: String): SubscribedTracker? {
         return if (username.isNullOrBlank()) {
-            repo.subscribedUsersDao.getByQueryWithNullUsername(query)
+            repo.dao.getByQueryWithNullUsername(query)
         } else {
-            repo.subscribedUsersDao.getByUsernameAndQuery(username, query)
+            repo.dao.getByUsernameAndQuery(username, query)
         }
     }
 
     fun deleteTrackedUser(username: String) {
-        repo.subscribedUsersDao.deleteByUsername(username)
+        repo.dao.deleteByUsername(username)
     }
 }
