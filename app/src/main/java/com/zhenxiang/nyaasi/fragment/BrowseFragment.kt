@@ -85,7 +85,6 @@ class BrowseFragment : Fragment() {
 
         releasesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                Log.w("asdasd", "asdasdsaidosadj")
                 super.onScrolled(recyclerView, dx, dy)
                 if (listLayoutManager.findLastVisibleItemPosition() == releasesListAdapter.itemCount - 1) {
                     browseViewModel.loadMore()
