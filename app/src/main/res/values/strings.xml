@@ -76,7 +76,9 @@
     <string name="latest_releases_found_title">Latest releases</string>
     <string name="search_query_title">Keywords</string>
 
-    <string name="user_title">From %1$s</string>
-    <string name="latest_release_on_title">Latest release on %1$s</string>
+    <string name="release_trackers_title">Release trackers</string>
+    <string name="tracker_all_releases_from_user">All releases from %1$s</string>
+    <string name="tracker_from_user">From user: %1$s</string>
+    <string name="tracker_latest_release">Latest release: %1$s</string>
 
 </resources>

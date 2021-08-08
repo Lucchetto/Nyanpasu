@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="@dimen/activity_insets"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="?selectableItemBackground"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/tracker_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/Style.Nyaasi.ReleasePreviewTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/latest_release_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Random file with very long name" />
+
+    <!-- hidden if null or for whole user trackers -->
+    <TextView
+        android:id="@+id/tracker_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tracker_title"
+        app:layout_constraintBottom_toTopOf="@id/tracker_username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"
+        tools:text="Category: Hentai" />
+
+    <!-- hidden if null or for whole user trackers -->
+    <TextView
+        android:id="@+id/tracker_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tracker_category"
+        app:layout_constraintBottom_toTopOf="@id/latest_release_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"
+        tools:text="From user: YourMum90" />
+
+    <TextView
+        android:id="@+id/latest_release_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tracker_username"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"
+        tools:text="Latest release: Today" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

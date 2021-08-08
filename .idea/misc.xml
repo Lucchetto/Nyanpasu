@@ -26,7 +26,7 @@
         <entry key="app/src/main/res/layout/loading_circle_footer.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/layout/release_data_item.xml" value="0.23641304347826086" />
         <entry key="app/src/main/res/layout/release_preview_item.xml" value="0.4275568181818182" />
-        <entry key="app/src/main/res/layout/release_tracker_item.xml" value="0.17395833333333333" />
+        <entry key="app/src/main/res/layout/release_tracker_item.xml" value="0.4" />
         <entry key="app/src/main/res/layout/subscribed_user_item.xml" value="0.33" />
         <entry key="app/src/main/res/menu/browse_toolbar_menu.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/menu/home_bottom_nav.xml" value="0.15677083333333333" />
