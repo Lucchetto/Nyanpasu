@@ -84,9 +84,8 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
             itemData = item
             //id.text = item.id.toString()
             title.text = item.name
-            releaseDate.text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
-                Date(item.timestamp * 1000)
-            )
+            releaseDate.text = releaseDate.context.getString(R.string.release_date,
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(item.timestamp * 1000)))
         }
     }
 

@@ -44,7 +44,7 @@
 
     <string name="release_category">Category: %1$s</string>
     <string name="release_submitter">Posted by %1$s</string>
-    <string name="release_date">Date: %1$s</string>
+    <string name="release_date">Release date: %1$s</string>
     <string name="submitter_null">Anonymous</string>
     <string name="manage_trackers_title">Manage tracker</string>
     <string name="add_tracker_title">Add tracker</string>
