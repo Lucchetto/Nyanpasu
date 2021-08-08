@@ -73,12 +73,6 @@
         <item name="android:textColor">?android:textColorTertiary</item>
     </style>
 
-    <style name="Style.Nyaasi.NewReleasesCounter" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
-
     <style name="Theme.Nyaasi.ReleaseActionButton">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
@@ -92,5 +86,19 @@
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:layout_marginEnd">10dp</item>
         <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="Style.Nyaasi.NewReleasesCounter"  parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">@dimen/new_releases_counter_text_size</item>
+        <item name="android:minWidth">@dimen/new_releases_counter_view_size</item>
+        <item name="android:layout_height">@dimen/new_releases_counter_view_size</item>
+        <item name="android:paddingTop">@dimen/new_releases_counter_top_padding</item>
+        <item name="android:paddingBottom">@dimen/new_releases_counter_bottom_padding</item>
+        <item name="android:paddingLeft">@dimen/new_releases_counter_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/new_releases_counter_horizontal_padding</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/new_releases_counter_bg</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 </resources>

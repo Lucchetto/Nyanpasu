@@ -2,4 +2,15 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="activity_insets">16dp</dimen>
     <dimen name="hint_text_max_width">320dp</dimen>
+
+    <dimen name="release_preview_item_first_btn_start_margin">12dp</dimen>
+
+    <dimen name="new_releases_counter_text_size">14sp</dimen>
+    <dimen name="new_releases_counter_horizontal_padding">5sp</dimen>
+    <!-- new_releases_counter_top_padding and new_releases_counter_bottom_padding should be slightly
+         different to compensate the font internal padding -->
+    <dimen name="new_releases_counter_top_padding">3sp</dimen>
+    <dimen name="new_releases_counter_bottom_padding">5sp</dimen>
+    <!-- should be new_releases_counter_text_size + new_releases_counter_horizontal_padding -->
+    <dimen name="new_releases_counter_view_size">22sp</dimen>
 </resources>

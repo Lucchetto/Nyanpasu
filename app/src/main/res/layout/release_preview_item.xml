@@ -40,7 +40,7 @@
         android:layout_height="0dp"
         android:src="@drawable/ic_magnet"
         android:background="?selectableItemBackgroundBorderless"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="@dimen/release_preview_item_first_btn_start_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/release_title"

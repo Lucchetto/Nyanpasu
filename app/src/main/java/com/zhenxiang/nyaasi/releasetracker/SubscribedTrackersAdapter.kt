@@ -11,13 +11,14 @@ import java.util.*
 
 class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapter.ViewHolder>() {
 
-    val users = mutableListOf<SubscribedTracker>()
+    private val users = mutableListOf<SubscribedTracker>()
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         private val title = view.findViewById<TextView>(R.id.tracker_title)
         private val category = view.findViewById<TextView>(R.id.tracker_category)
         private val username = view.findViewById<TextView>(R.id.tracker_username)
         private val latestRelease = view.findViewById<TextView>(R.id.latest_release_date)
+        private val newReleasesCounter = view.findViewById<TextView>(R.id.new_releases_counter)
 
         fun bind(tracker: SubscribedTracker) {
             category.text = category.context.getString(R.string.release_category,
@@ -26,6 +27,20 @@ class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapte
             latestRelease.text = latestRelease.context.getString(R.string.tracker_latest_release,
                 DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.lastReleaseTimestamp * 1000))
             )
+            when {
+                tracker.newReleasesCount < 1 -> {
+                    newReleasesCounter.text = null
+                    newReleasesCounter.visibility = View.GONE
+                }
+                tracker.newReleasesCount < 100 -> {
+                    newReleasesCounter.text = tracker.newReleasesCount.toString()
+                    newReleasesCounter.visibility = View.VISIBLE
+                }
+                tracker.newReleasesCount >= 100 -> {
+                    newReleasesCounter.text = "99+"
+                    newReleasesCounter.visibility = View.VISIBLE
+                }
+            }
 
             if (tracker.searchQuery != null) {
                 // First line the query

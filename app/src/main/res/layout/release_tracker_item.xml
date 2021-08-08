@@ -18,19 +18,18 @@
         style="@style/Style.Nyaasi.ReleasePreviewTitle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="@id/latest_release_date"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/new_releases_counter"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Random file with very long name" />
 
-    <!-- hidden if null or for whole user trackers -->
     <TextView
         android:id="@+id/tracker_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tracker_title"
         app:layout_constraintBottom_toTopOf="@id/tracker_username"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tracker_title"
+        app:layout_constraintStart_toStartOf="@id/tracker_title"
         app:layout_constraintHorizontal_bias="0"
         android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"
         tools:text="Category: Hentai" />
@@ -42,8 +41,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tracker_category"
         app:layout_constraintBottom_toTopOf="@id/latest_release_date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tracker_title"
+        app:layout_constraintStart_toStartOf="@id/tracker_title"
         app:layout_constraintHorizontal_bias="0"
         android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"
         tools:text="From user: YourMum90" />
@@ -54,10 +53,21 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tracker_username"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tracker_title"
+        app:layout_constraintStart_toStartOf="@id/tracker_title"
         app:layout_constraintHorizontal_bias="0"
         android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"
         tools:text="Latest release: Today" />
+
+    <it.gilvegliach.android.transparenttexttextview.TransparentTextTextView
+        android:id="@+id/new_releases_counter"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="@dimen/release_preview_item_first_btn_start_margin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tracker_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Style.Nyaasi.NewReleasesCounter"
+        tools:text="12"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
