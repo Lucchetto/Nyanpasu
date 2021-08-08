@@ -10,6 +10,7 @@ data class NyaaReleasePreview(
     @PrimaryKey val id: Int,
     val name: String,
     val magnet: String,
+    // timestamp is expressed in seconds while system timestamps are in milliseconds
     val timestamp: Long,
     val seeders: Int,
     val leechers: Int,

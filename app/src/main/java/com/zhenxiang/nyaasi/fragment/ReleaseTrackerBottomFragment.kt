@@ -57,7 +57,9 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                         releaseTrackerFragmentSharedViewModel.currentUserTracked.value = false
                     }
                 } else {
-                    val newTracked = SubscribedTracker(username = username, lastReleaseTimestamp = latestTimestamp)
+                    val newTracked = SubscribedTracker(username = username,
+                        lastReleaseTimestamp = latestTimestamp,
+                        createdTimestamp = System.currentTimeMillis())
                     releasesTrackerViewModel.addReleaseTracker(newTracked)
                     withContext(Dispatchers.Main) {
                         releaseTrackerFragmentSharedViewModel.currentUserTracked.value = true

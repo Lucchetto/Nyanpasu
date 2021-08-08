@@ -148,7 +148,8 @@ class CreateTrackerActivity : AppCompatActivity() {
                         val searchQuery = searchQueryInput.text.toString().trim()
                         val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,
                             searchQuery = searchQuery, lastReleaseTimestamp = it.timestamp,
-                            category = NyaaReleaseCategory.values()[selectedCategoryIndex])
+                            category = NyaaReleaseCategory.values()[selectedCategoryIndex],
+                            createdTimestamp = System.currentTimeMillis())
                         releasesTrackerViewModel.addReleaseTracker(newTracker)
                         finish()
                     }
@@ -160,7 +161,8 @@ class CreateTrackerActivity : AppCompatActivity() {
                     // Current millis must be divided by 1000 since nyaa.si use seconds as unit
                     val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,
                         searchQuery = searchQuery, lastReleaseTimestamp = System.currentTimeMillis() / 1000,
-                        category = NyaaReleaseCategory.values()[selectedCategoryIndex])
+                        category = NyaaReleaseCategory.values()[selectedCategoryIndex],
+                        createdTimestamp = System.currentTimeMillis())
                     releasesTrackerViewModel.addReleaseTracker(newTracker)
                     finish()
                 }

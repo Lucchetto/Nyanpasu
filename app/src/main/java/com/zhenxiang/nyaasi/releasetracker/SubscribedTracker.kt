@@ -11,18 +11,24 @@ data class SubscribedTracker(
     val username: String? = null,
     val searchQuery: String? = null,
     val category: NyaaReleaseCategory = NyaaReleaseCategory.ALL,
+    // lastReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
     var lastReleaseTimestamp: Long,
+    var createdTimestamp: Long,
 ): Serializable
 
 data class SubscribedUser(
     val id: Int,
     val username: String,
+    // lastReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
     var lastReleaseTimestamp: Long,
+    var createdTimestamp: Long,
 )
 
 data class SubscribedRelease(
     val id: Int,
     val username: String? = null,
     val searchQuery: String,
+    // lastReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
     var lastReleaseTimestamp: Long,
+    var createdTimestamp: Long,
 )

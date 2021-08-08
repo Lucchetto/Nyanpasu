@@ -37,7 +37,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
         val newReleasesForSubscribedRelease = mutableListOf<SubscribedRelease>()
         withContext(Dispatchers.IO) {
             subscribedUsersDao.getAllTrackedUsers().forEach {
-                val newReleasesOfUser = getNewReleasesFromTracker(SubscribedTracker(it.id, username = it.username, lastReleaseTimestamp = it.lastReleaseTimestamp))
+                val newReleasesOfUser = getNewReleasesFromTracker(SubscribedTracker(it.id, username = it.username, lastReleaseTimestamp = it.lastReleaseTimestamp, createdTimestamp = it.createdTimestamp))
                 if (newReleasesOfUser.isNotEmpty()) {
                     usersWithNewReleases.add(it)
                     subscribedUsersDao.updateLatestTimestamp(it.id, newReleasesOfUser[0].timestamp)
@@ -45,7 +45,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
             }
 
             subscribedUsersDao.getAllTrackedReleases().forEach {
-                val newReleases = getNewReleasesFromTracker(SubscribedTracker(it.id, username = it.username, searchQuery = it.searchQuery, lastReleaseTimestamp = it.lastReleaseTimestamp))
+                val newReleases = getNewReleasesFromTracker(SubscribedTracker(it.id, username = it.username, searchQuery = it.searchQuery, lastReleaseTimestamp = it.lastReleaseTimestamp, createdTimestamp = it.createdTimestamp))
                 if (newReleases.isNotEmpty()) {
                     newReleasesForSubscribedRelease.add(it)
                     subscribedUsersDao.updateLatestTimestamp(it.id, newReleases[0].timestamp)
