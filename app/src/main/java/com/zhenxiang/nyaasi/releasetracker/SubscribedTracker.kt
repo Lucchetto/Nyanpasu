@@ -14,4 +14,5 @@ data class SubscribedTracker(
     // lastReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
     var lastReleaseTimestamp: Long,
     var createdTimestamp: Long,
+    var newReleasesCount: Int = 0,
 ): Serializable

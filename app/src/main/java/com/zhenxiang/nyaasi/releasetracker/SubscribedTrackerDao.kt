@@ -22,10 +22,10 @@ interface SubscribedTrackerDao {
     fun getByUsername(userName: String): SubscribedTracker?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(release: SubscribedTracker)
+    fun insert(tracker: SubscribedTracker)
 
-    @Query("UPDATE subscribedtracker SET lastReleaseTimestamp = :timestamp WHERE id = :id")
-    fun updateLatestTimestamp(id: Int, timestamp: Long)
+    @Update
+    fun update(tracker: SubscribedTracker)
 
     @Query("DELETE FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL")
     fun deleteByUsername(userName: String)

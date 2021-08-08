@@ -28,7 +28,6 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
     private val RELEASE_TRACKER_NOTIF_ID = 1072
 
     private val releaseTrackersDao = NyaaDb(appContext).subscribedTrackersDao()
-    private val newReleasesDao = NyaaDb(appContext).newReleasesDao()
 
     override suspend fun doWork(): Result {
         val trackersWithNewReleases = mutableListOf<SubscribedTracker>()
@@ -41,7 +40,9 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                 if (newReleasesOfTracker.isNotEmpty()) {
                     Log.w(TAG, "New releases found for $it")
                     trackersWithNewReleases.add(it)
-                    releaseTrackersDao.updateLatestTimestamp(it.id, newReleasesOfTracker[0].timestamp)
+                    it.lastReleaseTimestamp = newReleasesOfTracker[0].timestamp
+                    it.newReleasesCount += newReleasesOfTracker.size
+                    releaseTrackersDao.update(it)
                 }
             }
 
@@ -126,7 +127,6 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                         return newReleases
                     } else {
                         newReleases.add(it)
-                        newReleasesDao.insertAll(NewRelease(it.id, tracker.id))
                     }
                 }
             }
