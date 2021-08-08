@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaasi.R
 import java.text.DateFormat
@@ -11,7 +13,22 @@ import java.util.*
 
 class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapter.ViewHolder>() {
 
-    private val users = mutableListOf<SubscribedTracker>()
+    private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<SubscribedTracker>() {
+        override fun areItemsTheSame(
+            oldItem: SubscribedTracker,
+            newItem: SubscribedTracker
+        ): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(
+            oldItem: SubscribedTracker,
+            newItem: SubscribedTracker
+        ): Boolean {
+            return oldItem == newItem
+        }
+    }
+    private val differ: AsyncListDiffer<SubscribedTracker> = AsyncListDiffer(this, DIFF_CALLBACK)
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         private val title = view.findViewById<TextView>(R.id.tracker_title)
@@ -69,10 +86,8 @@ class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapte
         }
     }
 
-    fun setData(newData: List<SubscribedTracker>) {
-        users.clear()
-        users.addAll(newData)
-        notifyDataSetChanged()
+    fun setData(newItems: List<SubscribedTracker>) {
+        differ.submitList(newItems)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -82,12 +97,12 @@ class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapte
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        users.getOrNull(position)?.let {
+        differ.currentList.getOrNull(position)?.let {
             holder.bind(it)
         }
     }
 
     override fun getItemCount(): Int {
-        return users.size
+        return differ.currentList.size
     }
 }
