@@ -6,29 +6,27 @@ import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import java.io.Serializable
 
 @Entity
-data class SubscribedTracker(
+open class SubscribedTracker(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val username: String? = null,
-    val searchQuery: String? = null,
+    open val username: String? = null,
+    open val searchQuery: String? = null,
     val category: NyaaReleaseCategory = NyaaReleaseCategory.ALL,
     // lastReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
     var lastReleaseTimestamp: Long,
     var createdTimestamp: Long,
 ): Serializable
 
-data class SubscribedUser(
-    val id: Int,
-    val username: String,
-    // lastReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
-    var lastReleaseTimestamp: Long,
-    var createdTimestamp: Long,
-)
+class SubscribedUser(id: Int,
+                     override val username: String,
+                     category: NyaaReleaseCategory,
+                     lastReleaseTimestamp: Long,
+                     createdTimestamp: Long,
+): SubscribedTracker(id, username, null, category, lastReleaseTimestamp, createdTimestamp)
 
-data class SubscribedRelease(
-    val id: Int,
-    val username: String? = null,
-    val searchQuery: String,
-    // lastReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
-    var lastReleaseTimestamp: Long,
-    var createdTimestamp: Long,
-)
+class SubscribedRelease(id: Int,
+                     username: String?,
+                     override val searchQuery: String,
+                     category: NyaaReleaseCategory,
+                     lastReleaseTimestamp: Long,
+                     createdTimestamp: Long,
+): SubscribedTracker(id, username, searchQuery, category, lastReleaseTimestamp, createdTimestamp)
