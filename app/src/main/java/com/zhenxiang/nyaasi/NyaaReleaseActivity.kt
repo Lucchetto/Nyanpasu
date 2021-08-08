@@ -181,7 +181,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
     private suspend fun setDetails(details: NyaaReleaseDetails) {
         val isTracked = details.user?.let {
-                releasesTrackerViewModel.getTrackedByUsername(it) != null
+                releasesTrackerViewModel.getTrackerByUsername(it) != null
         }
 
         withContext(Dispatchers.Main) {
@@ -204,7 +204,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
     private suspend fun setupTrackerButton(details: NyaaReleaseDetails) {
         if (details.user != null) {
-            val subscribedUser = releasesTrackerViewModel.getTrackedByUsername(details.user)
+            val subscribedUser = releasesTrackerViewModel.getTrackerByUsername(details.user)
             latestRelease?.let {
             } ?: run {
                 latestRelease = NyaaPageProvider.getPageItems(

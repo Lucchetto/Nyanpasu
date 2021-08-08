@@ -2,6 +2,7 @@ package com.zhenxiang.nyaasi.releasetracker
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 
 @Dao
 interface SubscribedTrackerDao {
@@ -12,11 +13,8 @@ interface SubscribedTrackerDao {
     @Query("SELECT * FROM subscribedtracker")
     fun getAllTrackersLive(): LiveData<List<SubscribedTracker>>
 
-    @Query("SELECT * FROM subscribedtracker WHERE searchQuery=:query AND username IS NULL")
-    fun getByQueryWithNullUsername(query: String): SubscribedTracker?
-
-    @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery=:query")
-    fun getByUsernameAndQuery(username: String, query: String): SubscribedTracker?
+    @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery=:query AND category=:category")
+    fun getByUsernameAndQueryAndCategory(username: String?, query: String, category: NyaaReleaseCategory): SubscribedTracker?
 
     @Query("SELECT * FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL")
     fun getByUsername(userName: String): SubscribedTracker?

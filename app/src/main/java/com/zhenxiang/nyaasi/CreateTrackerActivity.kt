@@ -115,12 +115,13 @@ class CreateTrackerActivity : AppCompatActivity() {
                 lifecycleScope.launch(Dispatchers.IO) {
                     val username = usernameInput.text.toString().trim()
                     val searchQuery = searchQueryInput.text.toString().trim()
-                    releasesTrackerViewModel.getTrackedByUsernameAndQuery(username, searchQuery)?.let {
+                    val category = NyaaReleaseCategory.values()[selectedCategoryIndex]
+                    releasesTrackerViewModel.getTrackerWithSameSpecs(username, searchQuery, category)?.let {
                         withContext(Dispatchers.Main) {
                             setStatus(Status.FAILED_ALREADY_EXISTS)
                         }
                     } ?: run {
-                        val releases = NyaaPageProvider.getPageItems(0, searchQuery = searchQuery, user = username, category = NyaaReleaseCategory.values()[selectedCategoryIndex])
+                        val releases = NyaaPageProvider.getPageItems(0, searchQuery = searchQuery, user = username, category = category)
                         withContext(Dispatchers.Main) {
                             if (releases == null) {
                                 setStatus(Status.FAILED)
