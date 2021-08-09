@@ -27,4 +27,7 @@ interface SubscribedTrackerDao {
 
     @Query("DELETE FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL")
     fun deleteByUsername(userName: String)
+
+    @Query("DELETE FROM subscribedtracker WHERE id=:id")
+    fun deleteById(id: Int)
 }

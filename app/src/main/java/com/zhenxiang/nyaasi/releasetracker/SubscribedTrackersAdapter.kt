@@ -11,7 +11,9 @@ import com.zhenxiang.nyaasi.R
 import java.text.DateFormat
 import java.util.*
 
-class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapter.ViewHolder>() {
+class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.ViewHolder>() {
+
+    var listener: ItemClickedListener? = null
 
     private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<SubscribedTracker>() {
         override fun areItemsTheSame(
@@ -30,14 +32,27 @@ class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapte
     }
     private val differ: AsyncListDiffer<SubscribedTracker> = AsyncListDiffer(this, DIFF_CALLBACK)
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         private val title = view.findViewById<TextView>(R.id.tracker_title)
         private val category = view.findViewById<TextView>(R.id.tracker_category)
         private val username = view.findViewById<TextView>(R.id.tracker_username)
         private val latestRelease = view.findViewById<TextView>(R.id.latest_release_date)
         private val newReleasesCounter = view.findViewById<TextView>(R.id.new_releases_counter)
 
+        private var itemData: SubscribedTracker? = null
+
+        init {
+            view.setOnClickListener { _ ->
+                listener?.let {
+                    itemData?.let { tracker ->
+                        it.itemClicked(tracker)
+                    }
+                }
+            }
+        }
+
         fun bind(tracker: SubscribedTracker) {
+            itemData = tracker
             category.text = category.context.getString(R.string.release_category,
                 category.context.getString(tracker.category.stringResId)
             )
@@ -108,5 +123,9 @@ class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapte
 
     override fun getItemCount(): Int {
         return differ.currentList.size
+    }
+
+    interface ItemClickedListener {
+        fun itemClicked(item: SubscribedTracker)
     }
 }

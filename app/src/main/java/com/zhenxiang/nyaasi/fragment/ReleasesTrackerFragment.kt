@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.zhenxiang.nyaasi.CreateTrackerActivity
 import com.zhenxiang.nyaasi.R
+import com.zhenxiang.nyaasi.ReleaseTrackerDetailsActivity
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
+import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTrackersAdapter
 
 class ReleasesTrackerFragment : Fragment() {
@@ -42,6 +44,12 @@ class ReleasesTrackerFragment : Fragment() {
         releaseTrackerViewModel.subscribedTrackers.observe(viewLifecycleOwner, {
             trackedKeywordsAdapter.setData(it)
         })
+
+        trackedKeywordsAdapter.listener = object: SubscribedTrackersAdapter.ItemClickedListener {
+            override fun itemClicked(item: SubscribedTracker) {
+                ReleaseTrackerDetailsActivity.startReleaseTrackerDetailsActivity(item, requireActivity())
+            }
+        }
 
         /*val subscribedUsersList = fragmentView.findViewById<RecyclerView>(R.id.subscribed_users_list)
         subscribedUsersList.layoutManager = LinearLayoutManager(fragmentView.context)
