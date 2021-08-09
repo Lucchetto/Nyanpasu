@@ -2,7 +2,6 @@ package com.zhenxiang.nyaasi.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,18 +9,14 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.tabs.TabLayout
 import com.zhenxiang.nyaasi.R
 import com.zhenxiang.nyaasi.widget.DisableScrollingTabLayout
 import com.zhenxiang.nyaasi.widget.DisableScrollingViewPager
-import dev.chrisbanes.insetter.applyInsetter
 
 
 class LibraryFragment : Fragment() {
@@ -171,7 +166,7 @@ class LibraryPagerAdapter(fragmentManager: FragmentManager, private val context:
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
             0 -> context.getString(R.string.saved_fragment_bottom_nav)
-            1 -> context.getString(R.string.recently_viewed_fragment_bottom_nav)
+            1 -> context.getString(R.string.recently_viewed_fragment_title)
             else -> {
                 return context.getString(R.string.saved_fragment_bottom_nav)
             }

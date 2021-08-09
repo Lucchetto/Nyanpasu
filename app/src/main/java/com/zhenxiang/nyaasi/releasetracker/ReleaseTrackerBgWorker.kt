@@ -47,11 +47,11 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
             }
 
             if (trackersWithNewReleases.isNotEmpty()) {
-                val notificationTitle = applicationContext.getString(R.string.release_tracker_notif_name)
+                val notificationTitle = applicationContext.getString(R.string.releases_tracker_notif_name)
                 val notificationContent = applicationContext.resources.getQuantityString(
-                    R.plurals.release_tracker_notif_content, trackersWithNewReleases.size, trackersWithNewReleases.size)
+                    R.plurals.releases_tracker_notif_content, trackersWithNewReleases.size, trackersWithNewReleases.size)
                 var notificationContentExpanded = applicationContext.getString(
-                    R.string.release_tracker_notif_expanded_content_first_line)
+                    R.string.releases_tracker_notif_expanded_content_first_line)
                 trackersWithNewReleases.forEach {
                     // Make sure to break line
                     notificationContentExpanded += "\n"
@@ -75,7 +75,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
             } else {
                 if (BuildConfig.DEBUG) {
                     withContext(Dispatchers.Main) {
-                        generateNotif(RELEASE_TRACKER_NOTIF_ID, applicationContext.getString(R.string.release_tracker_notif_name), "[DEBUG] No new releases")
+                        generateNotif(RELEASE_TRACKER_NOTIF_ID, applicationContext.getString(R.string.releases_tracker_notif_name), "[DEBUG] No new releases")
                     }
                 }
             }

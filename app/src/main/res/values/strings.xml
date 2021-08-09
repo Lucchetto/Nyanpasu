@@ -11,11 +11,14 @@
     <string name="cannot_download_release_hint">Can\'t download the selected release</string>
     <string name="no_magnet_supported_app_installed">No installed application can handle magnet links</string>
 
-    <string name="recently_viewed_fragment_bottom_nav">Recents</string>
-    <string name="recently_viewed_fragment_title">Recently viewed</string>
+    <string name="browse_bottom_nav">Browse</string>
+    <string name="library_bottom_nav">Library</string>
+    <string name="releases_tracker_bottom_nav">Releases tracker</string>
+
+    <string name="recently_viewed_fragment_title">Recents</string>
     <string name="saved_fragment_bottom_nav">Saved</string>
     <string name="saved_fragment_title">Saved releases</string>
-    <string name="library_title">Library</string>
+    <string name="library_title">@string/library_bottom_nav</string>
 
     <string name="category_all">All categories</string>
     <string name="category_anime">Anime</string>
@@ -54,12 +57,12 @@
     <string name="untrack_all_from_user_title">Untrack all from this user</string>
     <string name="untrack_all_from_user_desc">You won\'t get notified about new releases from this user anymore</string>
 
-    <string name="release_tracker_notif_name">Release trackers</string>
-    <plurals name="release_tracker_notif_content">
+    <string name="releases_tracker_notif_name">@string/releases_tracker_bottom_nav</string>
+    <plurals name="releases_tracker_notif_content">
         <item quantity="one">New releases found for one tracker</item>
         <item quantity="other">New releases found for %d trackers</item>
     </plurals>
-    <string name="release_tracker_notif_expanded_content_first_line">New release found for</string>
+    <string name="releases_tracker_notif_expanded_content_first_line">New release found for</string>
     <string name="release_tracker_new_releases_from_user">- User %1$s</string>
     <string name="release_tracker_new_releases_only_search_query">- %1$s</string>
     <string name="release_tracker_new_releases_from_user_with_search_query">- %1$s from user %2$s</string>
@@ -76,7 +79,7 @@
     <string name="latest_releases_found_title">Latest releases</string>
     <string name="search_query_title">Keywords</string>
 
-    <string name="release_trackers_title">Release trackers</string>
+    <string name="releases_tracker_title">@string/releases_tracker_bottom_nav</string>
     <string name="tracker_all_releases_from_user">All releases from %1$s</string>
     <string name="tracker_from_user">From user: %1$s</string>
     <string name="tracker_latest_release">Latest release: %1$s</string>

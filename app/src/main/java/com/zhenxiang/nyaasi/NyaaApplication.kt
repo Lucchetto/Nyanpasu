@@ -30,7 +30,7 @@ class NyaaApplication: Application() {
     private fun setupNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
-            val name = applicationContext.getString(R.string.release_tracker_notif_name)
+            val name = applicationContext.getString(R.string.releases_tracker_notif_name)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val mChannel = NotificationChannel(RELEASE_TRACKER_CHANNEL_ID, name, importance)
             // Register the channel with the system; you can't change the importance

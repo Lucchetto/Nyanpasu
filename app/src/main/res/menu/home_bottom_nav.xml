@@ -3,8 +3,8 @@
     <item
         android:id="@+id/browseFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_travel_explore_24"
-        android:title="Browse"/>
+        android:icon="@drawable/ic_outline_explore_24"
+        android:title="@string/browse_bottom_nav"/>
     <item
         android:id="@+id/libraryFragment"
         android:enabled="true"
@@ -14,8 +14,8 @@
     <item
         android:id="@+id/subscribedUsers"
         android:enabled="true"
-        android:icon="@drawable/ic_outline_history_24"
-        android:title="Subscribed users"/>
+        android:icon="@drawable/ic_outline_circle_notifications_24"
+        android:title="@string/releases_tracker_bottom_nav"/>
     <!--<item
         android:id="@+id/settings"
         android:enabled="true"
