@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
-import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
+import com.zhenxiang.nyaasi.api.NyaaApiViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaasi.db.NyaaSearchHistoryViewModel
@@ -25,7 +25,7 @@ import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity() {
 
-    private lateinit var searchViewModel: NyaaSearchViewModel
+    private lateinit var searchViewModel: NyaaApiViewModel
     private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
 
     private lateinit var activityRoot: View
@@ -60,10 +60,10 @@ class NyaaSearchActivity : AppCompatActivity() {
         }
         val resultsAdapter = ReleasesListAdapter()
         val footerAdapter = FooterAdapter()
-        searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
+        searchViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
         searchHistoryViewModel = ViewModelProvider(this).get(NyaaSearchHistoryViewModel::class.java)
 
-        searchViewModel.searchResultsLiveData.observe(this, {
+        searchViewModel.resultsLiveData.observe(this, {
             if (it.size > 0 && resultsList.visibility == View.GONE) {
                 resultsList.visibility = View.VISIBLE
                 val hintText = findViewById<View>(R.id.search_hint)
@@ -185,7 +185,7 @@ class NyaaSearchActivity : AppCompatActivity() {
                     // Clear results so it will show loading status
                     searchViewModel.clearResults()
                     searchViewModel.setSearchText(it)
-                    searchViewModel.loadSearchResults()
+                    searchViewModel.loadResults()
                     searchHistoryViewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))
                     searchBar.clearFocus()
                 }

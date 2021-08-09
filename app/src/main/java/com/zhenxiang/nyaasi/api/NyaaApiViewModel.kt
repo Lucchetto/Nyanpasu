@@ -1,45 +1,58 @@
 package com.zhenxiang.nyaasi.api
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
-class NyaaBrowseViewModel(application: Application) : AndroidViewModel(application) {
+class NyaaApiViewModel: ViewModel() {
 
     private val repository = NyaaRepository()
-    val itemsLiveData = MutableLiveData<List<NyaaReleasePreview>>()
-    private var busy = false
+    val resultsLiveData = MutableLiveData<List<NyaaReleasePreview>>()
+    var busy = false
+        private set
     var firstInsert: Boolean = true
 
+    fun setSearchText(searchText: String?) {
+        repository.searchValue = searchText
+    }
+
     fun loadMore() {
-        firstInsert = false
         if (repository.items.size > 0 && !endReached() && !busy) {
-            loadData()
+            loadResults()
         }
     }
 
-    fun loadData() {
+    fun loadResults() {
         viewModelScope.launch(Dispatchers.IO) {
             busy = true
-            // Request more items from repository
             repository.getLinks()
             withContext(Dispatchers.Main) {
                 // Emit new values from repository
-                itemsLiveData.value = repository.items
+                resultsLiveData.value = repository.items.toList()
             }
             busy = false
         }
     }
 
+    fun reEmitCurrentResults() {
+        resultsLiveData.value = repository.items.toList()
+    }
+
+
     fun setCategory(category: NyaaReleaseCategory) {
         this.repository.category = category
-        this.repository.clearRepo()
-        itemsLiveData.value = repository.items
+    }
+
+    fun setUsername(username: String?) {
+        repository.username = username
+    }
+
+    fun clearResults() {
+        firstInsert = true
+        repository.clearRepo()
+        resultsLiveData.value = repository.items.toList()
     }
 
     fun endReached() = this.repository.endReached

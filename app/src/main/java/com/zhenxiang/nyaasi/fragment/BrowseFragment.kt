@@ -9,9 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.zhenxiang.nyaasi.api.NyaaBrowseViewModel
 import android.content.Intent
-import android.util.Log
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.recyclerview.widget.ConcatAdapter
@@ -20,6 +18,7 @@ import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaasi.AppUtils.Companion.guardDownloadPermission
 import com.zhenxiang.nyaasi.AppUtils.Companion.storagePermissionForDownloadDenied
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
+import com.zhenxiang.nyaasi.api.NyaaApiViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.util.FooterAdapter
 
@@ -30,7 +29,7 @@ import com.zhenxiang.nyaasi.util.FooterAdapter
  */
 class BrowseFragment : Fragment() {
 
-    private lateinit var browseViewModel: NyaaBrowseViewModel
+    private lateinit var browseViewModel: NyaaApiViewModel
 
     private lateinit var fragmentView: View
     private lateinit var searchBtn: ExtendedFloatingActionButton
@@ -50,9 +49,11 @@ class BrowseFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        browseViewModel = ViewModelProvider(this).get(NyaaBrowseViewModel::class.java)
+        browseViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
         if (savedInstanceState == null) {
-            browseViewModel.loadData()
+            browseViewModel.loadResults()
+        } else {
+            browseViewModel.reEmitCurrentResults()
         }
     }
 
@@ -71,9 +72,8 @@ class BrowseFragment : Fragment() {
 
         val releasesListAdapter = ReleasesListAdapter()
         val footerAdapter = FooterAdapter()
-        browseViewModel.itemsLiveData.observe(viewLifecycleOwner,  {
-            // Hax until we handle livedata properly
-            releasesListAdapter.setItems(it.toList())
+        browseViewModel.resultsLiveData.observe(viewLifecycleOwner,  {
+            releasesListAdapter.setItems(it)
             footerAdapter.showLoading(!browseViewModel.endReached())
         })
 
@@ -133,7 +133,8 @@ class BrowseFragment : Fragment() {
                 id: Long
             ) {
                 browseViewModel.setCategory(NyaaReleaseCategory.values()[position])
-                browseViewModel.loadData()
+                browseViewModel.clearResults()
+                browseViewModel.loadResults()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

@@ -16,9 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
-import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
-import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
+import com.zhenxiang.nyaasi.api.NyaaApiViewModel
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +44,7 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var loading: View
     private lateinit var latestReleasesList: RecyclerView
 
-    private lateinit var searchViewModel: NyaaSearchViewModel
+    private lateinit var searchViewModel: NyaaApiViewModel
 
     private var selectedCategoryIndex = -1
     private var currentStatus = Status.TO_VALIDATE
@@ -56,7 +55,7 @@ class CreateTrackerActivity : AppCompatActivity() {
 
         val username = intent.getStringExtra(PRESET_USERNAME)
         val releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
-        searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
+        searchViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
 
         hintText = findViewById(R.id.hint_text)
         errorHint = findViewById(R.id.error_hint)
@@ -114,7 +113,7 @@ class CreateTrackerActivity : AppCompatActivity() {
             setStatus(Status.TO_VALIDATE)
         }
 
-        searchViewModel.searchResultsLiveData.observe(this, {
+        searchViewModel.resultsLiveData.observe(this, {
             if (it.isEmpty()) {
                 setStatus(Status.VALIDATED_EMPTY)
             } else {
@@ -149,7 +148,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                             searchViewModel.setCategory(category)
                             searchViewModel.setUsername(username)
                         }
-                        searchViewModel.loadSearchResults()
+                        searchViewModel.loadResults()
                     }
                 }
             } else if (currentStatus == Status.VALIDATED) {
