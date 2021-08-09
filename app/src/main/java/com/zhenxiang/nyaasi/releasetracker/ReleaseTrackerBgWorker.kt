@@ -40,8 +40,9 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                 if (newReleasesOfTracker.isNotEmpty()) {
                     Log.w(TAG, "New releases found for $it")
                     trackersWithNewReleases.add(it)
-                    it.lastReleaseTimestamp = newReleasesOfTracker[0].timestamp
+                    it.latestReleaseTimestamp = newReleasesOfTracker[0].timestamp
                     it.newReleasesCount += newReleasesOfTracker.size
+                    it.hasPreviousReleases = true
                     releaseTrackersDao.update(it)
                 }
             }
@@ -120,10 +121,10 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                 return newReleases
             } else {
                 releases.items.forEach {
-                    // If release timestamp is smaller or equal than lastReleaseTimestamp
+                    // If release timestamp is smaller or equal than latestReleaseTimestamp
                     // we've hit a release than the last one saved in tracker,
                     // so let's exit and call it a day
-                    if (tracker.lastReleaseTimestamp >= it.timestamp) {
+                    if (tracker.latestReleaseTimestamp >= it.timestamp) {
                         return newReleases
                     } else {
                         newReleases.add(it)

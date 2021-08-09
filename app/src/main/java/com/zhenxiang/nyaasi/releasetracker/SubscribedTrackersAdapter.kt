@@ -41,9 +41,13 @@ class SubscribedTrackersAdapter(): RecyclerView.Adapter<SubscribedTrackersAdapte
             category.text = category.context.getString(R.string.release_category,
                 category.context.getString(tracker.category.stringResId)
             )
-            latestRelease.text = latestRelease.context.getString(R.string.tracker_latest_release,
-                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.lastReleaseTimestamp * 1000))
-            )
+            latestRelease.text = if (tracker.hasPreviousReleases) {
+                latestRelease.context.getString(R.string.tracker_latest_release,
+                    DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.latestReleaseTimestamp * 1000))
+                )
+            } else {
+                latestRelease.context.getString(R.string.tracker_no_releases_yet)
+            }
             when {
                 tracker.newReleasesCount < 1 -> {
                     newReleasesCounter.text = null

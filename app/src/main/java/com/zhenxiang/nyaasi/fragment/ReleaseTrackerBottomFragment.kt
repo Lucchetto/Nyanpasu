@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -58,7 +57,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                     }
                 } else {
                     val newTracked = SubscribedTracker(username = username,
-                        lastReleaseTimestamp = latestTimestamp,
+                        latestReleaseTimestamp = latestTimestamp,
                         createdTimestamp = System.currentTimeMillis())
                     releasesTrackerViewModel.addReleaseTracker(newTracked)
                     withContext(Dispatchers.Main) {

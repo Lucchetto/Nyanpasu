@@ -1,15 +1,13 @@
 package com.zhenxiang.nyaasi.db
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTrackerDao
 
 @Database(entities = [NyaaReleasePreview::class, NyaaReleaseDetails::class, NyaaSearchHistoryItem::class,
-    ViewedNyaaRelease::class, SavedNyaaRelease::class, SubscribedTracker::class], version = 1)
+    ViewedNyaaRelease::class, SavedNyaaRelease::class, SubscribedTracker::class], version = 1,
+)
 @TypeConverters(DateConverters::class)
 abstract class NyaaDb : RoomDatabase() {
     abstract fun nyaaReleasesPreviewDao(): NyaaReleasePreviewDao
@@ -21,6 +19,7 @@ abstract class NyaaDb : RoomDatabase() {
     abstract fun subscribedTrackersDao(): SubscribedTrackerDao
 
     companion object {
+
         @Volatile private var instance: NyaaDb? = null
         private val LOCK = Any()
 

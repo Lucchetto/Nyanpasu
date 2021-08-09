@@ -1,5 +1,6 @@
 package com.zhenxiang.nyaasi.releasetracker
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
@@ -11,8 +12,9 @@ data class SubscribedTracker(
     val username: String? = null,
     val searchQuery: String? = null,
     val category: NyaaReleaseCategory = NyaaReleaseCategory.ALL,
-    // lastReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
-    var lastReleaseTimestamp: Long,
+    // latestReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
+    var latestReleaseTimestamp: Long,
+    var hasPreviousReleases: Boolean = true,
     var createdTimestamp: Long,
     var newReleasesCount: Int = 0,
 ): Serializable

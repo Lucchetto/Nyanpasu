@@ -213,7 +213,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val latestTimestamp = latestRelease?.let {
                 it.timestamp
             } ?: run {
-                subscribedUser?.lastReleaseTimestamp
+                subscribedUser?.latestReleaseTimestamp
             }
             latestTimestamp?.let {
                 val isTrackedAtBeginning = subscribedUser != null
