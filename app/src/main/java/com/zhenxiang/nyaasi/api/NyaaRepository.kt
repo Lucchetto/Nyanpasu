@@ -15,16 +15,12 @@ class NyaaRepository {
 
     var searchValue: String? = null
         set (value) {
-            field = value
-            clearRepo()
-            // If empty or null consider we are bottom of list, to hide loading status
-            endReached = value.isNullOrBlank()
+            field = if (value?.isBlank() == true) null else value
         }
 
     var username: String? = null
         set (value) {
             field = if (value?.isBlank() == true) null else value
-            clearRepo()
         }
 
     var category: NyaaReleaseCategory = NyaaReleaseCategory.ALL

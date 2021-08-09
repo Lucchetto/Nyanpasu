@@ -15,7 +15,6 @@ class NyaaSearchViewModel: ViewModel() {
     var firstInsert: Boolean = true
 
     fun setSearchText(searchText: String?) {
-        firstInsert = true
         repository.searchValue = searchText
     }
 
@@ -28,9 +27,7 @@ class NyaaSearchViewModel: ViewModel() {
     fun loadSearchResults() {
         viewModelScope.launch(Dispatchers.IO) {
             busy = true
-            if (repository.searchValue?.isNotEmpty() == true) {
-                repository.getLinks()
-            }
+            repository.getLinks()
             withContext(Dispatchers.Main) {
                 // Emit new values from repository
                 searchResultsLiveData.value = repository.items.toList()
@@ -44,11 +41,11 @@ class NyaaSearchViewModel: ViewModel() {
     }
 
     fun setUsername(username: String?) {
-        firstInsert = true
         repository.username = username
     }
 
     fun clearResults() {
+        firstInsert = true
         repository.clearRepo()
         searchResultsLiveData.value = repository.items.toList()
     }
