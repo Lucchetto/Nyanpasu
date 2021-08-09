@@ -34,7 +34,7 @@ class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(appli
         return repo.dao.getByUsername(username)
     }
 
-    fun getTrackerWithSameSpecs(username: String?, query: String, category: NyaaReleaseCategory): SubscribedTracker? {
+    suspend fun getTrackerWithSameSpecs(username: String?, query: String, category: NyaaReleaseCategory): SubscribedTracker? {
         return repo.dao.getByUsernameAndQueryAndCategory(
             if (username.isNullOrBlank()) null else username,
             query, category

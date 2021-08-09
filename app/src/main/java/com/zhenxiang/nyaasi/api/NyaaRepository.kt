@@ -14,10 +14,17 @@ class NyaaRepository {
         private set
 
     var searchValue: String? = null
-        set(value) {
+        set (value) {
             field = value
             clearRepo()
-            endReached = value == null || value.isEmpty()
+            // If empty or null consider we are bottom of list, to hide loading status
+            endReached = value.isNullOrBlank()
+        }
+
+    var username: String? = null
+        set (value) {
+            field = if (value?.isBlank() == true) null else value
+            clearRepo()
         }
 
     var category: NyaaReleaseCategory = NyaaReleaseCategory.ALL
@@ -31,7 +38,7 @@ class NyaaRepository {
     suspend fun getLinks(): Boolean = withContext(Dispatchers.IO) {
         if (!endReached) {
             pageIndex++
-            val newItems = NyaaPageProvider.getPageItems(pageIndex, category, searchValue)
+            val newItems = NyaaPageProvider.getPageItems(pageIndex, category, searchValue, username)
             newItems?.let {
                 items.addAll(it.items)
                 endReached = if (it.bottomReached) {

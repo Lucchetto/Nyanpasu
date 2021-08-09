@@ -69,8 +69,7 @@ class NyaaSearchActivity : AppCompatActivity() {
                 val hintText = findViewById<View>(R.id.search_hint)
                 hintText.visibility = View.GONE
             }
-            // Hax until we handle livedata properly
-            resultsAdapter.setItems(it.toList())
+            resultsAdapter.setItems(it)
             footerAdapter.showLoading(!searchViewModel.endReached())
         })
         if (savedInstanceState == null) {
@@ -183,6 +182,8 @@ class NyaaSearchActivity : AppCompatActivity() {
                         val hintText = findViewById<View>(R.id.search_hint)
                         hintText.visibility = View.GONE
                     }
+                    // Clear results so it will show loading status
+                    searchViewModel.clearResults()
                     searchViewModel.setSearchText(it)
                     searchViewModel.loadSearchResults()
                     searchHistoryViewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))

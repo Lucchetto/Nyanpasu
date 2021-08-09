@@ -16,12 +16,7 @@ class NyaaSearchViewModel: ViewModel() {
 
     fun setSearchText(searchText: String?) {
         firstInsert = true
-        searchText?.let {
-            repository.searchValue = if (searchText.isEmpty()) null else searchText
-        } ?: run {
-            repository.searchValue = null
-        }
-        searchResultsLiveData.value = repository.items
+        repository.searchValue = searchText
     }
 
     fun loadMore() {
@@ -38,7 +33,7 @@ class NyaaSearchViewModel: ViewModel() {
             }
             withContext(Dispatchers.Main) {
                 // Emit new values from repository
-                searchResultsLiveData.value = repository.items
+                searchResultsLiveData.value = repository.items.toList()
             }
             busy = false
         }
@@ -46,6 +41,16 @@ class NyaaSearchViewModel: ViewModel() {
 
     fun setCategory(category: NyaaReleaseCategory) {
         this.repository.category = category
+    }
+
+    fun setUsername(username: String?) {
+        firstInsert = true
+        repository.username = username
+    }
+
+    fun clearResults() {
+        repository.clearRepo()
+        searchResultsLiveData.value = repository.items.toList()
     }
 
     fun endReached() = this.repository.endReached

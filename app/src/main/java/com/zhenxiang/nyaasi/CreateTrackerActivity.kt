@@ -18,6 +18,7 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.zhenxiang.nyaasi.api.NyaaPageProvider
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
+import com.zhenxiang.nyaasi.api.NyaaSearchViewModel
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +45,8 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var loading: View
     private lateinit var latestReleasesList: RecyclerView
 
+    private lateinit var searchViewModel: NyaaSearchViewModel
+
     private var selectedCategoryIndex = -1
     private var currentStatus = Status.TO_VALIDATE
 
@@ -53,6 +56,7 @@ class CreateTrackerActivity : AppCompatActivity() {
 
         val username = intent.getStringExtra(PRESET_USERNAME)
         val releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
+        searchViewModel = ViewModelProvider(this).get(NyaaSearchViewModel::class.java)
 
         hintText = findViewById(R.id.hint_text)
         errorHint = findViewById(R.id.error_hint)
@@ -62,6 +66,7 @@ class CreateTrackerActivity : AppCompatActivity() {
         latestReleasesList = findViewById(R.id.last_releases_list)
         val listLayoutManager = LinearLayoutManager(this)
         val latestReleasesAdapter = ReleasesListAdapter(false)
+        latestReleasesList.itemAnimator = null
         latestReleasesList.layoutManager = listLayoutManager
         latestReleasesList.adapter = latestReleasesAdapter
 
@@ -109,6 +114,23 @@ class CreateTrackerActivity : AppCompatActivity() {
             setStatus(Status.TO_VALIDATE)
         }
 
+        searchViewModel.searchResultsLiveData.observe(this, {
+            if (it.isEmpty()) {
+                setStatus(Status.VALIDATED_EMPTY)
+            } else {
+                // Hax to hide keyboard
+                searchQueryInput.clearFocus()
+                usernameInput.clearFocus()
+                categoriesDropdown.clearFocus()
+                val imm: InputMethodManager =
+                    getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(searchQueryInput.windowToken, 0)
+
+                latestReleasesAdapter.setItems(it)
+                setStatus(Status.VALIDATED)
+            }
+        })
+
         createBtn.setOnClickListener { _ ->
             if (currentStatus == Status.TO_VALIDATE) {
                 setStatus(Status.LOADING)
@@ -121,25 +143,13 @@ class CreateTrackerActivity : AppCompatActivity() {
                             setStatus(Status.FAILED_ALREADY_EXISTS)
                         }
                     } ?: run {
-                        val releases = NyaaPageProvider.getPageItems(0, searchQuery = searchQuery, user = username, category = category)
+                        latestReleasesAdapter.setItems(emptyList())
                         withContext(Dispatchers.Main) {
-                            if (releases == null) {
-                                setStatus(Status.FAILED)
-                            } else if (releases.items.isEmpty()) {
-                                setStatus(Status.VALIDATED_EMPTY)
-                            } else {
-                                // Hax to hide keyboard
-                                searchQueryInput.clearFocus()
-                                usernameInput.clearFocus()
-                                categoriesDropdown.clearFocus()
-                                val imm: InputMethodManager =
-                                    getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                imm.hideSoftInputFromWindow(searchQueryInput.windowToken, 0)
-
-                                latestReleasesAdapter.setItems(releases.items)
-                                setStatus(Status.VALIDATED)
-                            }
+                            searchViewModel.setSearchText(searchQuery)
+                            searchViewModel.setCategory(category)
+                            searchViewModel.setUsername(username)
                         }
+                        searchViewModel.loadSearchResults()
                     }
                 }
             } else if (currentStatus == Status.VALIDATED) {
