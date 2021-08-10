@@ -10,8 +10,6 @@ class NyaaApiViewModel: ViewModel() {
 
     private val repository = NyaaRepository()
     val resultsLiveData = MutableLiveData<List<NyaaReleasePreview>>()
-    var busy = false
-        private set
     var firstInsert: Boolean = true
 
     fun setSearchText(searchText: String?) {
@@ -19,20 +17,24 @@ class NyaaApiViewModel: ViewModel() {
     }
 
     fun loadMore() {
-        if (repository.items.size > 0 && !endReached() && !busy) {
-            loadResults()
+        if (repository.items.size > 0 && !endReached()) {
+            loadFromRepo()
         }
     }
 
     fun loadResults() {
+        firstInsert = true
+        repository.clearRepo()
+        loadFromRepo()
+    }
+
+    private fun loadFromRepo() {
         viewModelScope.launch(Dispatchers.IO) {
-            busy = true
             repository.getLinks()
             withContext(Dispatchers.Main) {
                 // Emit new values from repository
                 resultsLiveData.value = repository.items.toList()
             }
-            busy = false
         }
     }
 
