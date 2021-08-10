@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -67,14 +68,17 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
                 tracker.newReleasesCount < 1 -> {
                     newReleasesCounter.text = null
                     newReleasesCounter.visibility = View.GONE
+                    TextViewCompat.setTextAppearance(title, R.style.Style_Nyaasi_ReleasePreviewTitle)
                 }
                 tracker.newReleasesCount < 100 -> {
                     newReleasesCounter.text = tracker.newReleasesCount.toString()
                     newReleasesCounter.visibility = View.VISIBLE
+                    TextViewCompat.setTextAppearance(title, R.style.Style_Nyaasi_ReleasePreviewTitle_Bold)
                 }
                 tracker.newReleasesCount >= 100 -> {
                     newReleasesCounter.text = "99+"
                     newReleasesCounter.visibility = View.VISIBLE
+                    TextViewCompat.setTextAppearance(title, R.style.Style_Nyaasi_ReleasePreviewTitle_Bold)
                 }
             }
 

@@ -4,7 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(application) {
 

@@ -7,6 +7,10 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="Style.Nyaasi.ReleasePreviewTitle.Bold" parent="Style.Nyaasi.ReleasePreviewTitle">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="TextAppearance.Nyaasi.ReleasePreviewDate" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">?android:textColorSecondary</item>
