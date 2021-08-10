@@ -15,6 +15,7 @@ import java.text.DateFormat
 import java.util.*
 
 class ReleaseTrackerDetailsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_release_tracker_details)
@@ -22,6 +23,11 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
         val tracker = intent.getSerializableExtra(RELEASE_TRACKER_INTENT_OBJ) as SubscribedTracker?
 
         tracker?.let { _ ->
+            val subscribedTrackerDao = ReleaseTrackerRepo(application).dao
+            lifecycleScope.launch(Dispatchers.IO) {
+                subscribedTrackerDao.clearNewReleasesCount(tracker.id)
+            }
+
             val title = findViewById<TextView>(R.id.tracker_title)
             val category = findViewById<TextView>(R.id.tracker_category)
             val username = findViewById<TextView>(R.id.tracker_username)
@@ -62,7 +68,7 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
 
             deleteBtn.setOnClickListener {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    ReleaseTrackerRepo(application).dao.deleteById(tracker.id)
+                    subscribedTrackerDao.deleteById(tracker.id)
                     finish()
                 }
             }

@@ -25,6 +25,9 @@ interface SubscribedTrackerDao {
     @Update
     fun update(tracker: SubscribedTracker)
 
+    @Query(" UPDATE subscribedtracker SET newReleasesCount=0 WHERE id=:id")
+    fun clearNewReleasesCount(id: Int)
+
     @Query("DELETE FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL")
     fun deleteByUsername(userName: String)
 
