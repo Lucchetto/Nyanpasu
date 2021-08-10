@@ -6,17 +6,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaasi.api.NyaaApiViewModel
 import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerRepo
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaasi.util.FooterAdapter
+import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -42,6 +45,15 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_release_tracker_details)
         activityRoot = findViewById(R.id.release_tracker_details_activity_root)
+
+        if (NavigationModeUtils.isFullGestures(this)) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            activityRoot.applyInsetter {
+                type(statusBars = true) {
+                    margin()
+                }
+            }
+        }
 
         val tracker = intent.getSerializableExtra(RELEASE_TRACKER_INTENT_OBJ) as SubscribedTracker?
 
