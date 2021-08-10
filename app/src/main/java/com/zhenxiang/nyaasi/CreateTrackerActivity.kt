@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaasi
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.WindowCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -16,10 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
+import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 import com.zhenxiang.nyaasi.api.NyaaApiViewModel
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
+import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -68,6 +72,15 @@ class CreateTrackerActivity : AppCompatActivity() {
         latestReleasesList.itemAnimator = null
         latestReleasesList.layoutManager = listLayoutManager
         latestReleasesList.adapter = latestReleasesAdapter
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT && NavigationModeUtils.isFullGestures(this)) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            findViewById<View>(R.id.create_tracker_activity_root).applyInsetter {
+                type(statusBars = true) {
+                    margin()
+                }
+            }
+        }
 
         // Initially this button will be validate and not enabled
         createBtn = findViewById(R.id.create_btn)
