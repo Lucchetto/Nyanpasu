@@ -7,10 +7,10 @@ import com.zhenxiang.nyaasi.api.NyaaReleaseCategory
 @Dao
 interface SubscribedTrackerDao {
 
-    @Query("SELECT * FROM subscribedtracker")
+    @Query("SELECT * FROM subscribedtracker ORDER BY latestReleaseTimestamp DESC")
     fun getAllTrackers(): List<SubscribedTracker>
 
-    @Query("SELECT * FROM subscribedtracker")
+    @Query("SELECT * FROM subscribedtracker ORDER BY latestReleaseTimestamp DESC")
     fun getAllTrackersLive(): LiveData<List<SubscribedTracker>>
 
     @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery=:query AND category=:category")
