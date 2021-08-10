@@ -73,7 +73,7 @@ class CreateTrackerActivity : AppCompatActivity() {
         createBtn = findViewById(R.id.create_btn)
         val searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
         val usernameInput = findViewById<TextInputEditText>(R.id.username_input)
-        val categories = AppUtils.getNyaaCategoriesArray(this)
+        val categories = AppUtils.getNyaaCategoriesArrayFormatted(this)
         val categoriesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.categories_selection)
         // Hax to always show all items, we'll never reach that threshold so filter is never triggered
         categoriesDropdown.threshold = Int.MAX_VALUE
