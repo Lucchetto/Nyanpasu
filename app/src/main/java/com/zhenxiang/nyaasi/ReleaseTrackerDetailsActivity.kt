@@ -6,9 +6,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.zhenxiang.nyaasi.AppUtils.Companion.createPermissionRequestLauncher
+import com.zhenxiang.nyaasi.api.NyaaApiViewModel
+import com.zhenxiang.nyaasi.db.NyaaReleasePreview
 import com.zhenxiang.nyaasi.releasetracker.ReleaseTrackerRepo
 import com.zhenxiang.nyaasi.releasetracker.SubscribedTracker
+import com.zhenxiang.nyaasi.util.FooterAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DateFormat
@@ -16,9 +24,24 @@ import java.util.*
 
 class ReleaseTrackerDetailsActivity : AppCompatActivity() {
 
+    private lateinit var activityRoot: View
+
+    private var waitingDownload: Int? = null
+    private val storagePermissionGuard = createPermissionRequestLauncher {
+        waitingDownload?.let { releaseId ->
+            if (it) {
+                AppUtils.enqueueDownload(releaseId, activityRoot)
+            } else {
+                AppUtils.storagePermissionForDownloadDenied(activityRoot)
+            }
+        }
+        waitingDownload = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_release_tracker_details)
+        activityRoot = findViewById(R.id.release_tracker_details_activity_root)
 
         val tracker = intent.getSerializableExtra(RELEASE_TRACKER_INTENT_OBJ) as SubscribedTracker?
 
@@ -34,6 +57,67 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
             val latestRelease = findViewById<TextView>(R.id.latest_release_date)
             val trackerCreatedDate = findViewById<TextView>(R.id.tracker_created_date)
             val deleteBtn = findViewById<TextView>(R.id.delete_tracker_btn)
+            val latestReleasesList = findViewById<RecyclerView>(R.id.latest_releases_list)
+
+            val searchViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
+            searchViewModel.setCategory(tracker.category)
+            searchViewModel.setSearchText(tracker.searchQuery)
+            searchViewModel.setUsername(tracker.username)
+
+            val latestReleasesAdapter = ReleasesListAdapter()
+            val footerAdapter = FooterAdapter()
+            val listLayoutManager = LinearLayoutManager(this)
+
+            latestReleasesList.layoutManager = listLayoutManager
+            latestReleasesList.adapter = ConcatAdapter(latestReleasesAdapter, footerAdapter)
+            latestReleasesList.itemAnimator = null
+            latestReleasesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (listLayoutManager.findLastVisibleItemPosition() == latestReleasesAdapter.itemCount - 1) {
+                        searchViewModel.loadMore()
+                    }
+                }
+            })
+
+            latestReleasesAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
+                override fun itemClicked(item: NyaaReleasePreview) {
+                    NyaaReleaseActivity.startNyaaReleaseActivity(item, this@ReleaseTrackerDetailsActivity)
+                }
+
+                override fun downloadMagnet(item: NyaaReleasePreview) {
+                    AppUtils.openMagnetLink(item, activityRoot)
+                }
+
+                override fun downloadTorrent(item: NyaaReleasePreview) {
+                    AppUtils.guardDownloadPermission(this@ReleaseTrackerDetailsActivity, storagePermissionGuard, {
+                        AppUtils.enqueueDownload(item.id, activityRoot)
+                    }, {
+                        waitingDownload = item.id
+                    })
+                }
+            }
+
+            // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
+            latestReleasesAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeInserted(positionStart, itemCount)
+                    // When items are inserted at the beginning and it's the first insert make sure we jump to the top
+                    if (positionStart == 0 && itemCount > 0 && searchViewModel.firstInsert) {
+                        latestReleasesList.scrollToPosition(0)
+                        searchViewModel.firstInsert = false
+                    }
+                }
+            })
+
+            searchViewModel.resultsLiveData.observe(this, {
+                latestReleasesAdapter.setItems(it)
+                footerAdapter.showLoading(!searchViewModel.endReached())
+            })
+
+            if (savedInstanceState == null) {
+                searchViewModel.loadResults()
+            }
 
             category.text = getString(R.string.release_category,
                 getString(tracker.category.stringResId)
