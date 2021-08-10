@@ -4,19 +4,16 @@ import androidx.room.*
 
 @Entity(foreignKeys = [
     ForeignKey(entity = NyaaReleasePreview::class,
-        parentColumns = ["id"], childColumns = ["releaseId"],
+        parentColumns = ["id", "dataSource"], childColumns = ["releaseId", "releaseDataSource"],
         onDelete = ForeignKey.RESTRICT, onUpdate = ForeignKey.CASCADE)
-])
+], primaryKeys = ["releaseId", "releaseDataSource"])
 data class SavedNyaaRelease(
-    @PrimaryKey val releaseId: Int,
-    val timestamp: Long,
+    val releaseId: Int,
+    val releaseDataSource: Int,
+    val savedTimestamp: Long,
 )
 
 data class SavedNyaaReleaseWithDetails(
     @Embedded val savedNyaaRelease: SavedNyaaRelease,
-    @Relation(
-        parentColumn = "releaseId",
-        entityColumn = "id"
-    )
-    val details: NyaaReleasePreview
+    @Embedded val details: NyaaReleasePreview
 )

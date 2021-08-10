@@ -4,9 +4,10 @@ import androidx.room.*
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import java.io.Serializable
 
-@Entity
+@Entity(primaryKeys = ["id", "dataSource"])
 data class NyaaReleasePreview(
-    @PrimaryKey val id: Int,
+    val id: Int,
+    val dataSource: Int,
     val name: String,
     val magnet: String,
     // timestamp is expressed in seconds while system timestamps are in milliseconds
@@ -20,11 +21,12 @@ data class NyaaReleasePreview(
 
 @Entity(foreignKeys = [
     ForeignKey(entity = NyaaReleasePreview::class,
-        parentColumns = ["id"], childColumns = ["parentId"],
+        parentColumns = ["id", "dataSource"], childColumns = ["parentId", "parentDataSource"],
         onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
-])
+], primaryKeys = ["parentId", "parentDataSource"])
 data class NyaaReleaseDetails(
-    @PrimaryKey val parentId: Int,
+    val parentId: Int,
+    val parentDataSource: Int,
     val user: String?,
     val hash: String,
     val descriptionMarkdown: String,

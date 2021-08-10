@@ -58,7 +58,7 @@ class NyaaPageProvider {
                     val completed = parentRow.select("td:nth-child(8)").text().toInt()
                     val releaseSize = parentRow.selectFirst("td:matches(^\\d*\\.?\\d* [a-zA-Z]+\$)").text()
 
-                    val nyaaItem = NyaaReleasePreview(id, title, magnetLink, timestamp, seeders, leechers, completed, category!!, releaseSize)
+                    val nyaaItem = NyaaReleasePreview(id, 0, title, magnetLink, timestamp, seeders, leechers, completed, category!!, releaseSize)
                     foundReleases.add(nyaaItem)
                 } catch (e: Exception) {}
             }

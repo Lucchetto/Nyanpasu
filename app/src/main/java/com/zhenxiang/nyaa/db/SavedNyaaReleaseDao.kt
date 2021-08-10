@@ -7,12 +7,11 @@ import androidx.room.*
 interface SavedNyaaReleaseDao {
 
     // Order from most recent
-    @Query("SELECT * FROM savednyaarelease ORDER BY timestamp DESC")
+    @Query("SELECT * FROM savednyaarelease ORDER BY savedTimestamp DESC")
     fun getAll(): LiveData<List<SavedNyaaRelease>>
 
     // Order from most recent
-    @Transaction
-    @Query("SELECT * From savednyaarelease ORDER BY timestamp DESC")
+    @Query("SELECT * From savednyaarelease INNER JOIN nyaareleasepreview ON id=releaseId AND dataSource=releaseDataSource ORDER BY savedTimestamp DESC")
     fun getAllWithDetails(): LiveData<List<SavedNyaaReleaseWithDetails>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
