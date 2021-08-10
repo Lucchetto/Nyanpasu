@@ -52,8 +52,6 @@ class BrowseFragment : Fragment() {
         browseViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
         if (savedInstanceState == null) {
             browseViewModel.loadResults()
-        } else {
-            browseViewModel.reEmitCurrentResults()
         }
     }
 

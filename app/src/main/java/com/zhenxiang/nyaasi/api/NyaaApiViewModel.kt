@@ -36,11 +36,6 @@ class NyaaApiViewModel: ViewModel() {
         }
     }
 
-    fun reEmitCurrentResults() {
-        resultsLiveData.value = repository.items.toList()
-    }
-
-
     fun setCategory(category: NyaaReleaseCategory) {
         this.repository.category = category
     }
