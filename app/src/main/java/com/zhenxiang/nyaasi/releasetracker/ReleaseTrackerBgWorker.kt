@@ -89,7 +89,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
         // Select releases tracker tab in bottom nav
         activityIntent.putExtra(MAIN_ACTIVITY_BOTTOM_NAV_SELECTED_ID, R.id.subscribedUsers)
         val notificationBuilder = NotificationCompat.Builder(applicationContext, RELEASE_TRACKER_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_magnet)
+            .setSmallIcon(R.drawable.ic_outline_circle_notifications_24)
             .setContentTitle(title)
             .setContentText(content)
             .setContentIntent(
