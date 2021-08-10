@@ -108,25 +108,25 @@
             app:justifyContent="center"
             app:flexWrap="wrap">
 
-            <com.zhenxiang.nyaasi.view.ReleaseDataItemView
+            <com.zhenxiang.nyaa.view.ReleaseDataItemView
                 android:id="@+id/seeders"
                 style="@style/Theme.Nyaasi.ReleaseDataItem"
                 app:title="Seeders"
                 tools:value="15"/>
 
-            <com.zhenxiang.nyaasi.view.ReleaseDataItemView
+            <com.zhenxiang.nyaa.view.ReleaseDataItemView
                 android:id="@+id/leechers"
                 style="@style/Theme.Nyaasi.ReleaseDataItem"
                 app:title="Leechers"
                 tools:value="69"/>
 
-            <com.zhenxiang.nyaasi.view.ReleaseDataItemView
+            <com.zhenxiang.nyaa.view.ReleaseDataItemView
                 android:id="@+id/completed"
                 style="@style/Theme.Nyaasi.ReleaseDataItem"
                 app:title="Completed"
                 tools:value="420"/>
 
-            <com.zhenxiang.nyaasi.view.ReleaseDataItemView
+            <com.zhenxiang.nyaa.view.ReleaseDataItemView
                 android:id="@+id/release_size"
                 style="@style/Theme.Nyaasi.ReleaseDataItem"
                 app:title="Release size"

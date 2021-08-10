@@ -38,7 +38,7 @@
                 app:searchIcon="@null" />
         </FrameLayout>
 
-        <com.zhenxiang.nyaasi.widget.DisableScrollingTabLayout
+        <com.zhenxiang.nyaa.widget.DisableScrollingTabLayout
             android:id="@+id/library_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             app:layout_scrollFlags="snap"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.zhenxiang.nyaasi.widget.DisableScrollingViewPager
+    <com.zhenxiang.nyaa.widget.DisableScrollingViewPager
         android:id="@+id/library_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
