@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zhenxiang.nyaa.fragment.BrowseFragment
 import com.zhenxiang.nyaa.fragment.LibraryFragment
 import com.zhenxiang.nyaa.fragment.ReleasesTrackerFragment
+import com.zhenxiang.nyaa.fragment.SettingsFragment
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerBgWorker
 import dev.chrisbanes.insetter.applyInsetter
 
@@ -57,16 +58,19 @@ class MainActivity : AppCompatActivity() {
         val browseFragment: Fragment
         val libraryFragment: Fragment
         val subscribedUsersFragment: Fragment
+        val settingsFragment: Fragment
 
         if (savedInstanceState == null) {
             browseFragment = setupFragment(BrowseFragment.newInstance(), "1")
-            libraryFragment = setupFragment(LibraryFragment.newInstance(), "3")
-            subscribedUsersFragment = setupFragment(ReleasesTrackerFragment.newInstance(), "4")
+            libraryFragment = setupFragment(LibraryFragment.newInstance(), "2")
+            subscribedUsersFragment = setupFragment(ReleasesTrackerFragment.newInstance(), "3")
+            settingsFragment = setupFragment(SettingsFragment.newInstance(), "4")
             switchActiveFragment(browseFragment)
         } else {
             browseFragment = supportFragmentManager.findFragmentByTag("1")!!
-            libraryFragment = supportFragmentManager.findFragmentByTag("3")!!
-            subscribedUsersFragment = supportFragmentManager.findFragmentByTag("4")!!
+            libraryFragment = supportFragmentManager.findFragmentByTag("2")!!
+            subscribedUsersFragment = supportFragmentManager.findFragmentByTag("3")!!
+            settingsFragment = supportFragmentManager.findFragmentByTag("4")!!
         }
 
         bottomNav = findViewById(R.id.bottom_nav)
@@ -76,6 +80,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.browseFragment -> switchActiveFragment(browseFragment)
                 R.id.libraryFragment -> switchActiveFragment(libraryFragment)
                 R.id.subscribedUsers -> switchActiveFragment(subscribedUsersFragment)
+                R.id.settings -> switchActiveFragment(settingsFragment)
             }
             true
         }
