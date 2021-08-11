@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaa.db
 
 import androidx.room.*
+import com.zhenxiang.nyaa.api.ApiDataSource
 
 @Dao
 interface NyaaReleasePreviewDao {
@@ -12,7 +13,7 @@ interface NyaaReleasePreviewDao {
     fun insert(release: NyaaReleasePreview): Long
 
     @Query("DELETE FROM nyaareleasepreview WHERE number = :number AND dataSource = :dataSource")
-    fun delete(number: Int, dataSource: Int)
+    fun delete(number: Int, dataSource: ApiDataSource)
 
     @Update
     fun update(release: NyaaReleasePreview)
@@ -26,7 +27,7 @@ interface NyaaReleasePreviewDao {
     }
 
     @Query("delete from nyaareleasepreview WHERE number=:number AND dataSource=:dataSource")
-    fun deleteById(number: Int, dataSource: Int)
+    fun deleteById(number: Int, dataSource: ApiDataSource)
 
     @Transaction
     fun deleteByIdList(list: List<ReleaseId>) {
@@ -43,7 +44,7 @@ interface NyaaReleaseDetailsDao {
     fun getAll(): List<NyaaReleaseDetails>
 
     @Query("SELECT * FROM nyaareleasedetails WHERE parent_number=:number AND parent_dataSource=:dataSource")
-    fun getItemById(number: Int, dataSource: Int): NyaaReleaseDetails?
+    fun getItemById(number: Int, dataSource: ApiDataSource): NyaaReleaseDetails?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(release: NyaaReleaseDetails)

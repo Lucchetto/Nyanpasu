@@ -2,6 +2,7 @@ package com.zhenxiang.nyaa.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.zhenxiang.nyaa.api.ApiDataSource
 
 @Dao
 interface ViewedNyaaReleaseDao {
@@ -29,7 +30,7 @@ interface ViewedNyaaReleaseDao {
     fun delete(relase: ViewedNyaaRelease)
 
     @Query("delete from viewednyaarelease WHERE parent_number=:number AND parent_dataSource=:dataSource")
-    fun deleteById(number: Int, dataSource: Int)
+    fun deleteById(number: Int, dataSource: ApiDataSource)
 
     @Transaction
     fun deleteByIdList(list: List<ReleaseId>) {

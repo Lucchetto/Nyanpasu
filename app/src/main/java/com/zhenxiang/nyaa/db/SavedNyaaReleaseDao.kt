@@ -2,6 +2,7 @@ package com.zhenxiang.nyaa.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.zhenxiang.nyaa.api.ApiDataSource
 
 @Dao
 interface SavedNyaaReleaseDao {
@@ -18,7 +19,7 @@ interface SavedNyaaReleaseDao {
     fun insert(release: SavedNyaaRelease)
 
     @Query("SELECT * FROM savednyaarelease WHERE parent_number=:number AND parent_dataSource=:dataSource")
-    fun getItemById(number: Int, dataSource: Int): SavedNyaaRelease?
+    fun getItemById(number: Int, dataSource: ApiDataSource): SavedNyaaRelease?
 
     @Delete
     fun delete(release: SavedNyaaRelease)
