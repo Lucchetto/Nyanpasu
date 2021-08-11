@@ -1,0 +1,336 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "3aae13b04559237274d0d2c587391c79",
+    "entities": [
+      {
+        "tableName": "NyaaReleasePreview",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `magnet` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `seeders` INTEGER NOT NULL, `leechers` INTEGER NOT NULL, `completed` INTEGER NOT NULL, `category` TEXT NOT NULL, `releaseSize` TEXT NOT NULL, `number` INTEGER NOT NULL, `dataSource` INTEGER NOT NULL, PRIMARY KEY(`number`, `dataSource`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "magnet",
+            "columnName": "magnet",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seeders",
+            "columnName": "seeders",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "leechers",
+            "columnName": "leechers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "completed",
+            "columnName": "completed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releaseSize",
+            "columnName": "releaseSize",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id.number",
+            "columnName": "number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id.dataSource",
+            "columnName": "dataSource",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "number",
+            "dataSource"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "NyaaReleaseDetails",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user` TEXT, `hash` TEXT NOT NULL, `descriptionMarkdown` TEXT NOT NULL, `parent_number` INTEGER NOT NULL, `parent_dataSource` INTEGER NOT NULL, PRIMARY KEY(`parent_number`, `parent_dataSource`), FOREIGN KEY(`parent_number`, `parent_dataSource`) REFERENCES `NyaaReleasePreview`(`number`, `dataSource`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "user",
+            "columnName": "user",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hash",
+            "columnName": "hash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descriptionMarkdown",
+            "columnName": "descriptionMarkdown",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releaseId.number",
+            "columnName": "parent_number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releaseId.dataSource",
+            "columnName": "parent_dataSource",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "parent_number",
+            "parent_dataSource"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "NyaaReleasePreview",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "parent_number",
+              "parent_dataSource"
+            ],
+            "referencedColumns": [
+              "number",
+              "dataSource"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "NyaaSearchHistoryItem",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`searchQuery` TEXT NOT NULL COLLATE NOCASE, `searchTimestamp` INTEGER NOT NULL, PRIMARY KEY(`searchQuery`))",
+        "fields": [
+          {
+            "fieldPath": "searchQuery",
+            "columnName": "searchQuery",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "searchTimestamp",
+            "columnName": "searchTimestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "searchQuery"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ViewedNyaaRelease",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`viewedTimestamp` INTEGER NOT NULL, `parent_number` INTEGER NOT NULL, `parent_dataSource` INTEGER NOT NULL, PRIMARY KEY(`parent_number`, `parent_dataSource`), FOREIGN KEY(`parent_number`, `parent_dataSource`) REFERENCES `NyaaReleasePreview`(`number`, `dataSource`) ON UPDATE CASCADE ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "viewedTimestamp",
+            "columnName": "viewedTimestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releaseId.number",
+            "columnName": "parent_number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releaseId.dataSource",
+            "columnName": "parent_dataSource",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "parent_number",
+            "parent_dataSource"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "NyaaReleasePreview",
+            "onDelete": "RESTRICT",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "parent_number",
+              "parent_dataSource"
+            ],
+            "referencedColumns": [
+              "number",
+              "dataSource"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "SavedNyaaRelease",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`savedTimestamp` INTEGER NOT NULL, `parent_number` INTEGER NOT NULL, `parent_dataSource` INTEGER NOT NULL, PRIMARY KEY(`parent_number`, `parent_dataSource`), FOREIGN KEY(`parent_number`, `parent_dataSource`) REFERENCES `NyaaReleasePreview`(`number`, `dataSource`) ON UPDATE CASCADE ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "savedTimestamp",
+            "columnName": "savedTimestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releaseId.number",
+            "columnName": "parent_number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releaseId.dataSource",
+            "columnName": "parent_dataSource",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "parent_number",
+            "parent_dataSource"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "NyaaReleasePreview",
+            "onDelete": "RESTRICT",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "parent_number",
+              "parent_dataSource"
+            ],
+            "referencedColumns": [
+              "number",
+              "dataSource"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "SubscribedTracker",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `dataSource` INTEGER NOT NULL, `username` TEXT, `searchQuery` TEXT, `category` TEXT NOT NULL, `latestReleaseTimestamp` INTEGER NOT NULL, `hasPreviousReleases` INTEGER NOT NULL, `createdTimestamp` INTEGER NOT NULL, `newReleasesCount` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataSource",
+            "columnName": "dataSource",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "searchQuery",
+            "columnName": "searchQuery",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latestReleaseTimestamp",
+            "columnName": "latestReleaseTimestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasPreviousReleases",
+            "columnName": "hasPreviousReleases",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdTimestamp",
+            "columnName": "createdTimestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "newReleasesCount",
+            "columnName": "newReleasesCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3aae13b04559237274d0d2c587391c79')"
+    ]
+  }
+}
