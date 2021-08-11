@@ -39,7 +39,7 @@ class NyaaPageProvider {
 
         suspend fun getPageItems(dataSource: ApiDataSource,
                                  pageIndex: Int,
-                                 category: NyaaReleaseCategory = NyaaReleaseCategory.ALL,
+                                 category: ReleaseCategory? = null,
                                  searchQuery: String? = null,
                                  user: String? = null): NyaaPageResults? {
 
@@ -56,8 +56,8 @@ class NyaaPageProvider {
             searchQuery?.let {
                 fullUrl += "&q=${URLEncoder.encode(it, "utf-8")}"
             }
-            if (category != NyaaReleaseCategory.ALL) {
-                fullUrl += "&c=${category.id}"
+            if (category != null) {
+                fullUrl += "&c=${category.getId()}"
             }
 
             val pageItems: Elements
@@ -77,7 +77,7 @@ class NyaaPageProvider {
                     val parentRow = it.parent().parent()
 
                     val categoryId = categoryIdRegex.find(parentRow.selectFirst("td > a[href~=^(.*?)(\\?|\\&)c=\\d+_\\d+\$]").attr("href").removePrefix("/?c="))!!.value
-                    val category = NyaaReleaseCategory.values().find { category -> category.id == categoryId }
+                    val category = NyaaReleaseCategory.values().find { category -> category.getId() == categoryId }
 
                     val id = it.attr("href").split("/").last().toInt()
                     val title = it.attr("title")

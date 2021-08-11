@@ -8,6 +8,7 @@ import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.R
 import java.text.DateFormat
 import java.util.*
@@ -54,9 +55,7 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
 
         fun bind(tracker: SubscribedTracker) {
             itemData = tracker
-            category.text = category.context.getString(R.string.release_category,
-                category.context.getString(tracker.category.stringResId)
-            )
+            category.text = AppUtils.getReleaseCategoryString(category.context, tracker.category)
             latestRelease.text = if (tracker.hasPreviousReleases) {
                 latestRelease.context.getString(R.string.tracker_latest_release,
                     DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.latestReleaseTimestamp * 1000))

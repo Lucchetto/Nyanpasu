@@ -2,6 +2,7 @@ package com.zhenxiang.nyaa.db
 
 import androidx.room.*
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
+import com.zhenxiang.nyaa.api.ReleaseCategory
 import java.io.Serializable
 
 @Entity(primaryKeys = ["number", "dataSource"])
@@ -14,7 +15,7 @@ data class NyaaReleasePreview(
     val seeders: Int,
     val leechers: Int,
     val completed: Int,
-    val category: NyaaReleaseCategory,
+    val category: ReleaseCategory?,
     val releaseSize: String,
 ): Serializable
 

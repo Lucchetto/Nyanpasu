@@ -23,7 +23,7 @@ class NyaaRepository(var dataSource: ApiDataSource) {
             field = if (value?.isBlank() == true) null else value
         }
 
-    var category: NyaaReleaseCategory = NyaaReleaseCategory.ALL
+    var category: ReleaseCategory? = null
 
     fun clearRepo() {
         pageIndex = 0

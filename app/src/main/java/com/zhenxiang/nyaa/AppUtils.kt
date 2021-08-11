@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
+import com.zhenxiang.nyaa.api.ReleaseCategory
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.ReleaseId
 
@@ -101,7 +102,13 @@ class AppUtils {
             }
         }
 
-        fun getNyaaCategoriesArrayFormatted(context: Context) = NyaaReleaseCategory.values().map { context.getString(it.stringResId) }
+        fun getNyaaCategoriesArrayFormatted(context: Context) = NyaaReleaseCategory.values().map { context.getString(it.getStringResId()) }
+
+        fun getReleaseCategoryString(context: Context, releaseCategory: ReleaseCategory?): String {
+            return context.getString(
+                releaseCategory?.let { category -> category.getStringResId() } ?: run { R.string.category_all }
+            )
+        }
 
         fun getNyaaCategoriesSpinner(context: Context): ArrayAdapter<String> {
             return ArrayAdapter(

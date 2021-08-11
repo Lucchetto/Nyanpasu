@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zhenxiang.nyaa.CreateTrackerActivity
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.api.ApiDataSource
+import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
@@ -61,6 +62,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                     }
                 } else {
                     val newTracked = SubscribedTracker(dataSource = dataSource,
+                        category = ApiDataSource.getCategories(dataSource)[0],
                         username = username,
                         latestReleaseTimestamp = latestTimestamp,
                         createdTimestamp = System.currentTimeMillis())

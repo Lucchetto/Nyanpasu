@@ -2,7 +2,8 @@ package com.zhenxiang.nyaa.api
 
 import com.zhenxiang.nyaa.R
 
-enum class NyaaReleaseCategory(val id: String, val stringResId: Int) {
+enum class NyaaReleaseCategory(private val id: String, private val stringResId: Int): ReleaseCategory {
+    // ALWAYS PUT DEFAULT CATEGORY AT TOP
     ALL("0_0", R.string.category_all),
     ANIME("1_0", R.string.category_anime),
     ANIME_AMV("1_1", R.string.category_anime_amv),
@@ -26,5 +27,17 @@ enum class NyaaReleaseCategory(val id: String, val stringResId: Int) {
     PICTURES_PHOTOS("5_2", R.string.category_pictures_photos),
     SOFTWARE("6_0", R.string.category_software),
     SOFTWARE_APPS("6_1", R.string.category_software_apps),
-    SOFTWARE_GAMES("6_2", R.string.category_software_games),
+    SOFTWARE_GAMES("6_2", R.string.category_software_games);
+
+    override fun getDataSource(): ApiDataSource {
+        return ApiDataSource.NYAA_SI
+    }
+
+    override fun getId(): String {
+        return id
+    }
+
+    override fun getStringResId(): Int {
+        return stringResId
+    }
 }

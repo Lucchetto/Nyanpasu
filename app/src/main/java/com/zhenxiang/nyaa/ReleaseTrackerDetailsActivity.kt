@@ -132,9 +132,7 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
                 searchViewModel.loadResults()
             }
 
-            category.text = getString(R.string.release_category,
-                getString(tracker.category.stringResId)
-            )
+            category.text = AppUtils.getReleaseCategoryString(this, tracker.category)
             latestRelease.text = if (tracker.hasPreviousReleases) {
                 getString(R.string.tracker_latest_release,
                     DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.latestReleaseTimestamp * 1000))

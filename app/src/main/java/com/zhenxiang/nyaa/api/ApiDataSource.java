@@ -19,6 +19,15 @@ public enum ApiDataSource {
         return (ApiDataSource) map.get(dataSource);
     }
 
+    public static ReleaseCategory[] getCategories(ApiDataSource dataSource) {
+        switch (dataSource) {
+            case NYAA_SI:
+                return NyaaReleaseCategory.values();
+            default:
+                return null;
+        }
+    }
+
     public static String getUrl(ApiDataSource dataSource) {
         switch (dataSource) {
             case NYAA_SI:

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
+import com.zhenxiang.nyaa.api.ReleaseCategory
 import java.io.Serializable
 
 @Entity
@@ -12,7 +13,7 @@ data class SubscribedTracker(
     val dataSource: ApiDataSource,
     val username: String? = null,
     val searchQuery: String? = null,
-    val category: NyaaReleaseCategory = NyaaReleaseCategory.ALL,
+    val category: ReleaseCategory? = null,
     // latestReleaseTimestamp is expressed in seconds while system timestamps are in milliseconds
     var latestReleaseTimestamp: Long,
     var hasPreviousReleases: Boolean = true,

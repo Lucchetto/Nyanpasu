@@ -3,7 +3,6 @@ package com.zhenxiang.nyaa
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
@@ -30,8 +29,6 @@ import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import java.text.DateFormat
 import java.util.*
 
@@ -112,7 +109,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             }
 
             val category = findViewById<TextView>(R.id.category)
-            category.text = getString(R.string.release_category, getString(it.category.stringResId))
+            category.text = AppUtils.getReleaseCategoryString(this, it.category)
 
             val date = findViewById<TextView>(R.id.date)
             date.text = getString(R.string.release_date,

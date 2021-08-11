@@ -38,7 +38,7 @@ class NyaaApiViewModel: ViewModel() {
         }
     }
 
-    fun setCategory(category: NyaaReleaseCategory) {
+    fun setCategory(category: ReleaseCategory?) {
         this.repository.category = category
     }
 
