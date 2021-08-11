@@ -4,7 +4,7 @@ import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class NyaaRepository {
+class NyaaRepository(var dataSource: ApiDataSource) {
 
     private val TAG = javaClass.name
 
@@ -34,7 +34,7 @@ class NyaaRepository {
     suspend fun getLinks(): Boolean = withContext(Dispatchers.IO) {
         if (!endReached) {
             pageIndex++
-            val newItems = NyaaPageProvider.getPageItems(pageIndex, category, searchValue, username)
+            val newItems = NyaaPageProvider.getPageItems(dataSource, pageIndex, category, searchValue, username)
             newItems?.let {
                 items.addAll(it.items)
                 endReached = if (it.bottomReached) {

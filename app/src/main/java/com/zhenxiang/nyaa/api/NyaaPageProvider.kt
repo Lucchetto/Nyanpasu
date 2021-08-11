@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaa.api
 
 import android.util.Log
+import com.zhenxiang.nyaa.db.NyaaReleaseDetails
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.ReleaseId
 import org.jsoup.Jsoup
@@ -15,26 +16,54 @@ class NyaaPageProvider {
     companion object {
         private val categoryIdRegex = "^\\d+_\\d+\$".toRegex()
         private val TAG = javaClass.name
-        suspend fun getPageItems(pageIndex: Int,
+
+        suspend fun getReleaseDetails(releaseId: ReleaseId): NyaaReleaseDetails? {
+            return try {
+                ApiDataSource.getUrl(releaseId.dataSource)?.let { sourceUrl ->
+                    val doc: Document = Jsoup.connect("https://${sourceUrl}/view/${releaseId.number}").get()
+                    doc.outputSettings().prettyPrint(false)
+
+                    val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
+                    val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
+                    val descriptionMarkdown = doc.getElementById("torrent-description").html()
+
+                    NyaaReleaseDetails(releaseId, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
+                } ?: run {
+                    null
+                }
+            } catch(e: Exception) {
+                Log.w(TAG, e)
+                null
+            }
+        }
+
+        suspend fun getPageItems(dataSource: ApiDataSource,
+                                 pageIndex: Int,
                                  category: NyaaReleaseCategory = NyaaReleaseCategory.ALL,
                                  searchQuery: String? = null,
                                  user: String? = null): NyaaPageResults? {
-            var url = "https://nyaa.si/"
-            if (!user.isNullOrBlank()) {
-                url += "user/$user"
+
+            val sourceUrl = ApiDataSource.getUrl(dataSource)
+            if (sourceUrl == null) {
+                return null
             }
-            url += "?p=${pageIndex}"
+
+            var fullUrl = "https://${sourceUrl}/"
+            if (!user.isNullOrBlank()) {
+                fullUrl += "user/$user"
+            }
+            fullUrl += "?p=${pageIndex}"
             searchQuery?.let {
-                url += "&q=${URLEncoder.encode(it, "utf-8")}"
+                fullUrl += "&q=${URLEncoder.encode(it, "utf-8")}"
             }
             if (category != NyaaReleaseCategory.ALL) {
-                url += "&c=${category.id}"
+                fullUrl += "&c=${category.id}"
             }
 
             val pageItems: Elements
             val doc: Document
             try {
-                doc = Jsoup.connect(url).get()
+                doc = Jsoup.connect(fullUrl).get()
                  pageItems = doc.select("tr >td > a[href~=^\\/view\\/\\d+\$]")
             } catch (e: Exception) {
                 Log.e(TAG, "exception", e)

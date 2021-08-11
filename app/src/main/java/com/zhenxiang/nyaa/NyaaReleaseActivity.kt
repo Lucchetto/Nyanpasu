@@ -153,20 +153,10 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 }
 
                 if (localReleaseDetails == null && savedInstanceState == null) {
-                    try {
-                        val doc: Document = Jsoup.connect("https://nyaa.si/view/${it.id.number}").get()
-                        doc.outputSettings().prettyPrint(false)
-
-                        val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
-                        val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
-                        val descriptionMarkdown = doc.getElementById("torrent-description").html()
-
-                        val details = NyaaReleaseDetails(it.id, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
+                    NyaaPageProvider.getReleaseDetails(it.id)?.let { details ->
                         localNyaaDbViewModel.addDetails(details)
 
                         setDetails(details)
-                    } catch(e: Exception) {
-                        Log.w(TAG, e)
                     }
                 }
             }
@@ -208,8 +198,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val subscribedUser = releasesTrackerViewModel.getTrackerByUsername(details.user)
             latestRelease?.let {
             } ?: run {
-                latestRelease = NyaaPageProvider.getPageItems(
-                    0, user = details.user)?.items?.getOrNull(0)
+                latestRelease = NyaaPageProvider.getPageItems(dataSource = details.releaseId.dataSource,
+                    pageIndex = 0, user = details.user)?.items?.getOrNull(0)
             }
             val latestTimestamp = latestRelease?.let {
                 it.timestamp
@@ -223,7 +213,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     manageTrackerBtn.isEnabled = true
                     manageTrackerBtn.visibility = View.VISIBLE
                     manageTrackerBtn.setOnClickListener {
-                        val bottomSheet = ReleaseTrackerBottomFragment.newInstance(details.user, latestTimestamp)
+                        val bottomSheet = ReleaseTrackerBottomFragment.newInstance(
+                            details.releaseId.dataSource, details.user, latestTimestamp)
                         bottomSheet.show(supportFragmentManager, null)
                     }
                 }

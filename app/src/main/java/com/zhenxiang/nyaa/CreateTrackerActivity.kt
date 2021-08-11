@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.revengeos.revengeui.utils.NavigationModeUtils
+import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.api.NyaaApiViewModel
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
@@ -169,7 +170,8 @@ class CreateTrackerActivity : AppCompatActivity() {
                     latestReleasesAdapter.getItems().getOrNull(0)?.let {
                         val username = usernameInput.text.toString().trim()
                         val searchQuery = searchQueryInput.text.toString().trim()
-                        val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,
+                        val newTracker = SubscribedTracker(dataSource = ApiDataSource.NYAA_SI,
+                            username = if (username.isBlank()) null else username,
                             searchQuery = searchQuery, latestReleaseTimestamp = it.timestamp,
                             category = NyaaReleaseCategory.values()[selectedCategoryIndex],
                             createdTimestamp = System.currentTimeMillis())
@@ -183,7 +185,8 @@ class CreateTrackerActivity : AppCompatActivity() {
                     val searchQuery = searchQueryInput.text.toString().trim()
                     // Current millis must be divided by 1000 since nyaa.si use seconds as unit
                     // Explicitly tell that hasPreviousReleases is false
-                    val newTracker = SubscribedTracker(username = if (username.isBlank()) null else username,
+                    val newTracker = SubscribedTracker(dataSource = ApiDataSource.NYAA_SI,
+                        username = if (username.isBlank()) null else username,
                         searchQuery = searchQuery, latestReleaseTimestamp = System.currentTimeMillis() / 1000,
                         category = NyaaReleaseCategory.values()[selectedCategoryIndex],
                         createdTimestamp = System.currentTimeMillis(), hasPreviousReleases = false)

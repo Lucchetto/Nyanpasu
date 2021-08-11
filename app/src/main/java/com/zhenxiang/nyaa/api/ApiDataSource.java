@@ -19,6 +19,15 @@ public enum ApiDataSource {
         return (ApiDataSource) map.get(dataSource);
     }
 
+    public static String getUrl(ApiDataSource dataSource) {
+        switch (dataSource) {
+            case NYAA_SI:
+                return "nyaa.si";
+            default:
+                return null;
+        }
+    }
+
     private ApiDataSource(int value) {
         this.value = value;
     }

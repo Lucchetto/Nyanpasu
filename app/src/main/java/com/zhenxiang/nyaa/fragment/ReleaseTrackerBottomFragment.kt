@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zhenxiang.nyaa.CreateTrackerActivity
 import com.zhenxiang.nyaa.R
+import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +21,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
+private const val ARG_DATASOURCE = "dataSource"
 private const val ARG_USERNAME = "username"
 private const val ARG_LATEST_TIMESTAMP = "latestTimestamp"
 
 class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
+    private var dataSource by Delegates.notNull<ApiDataSource>()
     private lateinit var username: String
     private var latestTimestamp by Delegates.notNull<Long>()
 
@@ -31,6 +34,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
         super.onCreate(savedInstanceState)
 
         requireArguments().let {
+            dataSource = it.getSerializable(ARG_DATASOURCE) as ApiDataSource
             username = it.getString(ARG_USERNAME)!!
             latestTimestamp = it.getLong(ARG_LATEST_TIMESTAMP)!!
         }
@@ -56,7 +60,8 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                         releaseTrackerFragmentSharedViewModel.currentUserTracked.value = false
                     }
                 } else {
-                    val newTracked = SubscribedTracker(username = username,
+                    val newTracked = SubscribedTracker(dataSource = dataSource,
+                        username = username,
                         latestReleaseTimestamp = latestTimestamp,
                         createdTimestamp = System.currentTimeMillis())
                     releasesTrackerViewModel.addReleaseTracker(newTracked)
@@ -85,9 +90,10 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(username: String, latestTimestamp: Long) =
+        fun newInstance(dataSource: ApiDataSource, username: String, latestTimestamp: Long) =
             ReleaseTrackerBottomFragment().apply {
                 arguments = Bundle().apply {
+                    putSerializable(ARG_DATASOURCE, dataSource)
                     putString(ARG_USERNAME, username)
                     putLong(ARG_LATEST_TIMESTAMP, latestTimestamp)
                 }

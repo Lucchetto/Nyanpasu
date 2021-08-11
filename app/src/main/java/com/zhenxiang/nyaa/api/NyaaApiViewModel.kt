@@ -8,7 +8,7 @@ import kotlinx.coroutines.*
 
 class NyaaApiViewModel: ViewModel() {
 
-    private val repository = NyaaRepository()
+    private val repository = NyaaRepository(ApiDataSource.NYAA_SI)
     val resultsLiveData = MutableLiveData<List<NyaaReleasePreview>>()
     var firstInsert: Boolean = true
 
