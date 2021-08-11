@@ -18,5 +18,4 @@ class DbTypeConverters {
             NyaaReleaseCategory.ALL
         }
     }
-
 }

@@ -2,7 +2,6 @@ package com.zhenxiang.nyaa.db
 
 import androidx.room.*
 
-
 @Dao
 interface NyaaReleasePreviewDao {
 
@@ -12,8 +11,8 @@ interface NyaaReleasePreviewDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(release: NyaaReleasePreview): Long
 
-    @Query("DELETE FROM nyaareleasepreview WHERE id = :id")
-    fun deleteById(id: Int)
+    @Query("DELETE FROM nyaareleasepreview WHERE number = :number AND dataSource = :dataSource")
+    fun delete(number: Int, dataSource: Int)
 
     @Update
     fun update(release: NyaaReleasePreview)
@@ -26,8 +25,15 @@ interface NyaaReleasePreviewDao {
         }
     }
 
-    @Query("delete from nyaareleasepreview where id in (:list)")
-    fun deleteByIdList(list: List<Int>)
+    @Query("delete from nyaareleasepreview WHERE number=:number AND dataSource=:dataSource")
+    fun deleteById(number: Int, dataSource: Int)
+
+    @Transaction
+    fun deleteByIdList(list: List<ReleaseId>) {
+        list.forEach {
+            deleteById(it.number, it.dataSource)
+        }
+    }
 }
 
 @Dao
@@ -36,8 +42,8 @@ interface NyaaReleaseDetailsDao {
     @Query("SELECT * FROM nyaareleasedetails")
     fun getAll(): List<NyaaReleaseDetails>
 
-    @Query("SELECT * FROM nyaareleasedetails WHERE parentId=:id")
-    fun getById(id: Int): NyaaReleaseDetails?
+    @Query("SELECT * FROM nyaareleasedetails WHERE parent_number=:number AND parent_dataSource=:dataSource")
+    fun getItemById(number: Int, dataSource: Int): NyaaReleaseDetails?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(release: NyaaReleaseDetails)

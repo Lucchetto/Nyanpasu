@@ -20,6 +20,7 @@ import com.zhenxiang.nyaa.AppUtils.Companion.storagePermissionForDownloadDenied
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.api.NyaaApiViewModel
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
+import com.zhenxiang.nyaa.db.ReleaseId
 import com.zhenxiang.nyaa.util.FooterAdapter
 
 /**
@@ -34,7 +35,7 @@ class BrowseFragment : Fragment() {
     private lateinit var fragmentView: View
     private lateinit var searchBtn: ExtendedFloatingActionButton
 
-    private var waitingDownload: Int? = null
+    private var waitingDownload: ReleaseId? = null
     private val storagePermissionGuard = createPermissionRequestLauncher {
         waitingDownload?.let { releaseId ->
             if (it) {
@@ -42,8 +43,8 @@ class BrowseFragment : Fragment() {
             } else {
                 storagePermissionForDownloadDenied(fragmentView, searchBtn)
             }
+            waitingDownload = null
         }
-        waitingDownload = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

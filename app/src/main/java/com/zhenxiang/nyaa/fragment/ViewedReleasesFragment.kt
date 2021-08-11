@@ -14,6 +14,7 @@ import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
+import com.zhenxiang.nyaa.db.ReleaseId
 import com.zhenxiang.nyaa.widget.ReleaseItemAnimator
 import dev.chrisbanes.insetter.applyInsetter
 
@@ -27,7 +28,7 @@ open class ViewedReleasesFragment : Fragment() {
 
     private lateinit var fragmentView: View
 
-    private var waitingDownload: Int? = null
+    private var waitingDownload: ReleaseId? = null
     private val storagePermissionGuard = createPermissionRequestLauncher {
         waitingDownload?.let { releaseId ->
             if (it) {

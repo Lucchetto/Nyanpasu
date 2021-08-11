@@ -11,22 +11,30 @@ interface ViewedNyaaReleaseDao {
     fun getAll(): LiveData<List<ViewedNyaaRelease>>
 
     // Order from most recent
-    @Query("SELECT * FROM viewednyaarelease INNER JOIN nyaareleasepreview ON id=releaseId AND dataSource=releaseDataSource ORDER BY viewedTimestamp DESC")
+    @Query("SELECT * FROM viewednyaarelease INNER JOIN nyaareleasepreview ON number=parent_number AND dataSource=parent_dataSource ORDER BY viewedTimestamp DESC")
     fun getAllWithDetails(): LiveData<List<ViewedNyaaReleaseWithDetails>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(release: ViewedNyaaRelease)
 
     // Let's limit the list to the most 150 recent items
-    @Query("SELECT releaseId FROM viewednyaarelease WHERE releaseId NOT IN (SELECT releaseId FROM viewednyaarelease ORDER BY viewedTimestamp DESC LIMIT 150)")
-    fun getExcessiveRecentsIds(): List<Int>
+    @Query("""
+            WITH to_keep AS (SELECT parent_number, parent_dataSource FROM viewednyaarelease ORDER BY viewedTimestamp DESC LIMIT 150)
+            SELECT parent_number AS number, parent_dataSource AS dataSource FROM viewednyaarelease WHERE NOT EXISTS (SELECT parent_number, parent_dataSource FROM to_keep
+                WHERE to_keep.parent_number=viewednyaarelease.parent_number AND to_keep.parent_dataSource=viewednyaarelease.parent_dataSource)
+    """)
+    fun getExcessiveRecentsIds(): List<ReleaseId>
 
     @Delete
-    fun delete(release: ViewedNyaaRelease)
+    fun delete(relase: ViewedNyaaRelease)
 
-    @Query("delete from viewednyaarelease where releaseId=:id")
-    fun deleteById(id: Int)
+    @Query("delete from viewednyaarelease WHERE parent_number=:number AND parent_dataSource=:dataSource")
+    fun deleteById(number: Int, dataSource: Int)
 
-    @Query("delete from viewednyaarelease where releaseId in (:list)")
-    fun deleteByIdList(list: List<Int>)
+    @Transaction
+    fun deleteByIdList(list: List<ReleaseId>) {
+        list.forEach {
+            deleteById(it.number, it.dataSource)
+        }
+    }
 }

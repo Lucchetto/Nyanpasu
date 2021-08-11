@@ -38,15 +38,15 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
         savedReleasesSearchFilter.value = null
     }
 
-    suspend fun getDetailsById(id: Int): NyaaReleaseDetails? {
+    suspend fun getDetailsById(id: ReleaseId): NyaaReleaseDetails? {
         return withContext(Dispatchers.IO) {
-            nyaaLocalRepo.detailsDao.getById(id)
+            nyaaLocalRepo.detailsDao.getItemById(id.number, id.dataSource)
         }
     }
 
     fun addToViewed(release: NyaaReleasePreview) {
         nyaaLocalRepo.previewsDao.upsert(release)
-        nyaaLocalRepo.viewedDao.insert(ViewedNyaaRelease(release.id, release.dataSource, System.currentTimeMillis()))
+        nyaaLocalRepo.viewedDao.insert(ViewedNyaaRelease(release.id, System.currentTimeMillis()))
         val toDelete = nyaaLocalRepo.viewedDao.getExcessiveRecentsIds()
         if (toDelete.isNotEmpty()) {
             nyaaLocalRepo.viewedDao.deleteByIdList(toDelete)
@@ -59,28 +59,28 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
 
     fun removeViewed(release: NyaaReleasePreview) {
         viewModelScope.launch(Dispatchers.IO) {
-            nyaaLocalRepo.viewedDao.deleteById(release.id)
+            nyaaLocalRepo.viewedDao.deleteById(release.id.number, release.id.dataSource)
             // Catch any SQLITE_CONSTRAINT_TRIGGER caused by constraints of viewed table foreign key
             try {
-                nyaaLocalRepo.previewsDao.deleteById(release.id)
+                nyaaLocalRepo.previewsDao.delete(release.id.number, release.id.dataSource)
             } catch (e: Exception) {}
         }
     }
 
     fun isSaved(release: NyaaReleasePreview): Boolean {
-        return nyaaLocalRepo.savedDao.getById(release.id) != null
+        return nyaaLocalRepo.savedDao.getItemById(release.id.number, release.id.dataSource) != null
     }
 
     fun toggleSaved(release: NyaaReleasePreview): Boolean {
-        nyaaLocalRepo.savedDao.getById(release.id)?.let {
+        nyaaLocalRepo.savedDao.getItemById(release.id.number, release.id.dataSource)?.let {
             nyaaLocalRepo.savedDao.delete(it)
             // Catch any SQLITE_CONSTRAINT_TRIGGER caused by constraints of viewed table foreign key
             try {
-                nyaaLocalRepo.previewsDao.deleteById(it.releaseId)
+                nyaaLocalRepo.previewsDao.delete(it.releaseId.number, it.releaseId.dataSource)
             } catch (e: Exception) {}
             return false
         } ?: run {
-            nyaaLocalRepo.savedDao.insert(SavedNyaaRelease(release.id, release.dataSource, System.currentTimeMillis()))
+            nyaaLocalRepo.savedDao.insert(SavedNyaaRelease(release.id, System.currentTimeMillis()))
             return true
         }
     }

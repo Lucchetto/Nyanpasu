@@ -20,6 +20,7 @@ import com.zhenxiang.nyaa.api.NyaaApiViewModel
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
+import com.zhenxiang.nyaa.db.ReleaseId
 import com.zhenxiang.nyaa.util.FooterAdapter
 import dev.chrisbanes.insetter.applyInsetter
 
@@ -29,7 +30,7 @@ class NyaaSearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
 
     private lateinit var activityRoot: View
-    private var waitingDownload: Int? = null
+    private var waitingDownload: ReleaseId? = null
     private val storagePermissionGuard = createPermissionRequestLauncher {
         waitingDownload?.let { releaseId ->
             if (it) {
@@ -37,8 +38,8 @@ class NyaaSearchActivity : AppCompatActivity() {
             } else {
                 AppUtils.storagePermissionForDownloadDenied(activityRoot)
             }
+            waitingDownload = null
         }
-        waitingDownload = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

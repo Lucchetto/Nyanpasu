@@ -21,6 +21,7 @@ import com.zhenxiang.nyaa.api.NyaaPageProvider
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
+import com.zhenxiang.nyaa.db.ReleaseId
 import com.zhenxiang.nyaa.fragment.ReleaseTrackerBottomFragment
 import com.zhenxiang.nyaa.fragment.ReleaseTrackerFragmentSharedViewModel
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
@@ -47,7 +48,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private lateinit var releaseTrackerFragmentSharedViewModel: ReleaseTrackerFragmentSharedViewModel
     private var latestRelease: NyaaReleasePreview? = null
 
-    private var waitingDownload: Int? = null
+    private var waitingDownload: ReleaseId? = null
     private val storagePermissionGuard = createPermissionRequestLauncher {
         waitingDownload?.let { releaseId ->
             if (it) {
@@ -55,8 +56,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
             } else {
                 AppUtils.storagePermissionForDownloadDenied(scrollRoot)
             }
+            waitingDownload = null
         }
-        waitingDownload = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +95,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             releaseTitle.text = it.name
 
             val idView = findViewById<TextView>(R.id.release_id)
-            idView.text = "ID: ${it.id}"
+            idView.text = "ID: ${it.id.number}"
 
             val magnetBtn = findViewById<View>(R.id.magnet_btn)
             magnetBtn.setOnClickListener { _ ->
@@ -153,14 +154,14 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
                 if (localReleaseDetails == null && savedInstanceState == null) {
                     try {
-                        val doc: Document = Jsoup.connect("https://nyaa.si/view/${it.id}").get()
+                        val doc: Document = Jsoup.connect("https://nyaa.si/view/${it.id.number}").get()
                         doc.outputSettings().prettyPrint(false)
 
                         val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
                         val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
                         val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
-                        val details = NyaaReleaseDetails(nyaaRelease.id, nyaaRelease.dataSource, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
+                        val details = NyaaReleaseDetails(it.id, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
                         localNyaaDbViewModel.addDetails(details)
 
                         setDetails(details)
