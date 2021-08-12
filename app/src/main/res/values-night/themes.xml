@@ -10,7 +10,7 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Customize your theme here. -->
-        <item name="android:colorBackground">#0d0d0d</item>
+        <item name="android:colorBackground">@color/color_background_dark</item>
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
 </resources>
