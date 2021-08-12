@@ -18,7 +18,9 @@ import android.app.PendingIntent
 import com.zhenxiang.nyaa.MainActivity
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.util.Log
+import androidx.preference.PreferenceManager
 
 
 class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters):
@@ -47,7 +49,10 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                 }
             }
 
-            if (trackersWithNewReleases.isNotEmpty()) {
+            val notificationsEnabled = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                .getBoolean(applicationContext.getString(R.string.releases_tracker_notification_key), true)
+
+            if (notificationsEnabled && trackersWithNewReleases.isNotEmpty()) {
                 val notificationTitle = applicationContext.getString(R.string.releases_tracker_notif_name)
                 val notificationContent = applicationContext.resources.getQuantityString(
                     R.plurals.releases_tracker_notif_content, trackersWithNewReleases.size, trackersWithNewReleases.size)
@@ -74,7 +79,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                     generateNotif(RELEASE_TRACKER_NOTIF_ID, notificationTitle, notificationContent, notificationContentExpanded)
                 }
             } else {
-                if (BuildConfig.DEBUG) {
+                if (BuildConfig.DEBUG && notificationsEnabled) {
                     withContext(Dispatchers.Main) {
                         generateNotif(RELEASE_TRACKER_NOTIF_ID, applicationContext.getString(R.string.releases_tracker_notif_name), "[DEBUG] No new releases")
                     }

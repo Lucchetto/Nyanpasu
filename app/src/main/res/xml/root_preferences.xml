@@ -1,6 +1,13 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/notifications_settings_title">
+
+        <SwitchPreferenceCompat
+            app:key="@string/releases_tracker_notification_key"
+            app:title="@string/releases_tracker_notifications_setting_title"
+            app:summaryOn="@string/releases_tracker_notifications_setting_summary_on"
+            app:summaryOff="@string/releases_tracker_notifications_setting_summary_off"
+            app:defaultValue="true" />
 
         <EditTextPreference
             app:key="signature"

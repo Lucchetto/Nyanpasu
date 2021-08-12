@@ -87,9 +87,18 @@
     <string name="tracker_no_releases_yet">No releases found yet</string>
     <string name="tracker_created_on">Tracker created on %1$s</string>
     <string name="delete_tracker">Delete tracker</string>
+
+    <!-- Preference keys -->
+    <string name="releases_tracker_notification_key">releases_tracker_notification</string>
+
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
+    <string name="notifications_settings_title">Notifications</string>
     <string name="sync_header">Sync</string>
+
+    <!-- Notifications settings -->
+    <string name="releases_tracker_notifications_setting_title">Releases tracker notifications</string>
+    <string name="releases_tracker_notifications_setting_summary_on">You will be notified about new releases</string>
+    <string name="releases_tracker_notifications_setting_summary_off">You won\'t be notified about new releases</string>
 
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
