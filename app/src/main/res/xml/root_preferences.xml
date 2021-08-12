@@ -21,11 +21,6 @@
             app:summaryOff="@string/releases_tracker_notifications_setting_summary_off"
             app:defaultValue="true" />
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -104,8 +104,4 @@
     <string name="releases_tracker_notifications_setting_summary_on">You will be notified about new releases</string>
     <string name="releases_tracker_notifications_setting_summary_off">You won\'t be notified about new releases</string>
 
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
 </resources>
