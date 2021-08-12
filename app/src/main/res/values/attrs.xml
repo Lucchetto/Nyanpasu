@@ -4,4 +4,9 @@
         <attr name="title" format="string" />
         <attr name="value" format="string" />
     </declare-styleable>
+    
+    <declare-styleable name="TitledSpinner">
+        <attr name="spinnerTitle" format="string" />
+        <attr name="titleTextAppearance" format="reference"/>
+    </declare-styleable>
 </resources>

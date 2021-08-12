@@ -15,13 +15,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
+import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.api.NyaaApiViewModel
+import com.zhenxiang.nyaa.api.ReleaseCategory
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
 import com.zhenxiang.nyaa.db.ReleaseId
 import com.zhenxiang.nyaa.util.FooterAdapter
+import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
 import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity() {
@@ -157,21 +160,13 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
         })
 
-        val categoriesSpinner = findViewById<Spinner>(R.id.categories_selection)
-        categoriesSpinner.adapter = AppUtils.getNyaaCategoriesSpinner(this)
-        // Prevent listener from firing on start
-        categoriesSpinner.setSelection(0, false)
-        categoriesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                searchViewModel.setCategory(NyaaReleaseCategory.values()[position])
+        val browsingSpecsSelectorView = findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
+        browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
+            override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
+                searchViewModel.setCategory(releaseCategory)
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+            override fun dataSourceChanged(apiDataSource: ApiDataSource) {
             }
         }
 

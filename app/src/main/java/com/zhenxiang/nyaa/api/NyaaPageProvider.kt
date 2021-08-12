@@ -19,7 +19,7 @@ class NyaaPageProvider {
 
         suspend fun getReleaseDetails(releaseId: ReleaseId): NyaaReleaseDetails? {
             return try {
-                ApiDataSource.getUrl(releaseId.dataSource)?.let { sourceUrl ->
+                releaseId.dataSource.url.let { sourceUrl ->
                     val doc: Document = Jsoup.connect("https://${sourceUrl}/view/${releaseId.number}").get()
                     doc.outputSettings().prettyPrint(false)
 
@@ -43,7 +43,7 @@ class NyaaPageProvider {
                                  searchQuery: String? = null,
                                  user: String? = null): NyaaPageResults? {
 
-            val sourceUrl = ApiDataSource.getUrl(dataSource)
+            val sourceUrl = dataSource.url
             if (sourceUrl == null) {
                 return null
             }

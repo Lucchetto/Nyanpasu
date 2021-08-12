@@ -17,6 +17,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
+import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.api.ReleaseCategory
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
@@ -103,6 +104,7 @@ class AppUtils {
         }
 
         fun getNyaaCategoriesArrayFormatted(context: Context) = NyaaReleaseCategory.values().map { context.getString(it.getStringResId()) }
+        fun getDataSourcesArrayFormatted() = ApiDataSource.values().map { it.url }
 
         fun getReleaseCategoryString(context: Context, releaseCategory: ReleaseCategory?): String {
             return context.getString(
@@ -111,11 +113,23 @@ class AppUtils {
         }
 
         fun getNyaaCategoriesSpinner(context: Context): ArrayAdapter<String> {
-            return ArrayAdapter(
+            val adapter = ArrayAdapter(
                 context,
-                android.R.layout.simple_list_item_1,
+                R.layout.spinner_item,
                 getNyaaCategoriesArrayFormatted(context)
             )
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            return adapter
+        }
+
+        fun getDataSourcesSpinner(context: Context): ArrayAdapter<String> {
+            val adapter = ArrayAdapter(
+                context,
+                R.layout.spinner_item,
+                getDataSourcesArrayFormatted()
+            )
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            return adapter
         }
     }
 }

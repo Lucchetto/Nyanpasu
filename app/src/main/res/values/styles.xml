@@ -105,4 +105,17 @@
         <item name="android:background">@drawable/new_releases_counter_bg</item>
         <item name="android:includeFontPadding">false</item>
     </style>
+    
+    <style name="TextAppearance.Spinner.Title" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">11sp</item>
+    </style>
+    
+    <style name="TitledSpinner">
+        <item name="android:clickable">true</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Spinner.Title</item>
+    </style>
 </resources>

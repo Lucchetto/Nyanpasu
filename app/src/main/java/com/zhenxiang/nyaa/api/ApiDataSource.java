@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ApiDataSource {
-    NYAA_SI(0);
+    NYAA_SI(0, "nyaa.si");
 
     private int value;
+    private String url;
     private static Map map = new HashMap<>();
 
     static {
@@ -28,20 +29,15 @@ public enum ApiDataSource {
         }
     }
 
-    public static String getUrl(ApiDataSource dataSource) {
-        switch (dataSource) {
-            case NYAA_SI:
-                return "nyaa.si";
-            default:
-                return null;
-        }
-    }
-
-    private ApiDataSource(int value) {
+    private ApiDataSource(int value, String url) {
         this.value = value;
+        this.url = url;
     }
 
     public int getValue() {
         return value;
+    }
+    public String getUrl() {
+        return url;
     }
 }

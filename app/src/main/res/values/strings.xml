@@ -21,6 +21,9 @@
     <string name="saved_fragment_title">Saved releases</string>
     <string name="library_title">@string/library_bottom_nav</string>
 
+    <string name="category">Category</string>
+    <string name="data_source">Source</string>
+
     <string name="category_all">All categories</string>
     <string name="category_anime">Anime</string>
     <string name="category_anime_amv">Anime AMV</string>

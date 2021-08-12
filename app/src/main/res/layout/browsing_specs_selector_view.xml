@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.zhenxiang.nyaa.view.TitledSpinner
+        android:id="@+id/categories_selection"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/abc_action_bar_content_inset_material"
+        app:spinnerTitle="@string/category">
+    </com.zhenxiang.nyaa.view.TitledSpinner>
+
+    <com.zhenxiang.nyaa.view.TitledSpinner
+        android:id="@+id/data_source_selection"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/abc_action_bar_content_inset_material"
+        app:spinnerTitle="@string/data_source">
+    </com.zhenxiang.nyaa.view.TitledSpinner>
+</merge>

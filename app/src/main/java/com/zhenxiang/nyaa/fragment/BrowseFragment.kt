@@ -17,11 +17,15 @@ import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.AppUtils.Companion.guardDownloadPermission
 import com.zhenxiang.nyaa.AppUtils.Companion.storagePermissionForDownloadDenied
+import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.api.NyaaApiViewModel
+import com.zhenxiang.nyaa.api.ReleaseCategory
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.ReleaseId
 import com.zhenxiang.nyaa.util.FooterAdapter
+import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
+import com.zhenxiang.nyaa.view.TitledSpinner
 
 /**
  * A simple [Fragment] subclass.
@@ -119,26 +123,16 @@ class BrowseFragment : Fragment() {
             }
         })
 
-        val categoriesSpinner = fragmentView.findViewById<Spinner>(R.id.categories_selection)
-        categoriesSpinner.adapter = AppUtils.getNyaaCategoriesSpinner(fragmentView.context)
-
-        // Prevent listener from firing on start
-        categoriesSpinner.setSelection(0, false)
-        categoriesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                browseViewModel.setCategory(NyaaReleaseCategory.values()[position])
+        val browsingSpecsSelectorView = fragmentView.findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
+        browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
+            override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
+                browseViewModel.setCategory(releaseCategory)
                 browseViewModel.clearResults()
                 browseViewModel.loadResults()
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+            override fun dataSourceChanged(apiDataSource: ApiDataSource) {
             }
-
         }
 
         return fragmentView
