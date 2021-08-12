@@ -89,11 +89,15 @@
     <string name="delete_tracker">Delete tracker</string>
 
     <!-- Preference keys -->
+    <string name="ui_mode_key">ui_mode</string>
     <string name="releases_tracker_notification_key">releases_tracker_notification</string>
 
     <!-- Preference Titles -->
     <string name="notifications_settings_title">Notifications</string>
-    <string name="sync_header">Sync</string>
+    <string name="interface_settings_title">Interface</string>
+
+    <!-- UI mode -->
+    <string name="ui_mode_setting_title">Theme</string>
 
     <!-- Notifications settings -->
     <string name="releases_tracker_notifications_setting_title">Releases tracker notifications</string>
@@ -103,12 +107,5 @@
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
 </resources>

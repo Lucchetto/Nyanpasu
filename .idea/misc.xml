@@ -35,7 +35,7 @@
         <entry key="app/src/main/res/menu/home_bottom_nav.xml" value="0.22" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.175" />
         <entry key="app/src/main/res/xml/nyaa_search_history_config.xml" value="0.16302083333333334" />
-        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.11911231884057971" />
+        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.2" />
         <entry key="app/src/main/res/xml/search_history_config.xml" value="0.14895833333333333" />
       </map>
     </option>

@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.os.Build
 import androidx.work.*
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerBgWorker
+import com.zhenxiang.nyaa.util.UIModeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ class NyaaApplication: Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
     override fun onCreate() {
+        UIModeUtils.updateUIMode(applicationContext)
         super.onCreate()
         delayedInit()
     }
