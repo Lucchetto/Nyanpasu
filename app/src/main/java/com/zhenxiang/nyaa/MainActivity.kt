@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import com.zhenxiang.nyaa.fragment.BrowseFragment
 import com.zhenxiang.nyaa.fragment.LibraryFragment
 import com.zhenxiang.nyaa.fragment.ReleasesTrackerFragment
@@ -19,7 +20,7 @@ import dev.chrisbanes.insetter.applyInsetter
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var bottomNav : BottomNavigationView
+    private lateinit var bottomNav : NavigationBarView
     private var activeFragment : Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav = findViewById(R.id.bottom_nav)
         ViewCompat.setOnApplyWindowInsetsListener(bottomNav, null)
-        bottomNav.setOnNavigationItemSelectedListener { item ->
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.browseFragment -> switchActiveFragment(browseFragment)
                 R.id.libraryFragment -> switchActiveFragment(libraryFragment)
