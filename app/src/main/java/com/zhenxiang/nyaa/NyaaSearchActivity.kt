@@ -16,13 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.ApiDataSource
-import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.api.NyaaApiViewModel
+import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.api.ReleaseCategory
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
-import com.zhenxiang.nyaa.db.ReleaseId
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
 import dev.chrisbanes.insetter.applyInsetter
@@ -33,15 +32,15 @@ class NyaaSearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
 
     private lateinit var activityRoot: View
-    private var waitingDownload: ReleaseId? = null
-    private val storagePermissionGuard = createPermissionRequestLauncher {
-        waitingDownload?.let { releaseId ->
-            if (it) {
-                AppUtils.enqueueDownload(releaseId, activityRoot)
+    private var queuedDownload: ReleaseId? = null
+    private val storagePermissionGuard = createPermissionRequestLauncher { granted ->
+        queuedDownload?.let {
+            if (granted) {
+                AppUtils.enqueueDownload(it, activityRoot)
             } else {
                 AppUtils.storagePermissionForDownloadDenied(activityRoot)
             }
-            waitingDownload = null
+            queuedDownload = null
         }
     }
 
@@ -141,10 +140,11 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
+                val newDownload = ReleaseId(item.number, item.dataSourceSpecs.source)
                 AppUtils.guardDownloadPermission(this@NyaaSearchActivity, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(item.id, activityRoot)
+                    AppUtils.enqueueDownload(newDownload, activityRoot)
                 }, {
-                    waitingDownload = item.id
+                    queuedDownload = newDownload
                 })
             }
         }

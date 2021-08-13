@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaa.db
 
 import androidx.room.*
+import com.zhenxiang.nyaa.api.ReleaseId
 
 @Entity(foreignKeys = [
     ForeignKey(entity = NyaaReleasePreview::class,

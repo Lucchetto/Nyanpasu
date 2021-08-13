@@ -28,7 +28,8 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
             oldItem: NyaaReleasePreview,
             newItem: NyaaReleasePreview
         ): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.number == newItem.number
+                    && oldItem.dataSourceSpecs.source == newItem.dataSourceSpecs.source
         }
 
         override fun areContentsTheSame(

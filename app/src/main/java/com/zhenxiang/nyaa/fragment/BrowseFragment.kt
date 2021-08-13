@@ -10,22 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import android.content.Intent
-import android.widget.AdapterView
-import android.widget.Spinner
 import androidx.recyclerview.widget.ConcatAdapter
 import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.AppUtils.Companion.guardDownloadPermission
 import com.zhenxiang.nyaa.AppUtils.Companion.storagePermissionForDownloadDenied
-import com.zhenxiang.nyaa.api.ApiDataSource
-import com.zhenxiang.nyaa.api.NyaaReleaseCategory
-import com.zhenxiang.nyaa.api.NyaaApiViewModel
-import com.zhenxiang.nyaa.api.ReleaseCategory
+import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
-import com.zhenxiang.nyaa.db.ReleaseId
+import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
-import com.zhenxiang.nyaa.view.TitledSpinner
 
 /**
  * A simple [Fragment] subclass.
@@ -39,15 +33,15 @@ class BrowseFragment : Fragment() {
     private lateinit var fragmentView: View
     private lateinit var searchBtn: ExtendedFloatingActionButton
 
-    private var waitingDownload: ReleaseId? = null
+    private var queuedDownload: ReleaseId? = null
     private val storagePermissionGuard = createPermissionRequestLauncher {
-        waitingDownload?.let { releaseId ->
+        queuedDownload?.let { releaseId ->
             if (it) {
                 AppUtils.enqueueDownload(releaseId, fragmentView, searchBtn)
             } else {
                 storagePermissionForDownloadDenied(fragmentView, searchBtn)
             }
-            waitingDownload = null
+            queuedDownload = null
         }
     }
 
@@ -105,10 +99,11 @@ class BrowseFragment : Fragment() {
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
+                val newDownload = item.getReleaseId()
                 guardDownloadPermission(fragmentView.context, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(item.id, fragmentView, searchBtn)
+                    AppUtils.enqueueDownload(newDownload, fragmentView, searchBtn)
                 }, {
-                    waitingDownload = item.id
+                    queuedDownload = newDownload
                 })
             }
         }

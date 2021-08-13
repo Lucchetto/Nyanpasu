@@ -1,13 +1,14 @@
 package com.zhenxiang.nyaa.db
 
 import androidx.room.*
-import com.zhenxiang.nyaa.api.NyaaReleaseCategory
-import com.zhenxiang.nyaa.api.ReleaseCategory
+import com.zhenxiang.nyaa.api.DataSourceSpecs
+import com.zhenxiang.nyaa.api.ReleaseId
 import java.io.Serializable
 
 @Entity(primaryKeys = ["number", "dataSource"])
 data class NyaaReleasePreview(
-    @Embedded val id: ReleaseId,
+    val number: Int,
+    @Embedded val dataSourceSpecs: DataSourceSpecs,
     val name: String,
     val magnet: String,
     // timestamp is expressed in seconds while system timestamps are in milliseconds
@@ -15,9 +16,14 @@ data class NyaaReleasePreview(
     val seeders: Int,
     val leechers: Int,
     val completed: Int,
-    val category: ReleaseCategory?,
     val releaseSize: String,
-): Serializable
+): Serializable {
+    companion object {
+        fun NyaaReleasePreview.getReleaseId(): ReleaseId {
+            return ReleaseId(this.number, this.dataSourceSpecs.source)
+        }
+    }
+}
 
 @Entity(foreignKeys = [
     ForeignKey(entity = NyaaReleasePreview::class,

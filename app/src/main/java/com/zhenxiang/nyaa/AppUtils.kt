@@ -20,8 +20,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.api.ReleaseCategory
+import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
-import com.zhenxiang.nyaa.db.ReleaseId
 
 class AppUtils {
     companion object {
@@ -87,7 +87,7 @@ class AppUtils {
         fun enqueueDownload(releaseId: ReleaseId, parentView: View, anchorView: View? = null): Long? {
             return try {
                 val manager = parentView.context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                val uri = Uri.parse("http://nyaa.si/download/${releaseId.number}.torrent")
+                val uri = Uri.parse("http://${releaseId.dataSource.url}/download/${releaseId.number}.torrent")
                 val request = DownloadManager.Request(uri)
                 request.setVisibleInDownloadsUi(true)
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -106,9 +106,9 @@ class AppUtils {
         fun getNyaaCategoriesArrayFormatted(context: Context) = NyaaReleaseCategory.values().map { context.getString(it.getStringResId()) }
         fun getDataSourcesArrayFormatted() = ApiDataSource.values().map { it.url }
 
-        fun getReleaseCategoryString(context: Context, releaseCategory: ReleaseCategory?): String {
+        fun getReleaseCategoryString(context: Context, releaseCategory: ReleaseCategory): String {
             return context.getString(
-                releaseCategory?.let { category -> category.getStringResId() } ?: run { R.string.category_all }
+                releaseCategory.getStringResId()
             )
         }
 

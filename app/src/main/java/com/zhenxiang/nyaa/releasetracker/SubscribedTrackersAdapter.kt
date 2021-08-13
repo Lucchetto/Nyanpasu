@@ -55,7 +55,7 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
 
         fun bind(tracker: SubscribedTracker) {
             itemData = tracker
-            category.text = AppUtils.getReleaseCategoryString(category.context, tracker.category)
+            category.text = AppUtils.getReleaseCategoryString(category.context, tracker.dataSourceSpecs.category)
             latestRelease.text = if (tracker.hasPreviousReleases) {
                 latestRelease.context.getString(R.string.tracker_latest_release,
                     DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.latestReleaseTimestamp * 1000))

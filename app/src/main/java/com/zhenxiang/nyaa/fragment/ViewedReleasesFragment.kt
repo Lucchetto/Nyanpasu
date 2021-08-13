@@ -12,9 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
+import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
-import com.zhenxiang.nyaa.db.ReleaseId
+import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 import com.zhenxiang.nyaa.widget.ReleaseItemAnimator
 import dev.chrisbanes.insetter.applyInsetter
 
@@ -28,16 +29,16 @@ open class ViewedReleasesFragment : Fragment() {
 
     private lateinit var fragmentView: View
 
-    private var waitingDownload: ReleaseId? = null
-    private val storagePermissionGuard = createPermissionRequestLauncher {
-        waitingDownload?.let { releaseId ->
-            if (it) {
-                AppUtils.enqueueDownload(releaseId, fragmentView, parentSearchBtn())
+    private var queuedDownload: ReleaseId? = null
+    private val storagePermissionGuard = createPermissionRequestLauncher { granted ->
+        queuedDownload?.let {
+            if (granted) {
+                AppUtils.enqueueDownload(it, fragmentView, parentSearchBtn())
             } else {
                 AppUtils.storagePermissionForDownloadDenied(fragmentView, parentSearchBtn())
             }
+            queuedDownload = null
         }
-        waitingDownload = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,10 +120,11 @@ open class ViewedReleasesFragment : Fragment() {
             }
 
             override fun downloadTorrent(item: NyaaReleasePreview) {
+                val newDownload = item.getReleaseId()
                 AppUtils.guardDownloadPermission(fragmentView.context, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(item.id, fragmentView, parentSearchBtn())
+                    AppUtils.enqueueDownload(newDownload, fragmentView, parentSearchBtn())
                 }, {
-                    waitingDownload = item.id
+                     queuedDownload = newDownload
                 })
             }
         }

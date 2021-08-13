@@ -1,6 +1,5 @@
-package com.zhenxiang.nyaa.db
+package com.zhenxiang.nyaa.api
 
-import com.zhenxiang.nyaa.api.ApiDataSource
 import java.io.Serializable
 
 data class ReleaseId(val number: Int, val dataSource: ApiDataSource): Serializable

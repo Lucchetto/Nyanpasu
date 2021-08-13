@@ -3,7 +3,6 @@ package com.zhenxiang.nyaa.api
 import android.util.Log
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
-import com.zhenxiang.nyaa.db.ReleaseId
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -28,8 +27,6 @@ class NyaaPageProvider {
                     val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
                     NyaaReleaseDetails(releaseId, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
-                } ?: run {
-                    null
                 }
             } catch(e: Exception) {
                 Log.w(TAG, e)
@@ -77,9 +74,9 @@ class NyaaPageProvider {
                     val parentRow = it.parent().parent()
 
                     val categoryId = categoryIdRegex.find(parentRow.selectFirst("td > a[href~=^(.*?)(\\?|\\&)c=\\d+_\\d+\$]").attr("href").removePrefix("/?c="))!!.value
-                    val category = NyaaReleaseCategory.values().find { category -> category.getId() == categoryId }
+                    val category = (dataSource.categories.find { category -> category.getId() == categoryId })?.let { category } ?: run { dataSource.categories[0] }
 
-                    val id = it.attr("href").split("/").last().toInt()
+                    val number = it.attr("href").split("/").last().toInt()
                     val title = it.attr("title")
                     val magnetLink = parentRow.selectFirst("a[href~=^magnet:\\?xt=urn:[a-z0-9]+:[a-z0-9]{32,40}&dn=.+&tr=.+\$]").attr("href")
                     val timestamp = parentRow.selectFirst("*[data-timestamp~=^\\d+\$]").attr("data-timestamp").toString().toLong()
@@ -88,7 +85,7 @@ class NyaaPageProvider {
                     val completed = parentRow.select("td:nth-child(8)").text().toInt()
                     val releaseSize = parentRow.selectFirst("td:matches(^\\d*\\.?\\d* [a-zA-Z]+\$)").text()
 
-                    val nyaaItem = NyaaReleasePreview(ReleaseId(id, ApiDataSource.NYAA_SI), title, magnetLink, timestamp, seeders, leechers, completed, category!!, releaseSize)
+                    val nyaaItem = NyaaReleasePreview(number, DataSourceSpecs(dataSource, category), title, magnetLink, timestamp, seeders, leechers, completed, releaseSize)
                     foundReleases.add(nyaaItem)
                 } catch (e: Exception) {}
             }

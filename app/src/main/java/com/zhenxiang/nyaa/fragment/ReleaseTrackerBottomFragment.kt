@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zhenxiang.nyaa.CreateTrackerActivity
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.api.ApiDataSource
+import com.zhenxiang.nyaa.api.DataSourceSpecs
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
@@ -61,8 +62,8 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                         releaseTrackerFragmentSharedViewModel.currentUserTracked.value = false
                     }
                 } else {
-                    val newTracked = SubscribedTracker(dataSource = dataSource,
-                        category = ApiDataSource.getCategories(dataSource)[0],
+                    val newTracked = SubscribedTracker(
+                        dataSourceSpecs = DataSourceSpecs(dataSource, ApiDataSource.getCategories(dataSource)[0]),
                         username = username,
                         latestReleaseTimestamp = latestTimestamp,
                         createdTimestamp = System.currentTimeMillis())

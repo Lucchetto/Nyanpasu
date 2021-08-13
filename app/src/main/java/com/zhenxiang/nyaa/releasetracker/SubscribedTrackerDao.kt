@@ -13,7 +13,7 @@ interface SubscribedTrackerDao {
     @Query("SELECT * FROM subscribedtracker ORDER BY latestReleaseTimestamp DESC")
     fun getAllTrackersLive(): LiveData<List<SubscribedTracker>>
 
-    @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery=:query AND category=:category")
+    @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery=:query AND categoryId=:category")
     fun getByUsernameAndQueryAndCategory(username: String?, query: String, category: NyaaReleaseCategory): SubscribedTracker?
 
     @Query("SELECT * FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL")

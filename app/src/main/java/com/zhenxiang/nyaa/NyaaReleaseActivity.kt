@@ -17,10 +17,11 @@ import br.tiagohm.markdownview.css.styles.Github
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.NyaaPageProvider
+import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
-import com.zhenxiang.nyaa.db.ReleaseId
+import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 import com.zhenxiang.nyaa.fragment.ReleaseTrackerBottomFragment
 import com.zhenxiang.nyaa.fragment.ReleaseTrackerFragmentSharedViewModel
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
@@ -45,15 +46,15 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private lateinit var releaseTrackerFragmentSharedViewModel: ReleaseTrackerFragmentSharedViewModel
     private var latestRelease: NyaaReleasePreview? = null
 
-    private var waitingDownload: ReleaseId? = null
-    private val storagePermissionGuard = createPermissionRequestLauncher {
-        waitingDownload?.let { releaseId ->
-            if (it) {
-                AppUtils.enqueueDownload(releaseId, scrollRoot)
+    private var queuedDownload: ReleaseId? = null
+    private val storagePermissionGuard = createPermissionRequestLauncher { granted ->
+        queuedDownload?.let {
+            if (granted) {
+                AppUtils.enqueueDownload(it, scrollRoot)
             } else {
                 AppUtils.storagePermissionForDownloadDenied(scrollRoot)
             }
-            waitingDownload = null
+            queuedDownload = null
         }
     }
 
@@ -92,7 +93,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             releaseTitle.text = it.name
 
             val idView = findViewById<TextView>(R.id.release_id)
-            idView.text = "ID: ${it.id.number}"
+            idView.text = "ID: ${it.number}"
 
             val magnetBtn = findViewById<View>(R.id.magnet_btn)
             magnetBtn.setOnClickListener { _ ->
@@ -101,15 +102,16 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val downloadBtn = findViewById<View>(R.id.download_btn)
             downloadBtn.setOnClickListener { _ ->
+                val newDownload = it.getReleaseId()
                 AppUtils.guardDownloadPermission(this, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(it.id, scrollRoot)
+                    AppUtils.enqueueDownload(newDownload, scrollRoot)
                 }, {
-                    waitingDownload = it.id
+                    queuedDownload = newDownload
                 })
             }
 
             val category = findViewById<TextView>(R.id.category)
-            category.text = AppUtils.getReleaseCategoryString(this, it.category)
+            category.text = AppUtils.getReleaseCategoryString(this, it.dataSourceSpecs.category)
 
             val date = findViewById<TextView>(R.id.date)
             date.text = getString(R.string.release_date,
@@ -144,13 +146,14 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     }
                 }
 
-                val localReleaseDetails = localNyaaDbViewModel.getDetailsById(it.id)
+                val releaseId = it.getReleaseId()
+                val localReleaseDetails = localNyaaDbViewModel.getDetailsById(releaseId)
                 localReleaseDetails?.let { details ->
                     setDetails(details)
                 }
 
                 if (localReleaseDetails == null && savedInstanceState == null) {
-                    NyaaPageProvider.getReleaseDetails(it.id)?.let { details ->
+                    NyaaPageProvider.getReleaseDetails(releaseId)?.let { details ->
                         localNyaaDbViewModel.addDetails(details)
 
                         setDetails(details)

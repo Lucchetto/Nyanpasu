@@ -15,8 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.NyaaApiViewModel
+import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
-import com.zhenxiang.nyaa.db.ReleaseId
+import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerRepo
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaa.util.FooterAdapter
@@ -30,15 +31,15 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
 
     private lateinit var activityRoot: View
 
-    private var waitingDownload: ReleaseId? = null
+    private var queuedDownload: ReleaseId? = null
     private val storagePermissionGuard = createPermissionRequestLauncher {
-        waitingDownload?.let { releaseId ->
+        queuedDownload?.let { releaseId ->
             if (it) {
                 AppUtils.enqueueDownload(releaseId, activityRoot)
             } else {
                 AppUtils.storagePermissionForDownloadDenied(activityRoot)
             }
-            waitingDownload = null
+            queuedDownload = null
         }
     }
 
@@ -73,7 +74,7 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
             val latestReleasesList = findViewById<RecyclerView>(R.id.latest_releases_list)
 
             val searchViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
-            searchViewModel.setCategory(tracker.category)
+            searchViewModel.setCategory(tracker.dataSourceSpecs.category)
             searchViewModel.setSearchText(tracker.searchQuery)
             searchViewModel.setUsername(tracker.username)
 
@@ -103,10 +104,11 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
                 }
 
                 override fun downloadTorrent(item: NyaaReleasePreview) {
+                    val newDownload = item.getReleaseId()
                     AppUtils.guardDownloadPermission(this@ReleaseTrackerDetailsActivity, storagePermissionGuard, {
-                        AppUtils.enqueueDownload(item.id, activityRoot)
+                        AppUtils.enqueueDownload(newDownload, activityRoot)
                     }, {
-                        waitingDownload = item.id
+                        queuedDownload = newDownload
                     })
                 }
             }
@@ -132,7 +134,7 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
                 searchViewModel.loadResults()
             }
 
-            category.text = AppUtils.getReleaseCategoryString(this, tracker.category)
+            category.text = AppUtils.getReleaseCategoryString(this, tracker.dataSourceSpecs.category)
             latestRelease.text = if (tracker.hasPreviousReleases) {
                 getString(R.string.tracker_latest_release,
                     DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.latestReleaseTimestamp * 1000))
