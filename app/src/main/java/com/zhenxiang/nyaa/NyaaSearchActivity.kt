@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.ApiDataSource
-import com.zhenxiang.nyaa.api.NyaaApiViewModel
+import com.zhenxiang.nyaa.api.DataSourceViewModel
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.api.ReleaseCategory
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
@@ -28,7 +28,7 @@ import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity() {
 
-    private lateinit var searchViewModel: NyaaApiViewModel
+    private lateinit var searchViewModel: DataSourceViewModel
     private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
 
     private lateinit var activityRoot: View
@@ -63,7 +63,7 @@ class NyaaSearchActivity : AppCompatActivity() {
         }
         val resultsAdapter = ReleasesListAdapter()
         val footerAdapter = FooterAdapter()
-        searchViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
+        searchViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
         searchHistoryViewModel = ViewModelProvider(this).get(NyaaSearchHistoryViewModel::class.java)
 
         searchViewModel.resultsLiveData.observe(this, {
@@ -161,6 +161,7 @@ class NyaaSearchActivity : AppCompatActivity() {
         })
 
         val browsingSpecsSelectorView = findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
+        browsingSpecsSelectorView.selectDataSource(0)
         browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
             override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
                 searchViewModel.setCategory(releaseCategory)

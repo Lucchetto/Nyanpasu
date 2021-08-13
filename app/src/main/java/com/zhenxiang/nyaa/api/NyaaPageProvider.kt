@@ -74,7 +74,7 @@ class NyaaPageProvider {
                     val parentRow = it.parent().parent()
 
                     val categoryId = categoryIdRegex.find(parentRow.selectFirst("td > a[href~=^(.*?)(\\?|\\&)c=\\d+_\\d+\$]").attr("href").removePrefix("/?c="))!!.value
-                    val category = (dataSource.categories.find { category -> category.getId() == categoryId })?.let { category } ?: run { dataSource.categories[0] }
+                    val category = DataSourceSpecs.getCategoryFromId(dataSource, categoryId)
 
                     val number = it.attr("href").split("/").last().toInt()
                     val title = it.attr("title")

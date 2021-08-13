@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ApiDataSource {
-    NYAA_SI(0, "nyaa.si", NyaaReleaseCategory.values());
+    NYAA_SI(0, "nyaa.si", NyaaReleaseCategory.values()),
+    SUKEBEI_NYAA_SI(1, "sukebei.nyaa.si", SukebeiReleaseCategory.values());
 
     private int value;
     private String url;
@@ -19,15 +20,6 @@ public enum ApiDataSource {
 
     public static ApiDataSource valueOf(int dataSource) {
         return (ApiDataSource) map.get(dataSource);
-    }
-
-    public static ReleaseCategory[] getCategories(ApiDataSource dataSource) {
-        switch (dataSource) {
-            case NYAA_SI:
-                return NyaaReleaseCategory.values();
-            default:
-                return null;
-        }
     }
 
     private ApiDataSource(int value, String url, ReleaseCategory[] categories) {

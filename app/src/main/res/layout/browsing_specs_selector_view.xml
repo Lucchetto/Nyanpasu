@@ -1,21 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.zhenxiang.nyaa.view.TitledSpinner
-        android:id="@+id/categories_selection"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/categories_selection_container"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/abc_action_bar_content_inset_material"
-        app:spinnerTitle="@string/category">
-    </com.zhenxiang.nyaa.view.TitledSpinner>
+        style="@style/TitledSpinner">
 
-    <com.zhenxiang.nyaa.view.TitledSpinner
-        android:id="@+id/data_source_selection"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/category"
+                android:textAppearance="@style/TextAppearance.Spinner.Title"
+                tools:text="title"/>
+
+            <com.zhenxiang.nyaa.widget.QuietSpinner
+                android:id="@+id/categories_selection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_spinner_caret">
+        </ImageView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/data_source_selection_container"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:paddingEnd="@dimen/abc_action_bar_content_inset_material"
-        app:spinnerTitle="@string/data_source">
-    </com.zhenxiang.nyaa.view.TitledSpinner>
+        style="@style/TitledSpinner">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/data_source"
+                android:textAppearance="@style/TextAppearance.Spinner.Title"
+                tools:text="title"/>
+
+            <com.zhenxiang.nyaa.widget.QuietSpinner
+                android:id="@+id/data_source_selection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_spinner_caret">
+        </ImageView>
+    </LinearLayout>
 </merge>

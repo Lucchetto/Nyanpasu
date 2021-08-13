@@ -63,7 +63,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                     }
                 } else {
                     val newTracked = SubscribedTracker(
-                        dataSourceSpecs = DataSourceSpecs(dataSource, ApiDataSource.getCategories(dataSource)[0]),
+                        dataSourceSpecs = DataSourceSpecs(dataSource, dataSource.categories[0]),
                         username = username,
                         latestReleaseTimestamp = latestTimestamp,
                         createdTimestamp = System.currentTimeMillis())

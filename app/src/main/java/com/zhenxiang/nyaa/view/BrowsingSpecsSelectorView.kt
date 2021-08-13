@@ -1,7 +1,9 @@
 package com.zhenxiang.nyaa.view
 
 import android.content.Context
+import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -10,14 +12,17 @@ import androidx.annotation.Nullable
 import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.api.ApiDataSource
-import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.api.ReleaseCategory
+import com.zhenxiang.nyaa.widget.QuietSpinner
 
 class BrowsingSpecsSelectorView: LinearLayout {
-    private val categorySpinner: TitledSpinner
-    private val dataSourceSpinner: TitledSpinner
+    private val categorySpinner: QuietSpinner
+    private val dataSourceSpinner: QuietSpinner
 
     var listener: OnSpecsChangedListener? = null
+    private var categories = ApiDataSource.NYAA_SI.categories
+    var selectedCategory = categories[0]
+        private set
 
     constructor (context: Context) : this(context, null)
 
@@ -30,20 +35,28 @@ class BrowsingSpecsSelectorView: LinearLayout {
         orientation = HORIZONTAL
 
         categorySpinner = findViewById(R.id.categories_selection)
+        findViewById<View>(R.id.categories_selection_container).setOnClickListener {
+            categorySpinner.performClick()
+        }
         dataSourceSpinner = findViewById(R.id.data_source_selection)
+        findViewById<View>(R.id.data_source_selection_container).setOnClickListener {
+            dataSourceSpinner.performClick()
+        }
 
-        categorySpinner.spinner.adapter = AppUtils.getNyaaCategoriesSpinner(context)
+        setupDataSources()
+    }
 
-        // Prevent listener from firing on start
-        categorySpinner.spinner.setSelection(0, false)
-        categorySpinner.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+    private fun setupDataSources() {
+        categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, ApiDataSource.NYAA_SI)
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-                listener?.releaseCategoryChanged(NyaaReleaseCategory.values()[position])
+                selectedCategory = categories[position]
+                listener?.releaseCategoryChanged(selectedCategory)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -51,23 +64,35 @@ class BrowsingSpecsSelectorView: LinearLayout {
 
         }
 
-        dataSourceSpinner.spinner.adapter = AppUtils.getDataSourcesSpinner(context)
-        // Prevent listener from firing on start
-        dataSourceSpinner.spinner.setSelection(0, false)
-        dataSourceSpinner.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        dataSourceSpinner.adapter = AppUtils.getDataSourcesSpinner(context)
+        dataSourceSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-                listener?.dataSourceChanged(ApiDataSource.values()[position])
+                val newDataSource = ApiDataSource.values()[position]
+                categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, newDataSource)
+                categories = newDataSource.categories
+                listener?.dataSourceChanged(newDataSource)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
         }
+    }
+
+    fun selectDataSource(index: Int) {
+        dataSourceSpinner.setSelection(index, false)
+        val newDataSource = ApiDataSource.values()[index]
+        categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, newDataSource)
+        categories = newDataSource.categories
+    }
+
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
+        super.dispatchRestoreInstanceState(container)
     }
 
     interface OnSpecsChangedListener {

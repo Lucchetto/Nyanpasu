@@ -22,7 +22,7 @@ import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.DataSourceSpecs
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
-import com.zhenxiang.nyaa.api.NyaaApiViewModel
+import com.zhenxiang.nyaa.api.DataSourceViewModel
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
 import dev.chrisbanes.insetter.applyInsetter
@@ -50,7 +50,7 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var loading: View
     private lateinit var latestReleasesList: RecyclerView
 
-    private lateinit var searchViewModel: NyaaApiViewModel
+    private lateinit var searchViewModel: DataSourceViewModel
 
     private var selectedCategoryIndex = -1
     private var currentStatus = Status.TO_VALIDATE
@@ -61,7 +61,7 @@ class CreateTrackerActivity : AppCompatActivity() {
 
         val username = intent.getStringExtra(PRESET_USERNAME)
         val releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
-        searchViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
+        searchViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
 
         hintText = findViewById(R.id.hint_text)
         errorHint = findViewById(R.id.error_hint)
@@ -88,14 +88,11 @@ class CreateTrackerActivity : AppCompatActivity() {
         createBtn = findViewById(R.id.create_btn)
         val searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
         val usernameInput = findViewById<TextInputEditText>(R.id.username_input)
-        val categories = AppUtils.getNyaaCategoriesArrayFormatted(this)
         val categoriesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.categories_selection)
         // Hax to always show all items, we'll never reach that threshold so filter is never triggered
         categoriesDropdown.threshold = Int.MAX_VALUE
         categoriesDropdown.setAdapter(
-            ArrayAdapter(this, android.R.layout.simple_list_item_1,
-                categories
-            )
+            AppUtils.getCategoriesSpinner(this, ApiDataSource.NYAA_SI)
         )
 
         categoriesDropdown.setOnItemClickListener { _, _, position, _ ->
@@ -104,7 +101,7 @@ class CreateTrackerActivity : AppCompatActivity() {
 
         // We'll saved and restore selectedCategoryIndex in bundle
         if (savedInstanceState == null) {
-            categoriesDropdown.setText(categories[0], false)
+            categoriesDropdown.setText(AppUtils.getReleaseCategoryString(this, ApiDataSource.NYAA_SI.categories[0]), false)
             selectedCategoryIndex = 0
             searchQueryInput.requestFocus()
         }

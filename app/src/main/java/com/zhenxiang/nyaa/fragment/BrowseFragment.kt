@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import android.content.Intent
+import android.util.Log
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
 import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
@@ -28,7 +30,7 @@ import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
  */
 class BrowseFragment : Fragment() {
 
-    private lateinit var browseViewModel: NyaaApiViewModel
+    private lateinit var browseViewModel: DataSourceViewModel
 
     private lateinit var fragmentView: View
     private lateinit var searchBtn: ExtendedFloatingActionButton
@@ -48,10 +50,7 @@ class BrowseFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        browseViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
-        if (savedInstanceState == null) {
-            browseViewModel.loadResults()
-        }
+        browseViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -62,7 +61,14 @@ class BrowseFragment : Fragment() {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_browse, container, false)
 
-        searchBtn = fragmentView.findViewById<ExtendedFloatingActionButton>(R.id.search_btn)
+        val prefsManager = PreferenceManager.getDefaultSharedPreferences(fragmentView.context)
+        val browsingSpecsSelectorView = fragmentView.findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
+        if (savedInstanceState == null) {
+            browsingSpecsSelectorView.selectDataSource(prefsManager.getInt(
+                DEFAULT_SELECTED_DATA_SOURCE, 0))
+        }
+
+        searchBtn = fragmentView.findViewById(R.id.search_btn)
         searchBtn.setOnClickListener {
             openNyaaSearch()
         }
@@ -118,15 +124,18 @@ class BrowseFragment : Fragment() {
             }
         })
 
-        val browsingSpecsSelectorView = fragmentView.findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
         browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
             override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
-                browseViewModel.setCategory(releaseCategory)
-                browseViewModel.clearResults()
-                browseViewModel.loadResults()
+                //Log.w("sadasds", "asdasdaaa")
+                if (browseViewModel.getCategory() != releaseCategory) {
+                    browseViewModel.setCategory(releaseCategory)
+                    browseViewModel.clearResults()
+                    browseViewModel.loadResults()
+                }
             }
 
             override fun dataSourceChanged(apiDataSource: ApiDataSource) {
+                prefsManager.edit().putInt(DEFAULT_SELECTED_DATA_SOURCE, apiDataSource.value).apply()
             }
         }
 
@@ -143,5 +152,7 @@ class BrowseFragment : Fragment() {
         fun newInstance() =
             BrowseFragment().apply {
             }
+
+        private val DEFAULT_SELECTED_DATA_SOURCE = "def_selected_data_source"
     }
 }

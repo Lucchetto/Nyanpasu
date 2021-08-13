@@ -116,6 +116,5 @@
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingStart">12dp</item>
         <item name="android:paddingEnd">12dp</item>
-        <item name="titleTextAppearance">@style/TextAppearance.Spinner.Title</item>
     </style>
 </resources>

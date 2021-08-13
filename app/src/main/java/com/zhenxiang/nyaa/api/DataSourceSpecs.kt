@@ -12,7 +12,7 @@ class DataSourceSpecs: Serializable {
     constructor(source: ApiDataSource, categoryId: String) {
         this.source = source
         this.categoryId = categoryId
-        this.category = getCategoryFromId(categoryId)
+        this.category = getCategoryFromId(source, categoryId)
     }
 
     constructor(dataSource: ApiDataSource, category: ReleaseCategory) {
@@ -26,12 +26,14 @@ class DataSourceSpecs: Serializable {
         }
     }
 
-    private fun getCategoryFromId(categoryId: String): ReleaseCategory {
-        for (category in source.categories) {
-            if (categoryId == category.getId()) {
-                return category
+    companion object {
+        fun getCategoryFromId(dataSource: ApiDataSource, categoryId: String): ReleaseCategory {
+            for (category in dataSource.categories) {
+                if (categoryId == category.getId()) {
+                    return category
+                }
             }
+            return dataSource.categories[0]
         }
-        return source.categories[0]
     }
 }

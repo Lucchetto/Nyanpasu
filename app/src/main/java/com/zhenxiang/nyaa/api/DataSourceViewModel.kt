@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import kotlinx.coroutines.*
 
-class NyaaApiViewModel: ViewModel() {
+class DataSourceViewModel: ViewModel() {
 
-    private val repository = NyaaRepository(ApiDataSource.NYAA_SI)
+    private val repository = NyaaRepository()
     val resultsLiveData = MutableLiveData<List<NyaaReleasePreview>>()
     var firstInsert: Boolean = true
 
@@ -38,8 +38,12 @@ class NyaaApiViewModel: ViewModel() {
         }
     }
 
-    fun setCategory(category: ReleaseCategory?) {
+    fun setCategory(category: ReleaseCategory) {
         this.repository.category = category
+    }
+
+    fun getCategory(): ReleaseCategory? {
+        return this.repository.category
     }
 
     fun setUsername(username: String?) {

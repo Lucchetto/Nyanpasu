@@ -17,10 +17,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import com.zhenxiang.nyaa.api.ApiDataSource
-import com.zhenxiang.nyaa.api.NyaaReleaseCategory
-import com.zhenxiang.nyaa.api.ReleaseCategory
-import com.zhenxiang.nyaa.api.ReleaseId
+import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 
 class AppUtils {
@@ -103,7 +100,6 @@ class AppUtils {
             }
         }
 
-        fun getNyaaCategoriesArrayFormatted(context: Context) = NyaaReleaseCategory.values().map { context.getString(it.getStringResId()) }
         fun getDataSourcesArrayFormatted() = ApiDataSource.values().map { it.url }
 
         fun getReleaseCategoryString(context: Context, releaseCategory: ReleaseCategory): String {
@@ -112,11 +108,11 @@ class AppUtils {
             )
         }
 
-        fun getNyaaCategoriesSpinner(context: Context): ArrayAdapter<String> {
-            val adapter = ArrayAdapter(
+        fun getCategoriesSpinner(context: Context, dataSource: ApiDataSource): ArrayAdapter<ReleaseCategory> {
+            val adapter = CategoriesAdapter(
                 context,
                 R.layout.spinner_item,
-                getNyaaCategoriesArrayFormatted(context)
+                dataSource.categories
             )
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
             return adapter

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
-import com.zhenxiang.nyaa.api.NyaaApiViewModel
+import com.zhenxiang.nyaa.api.DataSourceViewModel
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
@@ -73,7 +73,7 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
             val deleteBtn = findViewById<TextView>(R.id.delete_tracker_btn)
             val latestReleasesList = findViewById<RecyclerView>(R.id.latest_releases_list)
 
-            val searchViewModel = ViewModelProvider(this).get(NyaaApiViewModel::class.java)
+            val searchViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
             searchViewModel.setCategory(tracker.dataSourceSpecs.category)
             searchViewModel.setSearchText(tracker.searchQuery)
             searchViewModel.setUsername(tracker.username)
