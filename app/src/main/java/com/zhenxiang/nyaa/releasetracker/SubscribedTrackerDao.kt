@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
+import com.zhenxiang.nyaa.db.DbTypeConverters
 
 @Dao
 interface SubscribedTrackerDao {
@@ -14,11 +15,11 @@ interface SubscribedTrackerDao {
     @Query("SELECT * FROM subscribedtracker ORDER BY latestReleaseTimestamp DESC")
     fun getAllTrackersLive(): LiveData<List<SubscribedTracker>>
 
-    @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery=:query AND categoryId=:category")
-    fun getByUsernameAndQueryAndCategory(username: String?, query: String, category: NyaaReleaseCategory): SubscribedTracker?
+    @Query("SELECT * FROM subscribedtracker WHERE (username=:username OR (username is null and :username is null)) AND searchQuery=:query AND categoryId=:categoryId AND dataSource=:dataSource")
+    fun getBySpecs(username: String?, query: String, categoryId: String, dataSource: ApiDataSource): SubscribedTracker?
 
-    @Query("SELECT * FROM subscribedtracker WHERE username=:userName AND searchQuery IS NULL AND dataSource=:dataSource")
-    fun getByUsername(userName: String, dataSource: ApiDataSource): SubscribedTracker?
+    @Query("SELECT * FROM subscribedtracker WHERE username=:username AND searchQuery IS NULL AND dataSource=:dataSource")
+    fun getByUsername(username: String, dataSource: ApiDataSource): SubscribedTracker?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(tracker: SubscribedTracker)

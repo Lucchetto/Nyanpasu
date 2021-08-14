@@ -155,12 +155,12 @@ class CreateTrackerActivity : AppCompatActivity() {
         })
 
         createBtn.setOnClickListener { _ ->
+            val username = usernameInput.text.toString().trim()
+            val searchQuery = searchQueryInput.text.toString().trim()
+            val category = ApiDataSource.values()[selectedDataSourceIndex].categories[selectedCategoryIndex]
             if (currentStatus == Status.TO_VALIDATE) {
                 setStatus(Status.LOADING)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val username = usernameInput.text.toString().trim()
-                    val searchQuery = searchQueryInput.text.toString().trim()
-                    val category = NyaaReleaseCategory.values()[selectedCategoryIndex]
                     releasesTrackerViewModel.getTrackerWithSameSpecs(username, searchQuery, category)?.let {
                         withContext(Dispatchers.Main) {
                             setStatus(Status.FAILED_ALREADY_EXISTS)
@@ -178,10 +178,8 @@ class CreateTrackerActivity : AppCompatActivity() {
             } else if (currentStatus == Status.VALIDATED) {
                 lifecycleScope.launch(Dispatchers.IO) {
                     latestReleasesAdapter.getItems().getOrNull(0)?.let {
-                        val username = usernameInput.text.toString().trim()
-                        val searchQuery = searchQueryInput.text.toString().trim()
                         val newTracker = SubscribedTracker(
-                            dataSourceSpecs = DataSourceSpecs(ApiDataSource.NYAA_SI, ApiDataSource.NYAA_SI.categories[selectedCategoryIndex]),
+                            dataSourceSpecs = DataSourceSpecs(category.getDataSource(), category),
                             username = if (username.isBlank()) null else username,
                             searchQuery = searchQuery, latestReleaseTimestamp = it.timestamp,
                             createdTimestamp = System.currentTimeMillis())
@@ -191,12 +189,10 @@ class CreateTrackerActivity : AppCompatActivity() {
                 }
             } else if (currentStatus == Status.VALIDATED_EMPTY) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val username = usernameInput.text.toString().trim()
-                    val searchQuery = searchQueryInput.text.toString().trim()
                     // Current millis must be divided by 1000 since nyaa.si use seconds as unit
                     // Explicitly tell that hasPreviousReleases is false
                     val newTracker = SubscribedTracker(
-                        dataSourceSpecs = DataSourceSpecs(ApiDataSource.NYAA_SI, ApiDataSource.NYAA_SI.categories[selectedCategoryIndex]),
+                        dataSourceSpecs = DataSourceSpecs(category.getDataSource(), category),
                         username = if (username.isBlank()) null else username,
                         searchQuery = searchQuery, latestReleaseTimestamp = System.currentTimeMillis() / 1000,
                         createdTimestamp = System.currentTimeMillis(), hasPreviousReleases = false)
