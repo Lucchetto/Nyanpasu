@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 
 class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(application) {
@@ -30,8 +31,8 @@ class ReleaseTrackerViewModel(application: Application) : AndroidViewModel(appli
         repo.dao.insert(tracker)
     }
 
-    fun getTrackerByUsername(username: String): SubscribedTracker? {
-        return repo.dao.getByUsername(username)
+    fun getTrackerByUsername(username: String, dataSource: ApiDataSource): SubscribedTracker? {
+        return repo.dao.getByUsername(username, dataSource)
     }
 
     suspend fun getTrackerWithSameSpecs(username: String?, query: String, category: NyaaReleaseCategory): SubscribedTracker? {
