@@ -84,7 +84,7 @@ class BrowsingSpecsSelectorView: LinearLayout {
     }
 
     private fun updateCategories(dataSource: ApiDataSource) {
-        categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, dataSource)
+        categorySpinner.adapter = AppUtils.getCategoriesAdapter(context, dataSource, true)
         categories = dataSource.categories
     }
 
@@ -99,7 +99,7 @@ class BrowsingSpecsSelectorView: LinearLayout {
         // Hax to avoid firing the category listener twice
         dataSourceSpinner.onItemSelectedListener = null
         if (dataSourceSpinner.adapter == null) {
-            dataSourceSpinner.adapter = AppUtils.getDataSourcesSpinner(context)
+            dataSourceSpinner.adapter = AppUtils.getDataSourcesAdapter(context, true)
         }
         dataSourceSpinner.setSelection(index, false)
         val newDataSource = ApiDataSource.values()[index]
@@ -124,7 +124,7 @@ class BrowsingSpecsSelectorView: LinearLayout {
         dataSourceSpinner.onItemSelectedListener = null
         categorySpinner.onItemSelectedListener = null
         super.onRestoreInstanceState(state)
-        dataSourceSpinner.adapter = AppUtils.getDataSourcesSpinner(context)
+        dataSourceSpinner.adapter = AppUtils.getDataSourcesAdapter(context, true)
         if (state != null && state is SavedState) {
             dataSourceSpinner.setSelection(state.selectedDataSourceIndex, false)
             updateCategories(ApiDataSource.values()[state.selectedDataSourceIndex])

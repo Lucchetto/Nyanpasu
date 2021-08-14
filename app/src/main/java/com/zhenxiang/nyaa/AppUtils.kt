@@ -108,20 +108,20 @@ class AppUtils {
             )
         }
 
-        fun getCategoriesSpinner(context: Context, dataSource: ApiDataSource): ArrayAdapter<ReleaseCategory> {
+        fun getCategoriesAdapter(context: Context, dataSource: ApiDataSource, forSpinner: Boolean): ArrayAdapter<ReleaseCategory> {
             val adapter = CategoriesAdapter(
                 context,
-                R.layout.spinner_item,
+                if (forSpinner) R.layout.spinner_item else R.layout.spinner_dropdown_item,
                 dataSource.categories
             )
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
             return adapter
         }
 
-        fun getDataSourcesSpinner(context: Context): ArrayAdapter<String> {
+        fun getDataSourcesAdapter(context: Context, forSpinner: Boolean): ArrayAdapter<String> {
             val adapter = ArrayAdapter(
                 context,
-                R.layout.spinner_item,
+                if (forSpinner) R.layout.spinner_item else R.layout.spinner_dropdown_item,
                 getDataSourcesArrayFormatted()
             )
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)

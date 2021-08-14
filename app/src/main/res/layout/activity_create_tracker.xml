@@ -55,8 +55,23 @@
         android:layout_marginHorizontal="@dimen/activity_insets"
         android:layout_marginTop="@dimen/text_input_layout_spacing">
 
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+        <com.zhenxiang.nyaa.view.CategoryAutoCompleteTextView
             android:id="@+id/categories_selection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/activity_insets"
+        android:layout_marginTop="@dimen/text_input_layout_spacing">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/data_source_selection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="none" />

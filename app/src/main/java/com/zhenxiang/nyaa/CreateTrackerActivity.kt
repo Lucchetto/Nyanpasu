@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.view.WindowCompat
@@ -49,10 +48,13 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var finishHint: TextView
     private lateinit var loading: View
     private lateinit var latestReleasesList: RecyclerView
+    private lateinit var categoriesDropdown: MaterialAutoCompleteTextView
+    private lateinit var dataSourcesDropdown: MaterialAutoCompleteTextView
 
     private lateinit var searchViewModel: DataSourceViewModel
 
     private var selectedCategoryIndex = -1
+    private var selectedDataSourceIndex = -1
     private var currentStatus = Status.TO_VALIDATE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,22 +90,32 @@ class CreateTrackerActivity : AppCompatActivity() {
         createBtn = findViewById(R.id.create_btn)
         val searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
         val usernameInput = findViewById<TextInputEditText>(R.id.username_input)
-        val categoriesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.categories_selection)
+        categoriesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.categories_selection)
+        dataSourcesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.data_source_selection)
         // Hax to always show all items, we'll never reach that threshold so filter is never triggered
         categoriesDropdown.threshold = Int.MAX_VALUE
-        categoriesDropdown.setAdapter(
-            AppUtils.getCategoriesSpinner(this, ApiDataSource.NYAA_SI)
-        )
-
         categoriesDropdown.setOnItemClickListener { _, _, position, _ ->
             selectedCategoryIndex = position
         }
 
-        // We'll saved and restore selectedCategoryIndex in bundle
+        dataSourcesDropdown.threshold = Int.MAX_VALUE
+        dataSourcesDropdown.setAdapter(AppUtils.getDataSourcesAdapter(this, false))
+        dataSourcesDropdown.setOnItemClickListener { _, _, position, _ ->
+            selectedDataSourceIndex = position
+            setDataSource(ApiDataSource.values()[position])
+        }
+
         if (savedInstanceState == null) {
+            setDataSource(ApiDataSource.NYAA_SI)
             categoriesDropdown.setText(AppUtils.getReleaseCategoryString(this, ApiDataSource.NYAA_SI.categories[0]), false)
+            dataSourcesDropdown.setText(ApiDataSource.NYAA_SI.url)
             selectedCategoryIndex = 0
+            selectedDataSourceIndex = 0
             searchQueryInput.requestFocus()
+        } else {
+            selectedCategoryIndex = savedInstanceState.getInt("selectedCategoryIndex")
+            selectedDataSourceIndex = savedInstanceState.getInt("selectedDataSourceIndex")
+            setDataSource(ApiDataSource.values()[selectedDataSourceIndex])
         }
 
         username?.let {
@@ -204,13 +216,18 @@ class CreateTrackerActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         // Restore saved bundle
         setStatus(savedInstanceState.getSerializable("currentState") as Status)
-        selectedCategoryIndex = savedInstanceState.getInt("selectedCategoryIndex")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable("currentState", currentStatus)
         outState.putInt("selectedCategoryIndex", selectedCategoryIndex)
+        outState.putInt("selectedDataSourceIndex", selectedDataSourceIndex)
         super.onSaveInstanceState(outState)
+    }
+
+    private fun setDataSource(apiDataSource: ApiDataSource) {
+        categoriesDropdown.setAdapter(AppUtils.getCategoriesAdapter(this, apiDataSource, false))
+        categoriesDropdown.setText(AppUtils.getReleaseCategoryString(this, apiDataSource.categories[0]), false)
     }
 
     private fun setStatus(status: Status) {
