@@ -126,7 +126,6 @@ class BrowseFragment : Fragment() {
 
         browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
             override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
-                //Log.w("sadasds", "asdasdaaa")
                 if (browseViewModel.getCategory() != releaseCategory) {
                     browseViewModel.setCategory(releaseCategory)
                     browseViewModel.clearResults()

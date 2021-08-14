@@ -1,9 +1,10 @@
 package com.zhenxiang.nyaa.view
 
 import android.content.Context
+import android.os.Parcel
 import android.os.Parcelable
+import android.os.Parcelable.Creator
 import android.util.AttributeSet
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -24,6 +25,9 @@ class BrowsingSpecsSelectorView: LinearLayout {
     var selectedCategory = categories[0]
         private set
 
+    private val dataSourceListener: AdapterView.OnItemSelectedListener
+    private val categoryListener: AdapterView.OnItemSelectedListener
+
     constructor (context: Context) : this(context, null)
 
     constructor(context: Context, @Nullable attrs: AttributeSet?) : this(context, attrs, 0)
@@ -43,12 +47,7 @@ class BrowsingSpecsSelectorView: LinearLayout {
             dataSourceSpinner.performClick()
         }
 
-        setupDataSources()
-    }
-
-    private fun setupDataSources() {
-        categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, ApiDataSource.NYAA_SI)
-        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        categoryListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -64,8 +63,7 @@ class BrowsingSpecsSelectorView: LinearLayout {
 
         }
 
-        dataSourceSpinner.adapter = AppUtils.getDataSourcesSpinner(context)
-        dataSourceSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        dataSourceListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -73,8 +71,7 @@ class BrowsingSpecsSelectorView: LinearLayout {
                 id: Long
             ) {
                 val newDataSource = ApiDataSource.values()[position]
-                categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, newDataSource)
-                categories = newDataSource.categories
+                updateCategories(newDataSource)
                 listener?.dataSourceChanged(newDataSource)
             }
 
@@ -82,17 +79,89 @@ class BrowsingSpecsSelectorView: LinearLayout {
             }
 
         }
+
+        setupDataSources()
+    }
+
+    private fun updateCategories(dataSource: ApiDataSource) {
+        categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, dataSource)
+        categories = dataSource.categories
+    }
+
+    private fun setupDataSources() {
+        //categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, ApiDataSource.NYAA_SI)
+        categorySpinner.onItemSelectedListener = categoryListener
+
+        dataSourceSpinner.onItemSelectedListener = dataSourceListener
     }
 
     fun selectDataSource(index: Int) {
+        // Hax to avoid firing the category listener twice
+        dataSourceSpinner.onItemSelectedListener = null
+        if (dataSourceSpinner.adapter == null) {
+            dataSourceSpinner.adapter = AppUtils.getDataSourcesSpinner(context)
+        }
         dataSourceSpinner.setSelection(index, false)
         val newDataSource = ApiDataSource.values()[index]
-        categorySpinner.adapter = AppUtils.getCategoriesSpinner(context, newDataSource)
-        categories = newDataSource.categories
+        updateCategories(newDataSource)
+        // Hax to avoid firing the category listener twice
+        dataSourceSpinner.onItemSelectedListener = dataSourceListener
     }
 
-    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
-        super.dispatchRestoreInstanceState(container)
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        superState?.let {
+            val ss = SavedState(superState)
+            ss.selectedCategoryIndex = categorySpinner.selectedItemPosition
+            ss.selectedDataSourceIndex = dataSourceSpinner.selectedItemPosition
+            return ss
+        }
+        return superState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        // Hax to avoid firing the listener
+        dataSourceSpinner.onItemSelectedListener = null
+        categorySpinner.onItemSelectedListener = null
+        super.onRestoreInstanceState(state)
+        dataSourceSpinner.adapter = AppUtils.getDataSourcesSpinner(context)
+        if (state != null && state is SavedState) {
+            dataSourceSpinner.setSelection(state.selectedDataSourceIndex, false)
+            updateCategories(ApiDataSource.values()[state.selectedDataSourceIndex])
+            categorySpinner.setSelection(state.selectedCategoryIndex, false)
+        }
+        // Hax to avoid firing the listener
+        dataSourceSpinner.onItemSelectedListener = dataSourceListener
+        categorySpinner.onItemSelectedListener = categoryListener
+    }
+
+    internal class SavedState: BaseSavedState {
+        var selectedCategoryIndex = 0
+        var selectedDataSourceIndex = 0
+
+        constructor(superState: Parcelable): super(superState)
+
+        constructor(parcel: Parcel): super(parcel) {
+            selectedCategoryIndex = parcel.readInt()
+            selectedDataSourceIndex = parcel.readInt()
+        }
+
+        override fun writeToParcel(out: Parcel, flags: Int) {
+            super.writeToParcel(out, flags)
+            out.writeInt(selectedCategoryIndex)
+            out.writeInt(selectedDataSourceIndex)
+        }
+
+        @JvmField val CREATOR: Creator<SavedState> =
+            object : Creator<SavedState> {
+                override fun createFromParcel(`in`: Parcel): SavedState {
+                    return SavedState(`in`)
+                }
+
+                override fun newArray(size: Int): Array<SavedState?> {
+                    return arrayOfNulls(size)
+                }
+            }
     }
 
     interface OnSpecsChangedListener {
