@@ -57,6 +57,8 @@
     <string name="category_photobooks_pictures">Real life Photobooks and Pictures</string>
     <string name="category_videos">Real life Videos</string>
 
+    <string name="release_id_content">ID %1$s - From %2$s</string>
+
     <string name="release_category">Category: %1$s</string>
     <string name="release_submitter">Posted by %1$s</string>
     <string name="release_date">Release date: %1$s</string>

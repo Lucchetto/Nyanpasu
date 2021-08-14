@@ -93,7 +93,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             releaseTitle.text = it.name
 
             val idView = findViewById<TextView>(R.id.release_id)
-            idView.text = "ID: ${it.number}"
+            idView.text = getString(R.string.release_id_content, it.number.toString(), it.dataSourceSpecs.source.url)
 
             val magnetBtn = findViewById<View>(R.id.magnet_btn)
             magnetBtn.setOnClickListener { _ ->
