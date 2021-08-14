@@ -24,9 +24,9 @@ abstract class NyaaDb : RoomDatabase() {
 
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("""CREATE TABLE IF NOT EXISTS `new_nyaaReleasePreview` (`name` TEXT NOT NULL, `magnet` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `seeders` INTEGER NOT NULL, `leechers` INTEGER NOT NULL, `completed` INTEGER NOT NULL, `category` TEXT, `releaseSize` TEXT NOT NULL, `number` INTEGER NOT NULL, `dataSource` INTEGER NOT NULL, PRIMARY KEY(`number`, `dataSource`));
+                database.execSQL("""CREATE TABLE IF NOT EXISTS `new_nyaaReleasePreview` (`number` INTEGER NOT NULL, `name` TEXT NOT NULL, `magnet` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `seeders` INTEGER NOT NULL, `leechers` INTEGER NOT NULL, `completed` INTEGER NOT NULL, `releaseSize` TEXT NOT NULL, `dataSource` INTEGER NOT NULL, `categoryId` TEXT NOT NULL, PRIMARY KEY(`number`, `dataSource`));
                 """)
-                database.execSQL("""INSERT INTO new_nyaaReleasePreview(dataSource, number, name, magnet, timestamp, seeders, leechers, completed, category, releaseSize) SELECT 0, id, name, magnet, timestamp, seeders, leechers, completed, '0~' || category, releaseSize FROM nyaaReleasePreview;""")
+                database.execSQL("""INSERT INTO new_nyaaReleasePreview(dataSource, number, name, magnet, timestamp, seeders, leechers, completed, categoryId, releaseSize) SELECT 0, id, name, magnet, timestamp, seeders, leechers, completed, category, releaseSize FROM nyaaReleasePreview;""")
                 database.execSQL("""DROP TABLE nyaaReleasePreview;""")
                 database.execSQL("""ALTER TABLE `new_nyaaReleasePreview` RENAME TO `nyaaReleasePreview`;""")
                 database.execSQL("""CREATE TABLE IF NOT EXISTS `new_nyaaReleaseDetails` (`user` TEXT, `hash` TEXT NOT NULL, `descriptionMarkdown` TEXT NOT NULL, `parent_number` INTEGER NOT NULL, `parent_dataSource` INTEGER NOT NULL, PRIMARY KEY(`parent_number`, `parent_dataSource`), FOREIGN KEY(`parent_number`, `parent_dataSource`) REFERENCES `NyaaReleasePreview`(`number`, `dataSource`) ON UPDATE CASCADE ON DELETE CASCADE )""")
@@ -41,8 +41,8 @@ abstract class NyaaDb : RoomDatabase() {
                 database.execSQL("INSERT INTO new_savedNyaaRelease(parent_dataSource, parent_number, savedTimestamp) SELECT 0, releaseId, timestamp FROM savedNyaaRelease")
                 database.execSQL("DROP TABLE savedNyaaRelease;")
                 database.execSQL("ALTER TABLE `new_savedNyaaRelease` RENAME TO `savedNyaaRelease`;")
-                database.execSQL("CREATE TABLE IF NOT EXISTS `new_subscribedTracker` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `dataSource` INTEGER NOT NULL, `username` TEXT, `searchQuery` TEXT, `category` TEXT, `latestReleaseTimestamp` INTEGER NOT NULL, `hasPreviousReleases` INTEGER NOT NULL, `createdTimestamp` INTEGER NOT NULL, `newReleasesCount` INTEGER NOT NULL)")
-                database.execSQL("INSERT INTO new_subscribedTracker(dataSource, id, username, searchQuery, category, latestReleaseTimestamp, hasPreviousReleases, createdTimestamp, newReleasesCount) SELECT 0, id, username, searchQuery, '0~' || category, latestReleaseTimestamp, hasPreviousReleases, createdTimestamp, newReleasesCount FROM subscribedTracker")
+                database.execSQL("CREATE TABLE IF NOT EXISTS `new_subscribedTracker` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `username` TEXT, `searchQuery` TEXT, `latestReleaseTimestamp` INTEGER NOT NULL, `hasPreviousReleases` INTEGER NOT NULL, `createdTimestamp` INTEGER NOT NULL, `newReleasesCount` INTEGER NOT NULL, `dataSource` INTEGER NOT NULL, `categoryId` TEXT NOT NULL)")
+                database.execSQL("INSERT INTO new_subscribedTracker(dataSource, id, username, searchQuery, categoryId, latestReleaseTimestamp, hasPreviousReleases, createdTimestamp, newReleasesCount) SELECT 0, id, username, searchQuery, category, latestReleaseTimestamp, hasPreviousReleases, createdTimestamp, newReleasesCount FROM subscribedTracker")
                 database.execSQL("DROP TABLE subscribedTracker;")
                 database.execSQL("ALTER TABLE `new_subscribedTracker` RENAME TO `subscribedTracker`;")
             }
