@@ -48,11 +48,17 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_release_tracker_details)
         activityRoot = findViewById(R.id.release_tracker_details_activity_root)
 
+        val latestReleasesList = findViewById<RecyclerView>(R.id.latest_releases_list)
         if (NavigationModeUtils.isFullGestures(this)) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
             activityRoot.applyInsetter {
                 type(statusBars = true) {
                     margin()
+                }
+            }
+            latestReleasesList.applyInsetter {
+                type(navigationBars = true) {
+                    padding()
                 }
             }
         }
@@ -71,7 +77,6 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
             val latestRelease = findViewById<TextView>(R.id.latest_release_date)
             val trackerCreatedDate = findViewById<TextView>(R.id.tracker_created_date)
             val deleteBtn = findViewById<TextView>(R.id.delete_tracker_btn)
-            val latestReleasesList = findViewById<RecyclerView>(R.id.latest_releases_list)
 
             val searchViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
             searchViewModel.setCategory(tracker.dataSourceSpecs.category)
