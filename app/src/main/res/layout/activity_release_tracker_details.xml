@@ -38,7 +38,7 @@
         tools:text="Category: Literature non English translated"/>
 
     <TextView
-        android:id="@+id/tracker_username"
+        android:id="@+id/tracker_source_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/activity_insets"

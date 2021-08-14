@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tracker_title"
-        app:layout_constraintBottom_toTopOf="@id/tracker_username"
+        app:layout_constraintBottom_toTopOf="@id/tracker_source_username"
         app:layout_constraintEnd_toEndOf="@id/tracker_title"
         app:layout_constraintStart_toStartOf="@id/tracker_title"
         app:layout_constraintHorizontal_bias="0"
@@ -36,7 +36,7 @@
 
     <!-- hidden if null or for whole user trackers -->
     <TextView
-        android:id="@+id/tracker_username"
+        android:id="@+id/tracker_source_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tracker_category"
@@ -51,7 +51,7 @@
         android:id="@+id/latest_release_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tracker_username"
+        app:layout_constraintTop_toBottomOf="@id/tracker_source_username"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/tracker_title"
         app:layout_constraintStart_toStartOf="@id/tracker_title"

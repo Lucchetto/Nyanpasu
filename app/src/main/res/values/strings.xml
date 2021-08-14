@@ -94,8 +94,9 @@
     <string name="search_query_title">Keywords</string>
 
     <string name="releases_tracker_title">@string/releases_tracker_bottom_nav</string>
-    <string name="tracker_all_releases_from_user">All releases from %1$s</string>
-    <string name="tracker_from_user">From user: %1$s</string>
+    <string name="tracker_all_releases_from_user">All releases posted by %1$s</string>
+    <string name="tracker_from_data_source">From %1$s</string>
+    <string name="tracker_from_data_source_and_user">From %1$s - User %2$s</string>
     <string name="tracker_latest_release">Latest release: %1$s</string>
     <string name="tracker_no_releases_yet">No releases found yet</string>
     <string name="tracker_created_on">Tracker created on %1$s</string>

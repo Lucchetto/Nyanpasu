@@ -37,7 +37,7 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         private val title = view.findViewById<TextView>(R.id.tracker_title)
         private val category = view.findViewById<TextView>(R.id.tracker_category)
-        private val username = view.findViewById<TextView>(R.id.tracker_username)
+        private val sourceAndUsername = view.findViewById<TextView>(R.id.tracker_source_username)
         private val latestRelease = view.findViewById<TextView>(R.id.latest_release_date)
         private val newReleasesCounter = view.findViewById<TextView>(R.id.new_releases_counter)
 
@@ -84,26 +84,24 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
             if (tracker.searchQuery != null) {
                 // First line the query
                 title.text = tracker.searchQuery
-                // Second line is username is present
-                tracker.username?.let {
-                    username.text = username.context.getString(R.string.tracker_from_user, it)
-                    username.visibility = View.VISIBLE
+                sourceAndUsername.text = tracker.username?.let {
+                    sourceAndUsername.context.getString(R.string.tracker_from_data_source_and_user,
+                        tracker.dataSourceSpecs.source.url, it)
                 } ?: run {
-                    // Hide username because not available
-                    username.text = null
-                    username.visibility = View.GONE
+                    sourceAndUsername.context.getString(R.string.tracker_from_data_source,
+                        tracker.dataSourceSpecs.source.url)
                 }
+
             } else if (tracker.username != null) {
                 // First line the username
                 title.text = title.context.getString(R.string.tracker_all_releases_from_user, tracker.username)
                 // Hide username because not already showing in title
-                username.text = null
-                username.visibility = View.GONE
+                sourceAndUsername.text = sourceAndUsername.context.getString(R.string.tracker_from_data_source,
+                    tracker.dataSourceSpecs.source.url)
             } else {
                 // else condition should never happen
                 title.text = null
-                username.text = null
-                username.visibility = View.GONE
+                sourceAndUsername.text = null
             }
         }
     }

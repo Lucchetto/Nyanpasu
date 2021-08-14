@@ -73,7 +73,7 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
 
             val title = findViewById<TextView>(R.id.tracker_title)
             val category = findViewById<TextView>(R.id.tracker_category)
-            val username = findViewById<TextView>(R.id.tracker_username)
+            val sourceAndUsername = findViewById<TextView>(R.id.tracker_source_username)
             val latestRelease = findViewById<TextView>(R.id.latest_release_date)
             val trackerCreatedDate = findViewById<TextView>(R.id.tracker_created_date)
             val deleteBtn = findViewById<TextView>(R.id.delete_tracker_btn)
@@ -155,17 +155,18 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
                 // First line the query
                 title.text = tracker.searchQuery
                 // Show username if username is present
-                tracker.username?.let {
-                    username.text = getString(R.string.tracker_from_user, it)
-                    username.visibility = View.VISIBLE
+                sourceAndUsername.text = tracker.username?.let {
+                    getString(R.string.tracker_from_data_source_and_user,
+                        tracker.dataSourceSpecs.source.url, it)
                 } ?: run {
-                    // Hide username because not available
-                    username.text = null
-                    username.visibility = View.GONE
+                    getString(R.string.tracker_from_data_source,
+                        tracker.dataSourceSpecs.source.url)
                 }
             } else if (tracker.username != null) {
                 // Username as page title
                 title.text = getString(R.string.tracker_all_releases_from_user, tracker.username)
+                sourceAndUsername.text = getString(R.string.tracker_from_data_source,
+                    tracker.dataSourceSpecs.source.url)
             }
 
             deleteBtn.setOnClickListener {
