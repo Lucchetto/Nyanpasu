@@ -41,6 +41,11 @@ android {
             versionNameSuffix '-DEBUG'
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.resValue "string", "version_info", variant.versionName
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

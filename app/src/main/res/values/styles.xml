@@ -77,6 +77,12 @@
         <item name="android:textColor">?android:textColorTertiary</item>
     </style>
 
+    <style name="TextAppearance.Nyaasi.Credits" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
     <style name="Theme.Nyaasi.ReleaseActionButton">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>

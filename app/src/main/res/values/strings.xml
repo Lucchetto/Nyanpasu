@@ -113,6 +113,10 @@
     <!-- UI mode -->
     <string name="ui_mode_setting_title">Theme</string>
 
+    <!-- About info -->
+    <string name="about_title">About</string>
+    <string name="version_title">Version</string>
+
     <!-- Notifications settings -->
     <string name="releases_tracker_notifications_setting_title">Releases tracker notifications</string>
     <string name="releases_tracker_notifications_setting_summary_on">You will be notified about new releases</string>

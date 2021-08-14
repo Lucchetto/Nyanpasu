@@ -26,4 +26,30 @@
         android:layout_height="wrap_content"
         android:id="@android:id/list_container"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        app:layout_anchor="@android:id/list_container"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_anchorGravity="bottom|center_horizontal">
+
+        <TextView
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Nyaasi.Credits"
+            android:text="Developed by Zhenxiang Chen"/>
+
+        <ImageView
+            android:id="@+id/renge"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/renge"/>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
