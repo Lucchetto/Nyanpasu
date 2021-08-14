@@ -50,6 +50,12 @@
     <string name="category_software_games">Software games</string>
 
     <string name="category_art">Art</string>
+    <string name="category_doujinshi">Doujinshi</string>
+    <string name="category_games">Games</string>
+    <string name="category_manga">Manga</string>
+    <string name="category_real_life">Real life</string>
+    <string name="category_photobooks_pictures">Real life Photobooks and Pictures</string>
+    <string name="category_videos">Real life Videos</string>
 
     <string name="release_category">Category: %1$s</string>
     <string name="release_submitter">Posted by %1$s</string>
