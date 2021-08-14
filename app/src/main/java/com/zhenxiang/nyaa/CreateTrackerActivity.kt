@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -48,6 +50,8 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var finishHint: TextView
     private lateinit var loading: View
     private lateinit var latestReleasesList: RecyclerView
+    private lateinit var searchQueryInput: TextInputEditText
+    private lateinit var usernameInput: TextInputEditText
     private lateinit var categoriesDropdown: MaterialAutoCompleteTextView
     private lateinit var dataSourcesDropdown: MaterialAutoCompleteTextView
 
@@ -56,6 +60,19 @@ class CreateTrackerActivity : AppCompatActivity() {
     private var selectedCategoryIndex = -1
     private var selectedDataSourceIndex = -1
     private var currentStatus = Status.TO_VALIDATE
+
+    private val trackerValidator = object: TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            createBtn.isEnabled = !usernameInput.text.isNullOrBlank() || !searchQueryInput.text.isNullOrBlank()
+            setStatus(Status.TO_VALIDATE)
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,8 +105,8 @@ class CreateTrackerActivity : AppCompatActivity() {
 
         // Initially this button will be validate and not enabled
         createBtn = findViewById(R.id.create_btn)
-        val searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
-        val usernameInput = findViewById<TextInputEditText>(R.id.username_input)
+        searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
+        usernameInput = findViewById<TextInputEditText>(R.id.username_input)
         categoriesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.categories_selection)
         dataSourcesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.data_source_selection)
         // Hax to always show all items, we'll never reach that threshold so filter is never triggered
@@ -122,20 +139,9 @@ class CreateTrackerActivity : AppCompatActivity() {
             usernameInput.setText(it)
         }
 
-        searchQueryInput.doOnTextChanged { text, start, before, count ->
-            setStatus(Status.TO_VALIDATE)
-            createBtn.isEnabled = text?.isNotBlank() == true
-        }
-
-        usernameInput.doOnTextChanged { text, start, before, count ->
-            createBtn.isEnabled = searchQueryInput.text?.isNotBlank() == true
-            setStatus(Status.TO_VALIDATE)
-        }
-
-        categoriesDropdown.doOnTextChanged { text, start, before, count ->
-            createBtn.isEnabled = searchQueryInput.text?.isNotBlank() == true
-            setStatus(Status.TO_VALIDATE)
-        }
+        searchQueryInput.addTextChangedListener(trackerValidator)
+        usernameInput.addTextChangedListener(trackerValidator)
+        categoriesDropdown.addTextChangedListener(trackerValidator)
 
         searchViewModel.resultsLiveData.observe(this, {
             if (it.isEmpty()) {
@@ -155,8 +161,8 @@ class CreateTrackerActivity : AppCompatActivity() {
         })
 
         createBtn.setOnClickListener { _ ->
-            val username = usernameInput.text.toString().trim()
-            val searchQuery = searchQueryInput.text.toString().trim()
+            val username = formatUsernameOrQueryForTracker(usernameInput.text)
+            val searchQuery = formatUsernameOrQueryForTracker(searchQueryInput.text)
             val category = ApiDataSource.values()[selectedDataSourceIndex].categories[selectedCategoryIndex]
             if (currentStatus == Status.TO_VALIDATE) {
                 setStatus(Status.LOADING)
@@ -180,8 +186,9 @@ class CreateTrackerActivity : AppCompatActivity() {
                     latestReleasesAdapter.getItems().getOrNull(0)?.let {
                         val newTracker = SubscribedTracker(
                             dataSourceSpecs = DataSourceSpecs(category.getDataSource(), category),
-                            username = if (username.isBlank()) null else username,
-                            searchQuery = searchQuery, latestReleaseTimestamp = it.timestamp,
+                            username = username,
+                            searchQuery = searchQuery,
+                            latestReleaseTimestamp = it.timestamp,
                             createdTimestamp = System.currentTimeMillis())
                         releasesTrackerViewModel.addReleaseTracker(newTracker)
                         finish()
@@ -193,8 +200,9 @@ class CreateTrackerActivity : AppCompatActivity() {
                     // Explicitly tell that hasPreviousReleases is false
                     val newTracker = SubscribedTracker(
                         dataSourceSpecs = DataSourceSpecs(category.getDataSource(), category),
-                        username = if (username.isBlank()) null else username,
-                        searchQuery = searchQuery, latestReleaseTimestamp = System.currentTimeMillis() / 1000,
+                        username = username,
+                        searchQuery = searchQuery,
+                        latestReleaseTimestamp = System.currentTimeMillis() / 1000,
                         createdTimestamp = System.currentTimeMillis(), hasPreviousReleases = false)
                     releasesTrackerViewModel.addReleaseTracker(newTracker)
                     finish()
@@ -206,6 +214,10 @@ class CreateTrackerActivity : AppCompatActivity() {
         cancelBtn.setOnClickListener {
             finish()
         }
+    }
+
+    private fun formatUsernameOrQueryForTracker(text: Editable?): String? {
+        return if (text.isNullOrBlank()) null else text.toString().trim()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
