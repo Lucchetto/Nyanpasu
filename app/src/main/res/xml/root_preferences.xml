@@ -28,6 +28,7 @@
     <PreferenceCategory app:title="@string/about_title">
 
         <Preference
+            app:icon="@drawable/ic_outline_info_24"
             app:title="@string/version_title"
             app:summary="@string/version_info"/>
     </PreferenceCategory>
