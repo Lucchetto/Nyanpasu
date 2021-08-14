@@ -12,5 +12,7 @@
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/color_background_dark</item>
         <item name="android:windowBackground">?android:colorBackground</item>
+
+        <item name="preferenceTheme">@style/Theme.Nyaasi.PreferenceFragment</item>
     </style>
 </resources>

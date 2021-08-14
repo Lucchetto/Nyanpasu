@@ -23,6 +23,14 @@
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/white</item>
         <item name="android:windowBackground">?android:colorBackground</item>
+
+        <item name="preferenceTheme">@style/Theme.Nyaasi.PreferenceFragment</item>
+    </style>
+
+    <!-- Custom Preference Theme -->
+    <style name="Theme.Nyaasi.PreferenceFragment" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceFragmentCompatStyle">@style/Style.Nyaasi.PreferenceFragment</item>
+        <item name="preferenceCategoryStyle">@style/Style.Nyaasi.reference.Category</item>
     </style>
 
     <style name="Theme.Nyaasi.CreateTrackerDialog" parent="Theme.MaterialComponents.DayNight.Dialog.MinWidth">
