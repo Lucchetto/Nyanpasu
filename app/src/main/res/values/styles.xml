@@ -118,7 +118,10 @@
         <item name="android:paddingEnd">12dp</item>
     </style>
 
-    <style name="Style.Nyaasi.reference.Category" parent="@style/Preference.Category.Material">
+    <style name="Style.Nyaasi.Preference.Category" parent="@style/Preference.Category.Material">
+    </style>
+
+    <style name="Style.Nyaasi.Preference" parent="@style/Preference.Material">
     </style>
 
     <!-- Custom Style for PreferenceFragmentCompat -->

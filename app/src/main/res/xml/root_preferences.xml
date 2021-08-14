@@ -3,6 +3,7 @@
     <PreferenceCategory app:title="@string/interface_settings_title">
 
         <ListPreference
+            app:icon="@drawable/ic_outline_color_lens_24"
             app:defaultValue="0"
             app:entries="@array/ui_mode_entries"
             app:entryValues="@array/ui_mode_values"
@@ -15,6 +16,7 @@
     <PreferenceCategory app:title="@string/notifications_settings_title">
 
         <SwitchPreferenceCompat
+            app:icon="@drawable/ic_outline_notifications_active_24"
             app:key="@string/releases_tracker_notification_key"
             app:title="@string/releases_tracker_notifications_setting_title"
             app:summaryOn="@string/releases_tracker_notifications_setting_summary_on"

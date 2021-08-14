@@ -30,7 +30,8 @@
     <!-- Custom Preference Theme -->
     <style name="Theme.Nyaasi.PreferenceFragment" parent="@style/PreferenceThemeOverlay.v14.Material">
         <item name="preferenceFragmentCompatStyle">@style/Style.Nyaasi.PreferenceFragment</item>
-        <item name="preferenceCategoryStyle">@style/Style.Nyaasi.reference.Category</item>
+        <item name="preferenceStyle">@style/Style.Nyaasi.Preference</item>
+        <item name="preferenceCategoryStyle">@style/Style.Nyaasi.Preference.Category</item>
     </style>
 
     <style name="Theme.Nyaasi.CreateTrackerDialog" parent="Theme.MaterialComponents.DayNight.Dialog.MinWidth">
