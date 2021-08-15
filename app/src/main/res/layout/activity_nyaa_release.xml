@@ -133,20 +133,16 @@
                 tools:value="143.2 MiB"/>
         </com.google.android.flexbox.FlexboxLayout>
 
-        <com.google.android.gms.ads.AdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/ad_banner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
-        </com.google.android.gms.ads.AdView>
+        <FrameLayout
+            android:id="@+id/ad_banner_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </FrameLayout>
 
         <br.tiagohm.markdownview.MarkdownView
             android:id="@+id/release_details_markdown"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/layout_spacer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"/>

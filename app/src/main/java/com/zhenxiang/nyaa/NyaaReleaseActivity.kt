@@ -3,8 +3,10 @@ package com.zhenxiang.nyaa
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -59,6 +61,30 @@ class NyaaReleaseActivity : AppCompatActivity() {
         }
     }
 
+    // Ads stuff
+    private lateinit var adBannerContainer: FrameLayout
+    private lateinit var adView: AdView
+
+    private var initialLayoutComplete = false
+    // Determine the screen width (less decorations) to use for the ad width.
+    // If the ad hasn't been laid out, default to the full screen width.
+    private val adSize: AdSize
+        get() {
+            val display = windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
+
+            val density = outMetrics.density
+
+            var adWidthPixels = adBannerContainer.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nyaa_release)
@@ -85,11 +111,15 @@ class NyaaReleaseActivity : AppCompatActivity() {
         releaseTrackerFragmentSharedViewModel = ViewModelProvider(this).get(ReleaseTrackerFragmentSharedViewModel::class.java)
 
         nyaaRelease?.let {
-            val adBanner = findViewById<AdView>(R.id.ad_banner)
-            //adBanner.adSize = AdSize.BANNER
-            //adBanner.adUnitId = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/6300978111" else "ca-app-pub-7304870195125780/9748871353"
-            val adRequest = AdRequest.Builder().build()
-            adBanner.loadAd(adRequest)
+            adBannerContainer = findViewById(R.id.ad_banner_container)
+            adView = AdView(this)
+            adBannerContainer.addView(adView)
+            adBannerContainer.viewTreeObserver.addOnGlobalLayoutListener {
+                if (!initialLayoutComplete) {
+                    initialLayoutComplete = true
+                    loadBanner()
+                }
+            }
 
             manageTrackerBtn = findViewById(R.id.add_to_tracker)
             releaseTrackerFragmentSharedViewModel.currentUserTracked.observe(this) {
@@ -172,9 +202,45 @@ class NyaaReleaseActivity : AppCompatActivity() {
         }
     }
 
+    /** Called when leaving the activity  */
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    /** Called when returning to the activity  */
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    /** Called before the activity is destroyed  */
+    public override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable(USER_LATEST_RELEASE_INTENT_OBJ, latestRelease)
         super.onSaveInstanceState(outState)
+    }
+
+    private fun loadBanner() {
+        adView.adUnitId = AD_UNIT_ID
+
+        adView.adSize = adSize
+
+        // Create an ad request.
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
+        adView.adListener = object: AdListener() {
+            override fun onAdLoaded() {
+                adBannerContainer.setPadding(0, resources.getDimensionPixelSize(R.dimen.layout_spacer), 0, 0)
+                super.onAdLoaded()
+            }
+        }
     }
 
     private suspend fun setDetails(details: NyaaReleaseDetails) {
@@ -237,6 +303,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
     companion object {
         const val RELEASE_PREVIEW_INTENT_OBJ = "nyaaReleasePreview"
         const val USER_LATEST_RELEASE_INTENT_OBJ = "userLatestRelease"
+
+        private val AD_UNIT_ID = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9214589741"
+            else "ca-app-pub-7304870195125780/9748871353"
 
         fun startNyaaReleaseActivity(release: NyaaReleasePreview, activity: Activity) {
             val intent = Intent(activity, NyaaReleaseActivity::class.java).putExtra(RELEASE_PREVIEW_INTENT_OBJ, release)

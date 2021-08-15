@@ -6,6 +6,7 @@
     <dimen name="release_preview_item_first_btn_start_margin">12dp</dimen>
 
     <dimen name="text_input_layout_spacing">15dp</dimen>
+    <dimen name="layout_spacer">15dp</dimen>
     <dimen name="text_vertical_spacer">20dp</dimen>
 
     <dimen name="new_releases_counter_text_size">14sp</dimen>
