@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +14,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.DataSourceViewModel
@@ -43,6 +49,30 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
         }
     }
 
+    // Ads stuff
+    private lateinit var adBannerContainer: FrameLayout
+    private lateinit var adView: AdView
+
+    private var initialLayoutComplete = false
+    // Determine the screen width (less decorations) to use for the ad width.
+    // If the ad hasn't been laid out, default to the full screen width.
+    private val adSize: AdSize
+        get() {
+            val display = windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
+
+            val density = outMetrics.density
+
+            var adWidthPixels = adBannerContainer.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_release_tracker_details)
@@ -66,6 +96,17 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
         val tracker = intent.getSerializableExtra(RELEASE_TRACKER_INTENT_OBJ) as SubscribedTracker?
 
         tracker?.let { _ ->
+
+            adBannerContainer = findViewById(R.id.ad_banner_container)
+            adView = AdView(this)
+            adBannerContainer.addView(adView)
+            adBannerContainer.viewTreeObserver.addOnGlobalLayoutListener {
+                if (!initialLayoutComplete) {
+                    initialLayoutComplete = true
+                    loadBanner()
+                }
+            }
+
             val subscribedTrackerDao = ReleaseTrackerRepo(application).dao
             lifecycleScope.launch(Dispatchers.IO) {
                 subscribedTrackerDao.clearNewReleasesCount(tracker.id)
@@ -178,8 +219,46 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
         }
     }
 
+    /** Called when leaving the activity  */
+    public override fun onPause() {
+        adView.pause()
+        super.onPause()
+    }
+
+    /** Called when returning to the activity  */
+    public override fun onResume() {
+        super.onResume()
+        adView.resume()
+    }
+
+    /** Called before the activity is destroyed  */
+    public override fun onDestroy() {
+        adView.destroy()
+        super.onDestroy()
+    }
+
+    private fun loadBanner() {
+        adView.adUnitId = AD_UNIT_ID
+
+        adView.adSize = adSize
+
+        // Create an ad request.
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
+        adView.adListener = object: AdListener() {
+            override fun onAdLoaded() {
+                adBannerContainer.setPadding(0, resources.getDimensionPixelSize(R.dimen.layout_spacer), 0, 0)
+                super.onAdLoaded()
+            }
+        }
+    }
+
     companion object {
         const val RELEASE_TRACKER_INTENT_OBJ = "releaseTracker"
+        private val AD_UNIT_ID = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/9214589741"
+        else "ca-app-pub-7304870195125780/5729541772"
 
         fun startReleaseTrackerDetailsActivity(tracker: SubscribedTracker, activity: Activity) {
             val intent = Intent(activity, ReleaseTrackerDetailsActivity::class.java).putExtra(
