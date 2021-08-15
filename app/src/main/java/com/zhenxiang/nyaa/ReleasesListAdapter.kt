@@ -1,7 +1,5 @@
 package com.zhenxiang.nyaa
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
@@ -20,6 +18,7 @@ import android.view.*
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 
 
 class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView.Adapter<ReleasesListAdapter.DownloadItemViewHolder>() {
@@ -52,6 +51,8 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
         private val downloadBtn: View = view.findViewById(R.id.download_btn)
 
         private var itemData: NyaaReleasePreview? = null
+        var popupMenu: PopupMenu? = null
+            private set
 
         init {
             if (!showActions) {
@@ -96,14 +97,8 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
                 }
 
                 view.setOnLongClickListener {
-                    val itemData = itemData
-                    val listener = listener
-                    if (itemData != null && listener != null) {
-                        listener.openMenuForItem(it, itemData)
-                        true
-                    } else {
-                        false
-                    }
+                    showPopupMenu()
+                    true
                 }
             }
 
@@ -113,6 +108,39 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
                 if (itemData != null && listener != null) {
                     listener.itemClicked(itemData)
                 }
+            }
+        }
+
+        private fun showPopupMenu() {
+            val itemData = itemData
+            val listener = listener
+            if (itemData != null && listener != null) {
+                val popupMenu = PopupMenu(itemView.context, itemView)
+                popupMenu.menuInflater.inflate(R.menu.release_preview_menu, popupMenu.menu)
+                popupMenu.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.copy_magnet -> {
+                            listener.copyMagnet(itemData)
+                            true
+                        }
+                        R.id.copy_torrent -> {
+                            listener.copyTorrent(itemData)
+                            true
+                        }
+                        R.id.copy_release_link -> {
+                            listener.copyReleaseLink(itemData)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popupMenu.show()
+                popupMenu.setOnDismissListener {
+                    // Clear the reference
+                    this.popupMenu = null
+                }
+
+                this.popupMenu = popupMenu
             }
         }
 
@@ -149,11 +177,11 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
 
     interface ItemListener {
         fun itemClicked(item: NyaaReleasePreview)
-        fun openMenuForItem(itemView: View, item: NyaaReleasePreview)
         fun copyMagnet(item: NyaaReleasePreview)
         fun downloadMagnet(item: NyaaReleasePreview)
         fun copyTorrent(item: NyaaReleasePreview)
         fun downloadTorrent(item: NyaaReleasePreview)
+        fun copyReleaseLink(item: NyaaReleasePreview)
     }
 }
 
@@ -183,7 +211,23 @@ class SwipedCallback(context: Context, swipeDirs: Int = ItemTouchHelper.LEFT or 
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        // Shouldn't happen but if item is deleted dismiss the popup
+        if (viewHolder is ReleasesListAdapter.DownloadItemViewHolder) {
+            viewHolder.popupMenu?.dismiss()
+        }
         listener?.onDeleteItem(viewHolder.adapterPosition)
+    }
+
+    override fun getSwipeDirs(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
+        // Prevent swiping with popup open since it would be annoying
+        return if (viewHolder is ReleasesListAdapter.DownloadItemViewHolder && viewHolder.popupMenu != null) {
+            0
+        } else {
+            super.getSwipeDirs(recyclerView, viewHolder)
+        }
     }
 
     override fun onChildDraw(

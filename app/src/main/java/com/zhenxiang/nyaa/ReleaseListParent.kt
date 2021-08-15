@@ -62,30 +62,10 @@ interface ReleaseListParent: ActivityResultCaller {
                             .context.getString(R.string.torrent_link_copied), listParent)
                 }
 
-                override fun openMenuForItem(itemView: View, item: NyaaReleasePreview) {
-                    val popupMenu = PopupMenu(itemView.context, itemView)
-                    popupMenu.menuInflater.inflate(R.menu.release_preview_menu, popupMenu.menu)
-                    popupMenu.setOnMenuItemClickListener { menuItem ->
-                        when (menuItem.itemId) {
-                            R.id.copy_magnet -> {
-                                copyToClipboardShowSnackbar(item.name, item.magnet,
-                                    itemView.context.getString(R.string.magnet_link_copied), listParent)
-                                true
-                            }
-                            R.id.copy_torrent -> {
-                                copyToClipboardShowSnackbar(item.name, AppUtils.getReleaseTorrentUrl(item.getReleaseId()),
-                                    itemView.context.getString(R.string.torrent_link_copied), listParent)
-                                true
-                            }
-                            R.id.copy_release_link -> {
-                                copyToClipboardShowSnackbar(item.name, AppUtils.getReleasePageUrl(item.getReleaseId()),
-                                    itemView.context.getString(R.string.release_link_copied), listParent)
-                                true
-                            }
-                            else -> false
-                        }
-                    }
-                    popupMenu.show()
+                override fun copyReleaseLink(item: NyaaReleasePreview) {
+                    copyToClipboardShowSnackbar(item.name, AppUtils.getReleasePageUrl(item.getReleaseId()),
+                        listParent.getSnackBarParentView()
+                            .context.getString(R.string.release_link_copied), listParent)
                 }
             }
         }
