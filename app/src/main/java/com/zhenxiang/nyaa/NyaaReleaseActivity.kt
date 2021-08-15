@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
+import com.google.android.gms.ads.*
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.NyaaPageProvider
@@ -84,6 +85,12 @@ class NyaaReleaseActivity : AppCompatActivity() {
         releaseTrackerFragmentSharedViewModel = ViewModelProvider(this).get(ReleaseTrackerFragmentSharedViewModel::class.java)
 
         nyaaRelease?.let {
+            val adBanner = findViewById<AdView>(R.id.ad_banner)
+            //adBanner.adSize = AdSize.BANNER
+            //adBanner.adUnitId = if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/6300978111" else "ca-app-pub-7304870195125780/9748871353"
+            val adRequest = AdRequest.Builder().build()
+            adBanner.loadAd(adRequest)
+
             manageTrackerBtn = findViewById(R.id.add_to_tracker)
             releaseTrackerFragmentSharedViewModel.currentUserTracked.observe(this) {
                 setButtonTracked(it)
