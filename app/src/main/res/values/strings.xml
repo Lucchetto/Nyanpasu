@@ -72,6 +72,7 @@
     <string name="submitter_null">Anonymous</string>
     <string name="manage_trackers_title">Manage tracker</string>
     <string name="add_tracker_title">Add tracker</string>
+    <string name="tracker_fragment_empty_hint">Releases tracker notifies you about new releases based on your preferences.\nTo start click on \"Add tracker\"</string>
 
     <string name="track_all_from_user_title">Track all from this user</string>
     <string name="track_all_from_user_desc">You will get notified of all the new releases from this user</string>

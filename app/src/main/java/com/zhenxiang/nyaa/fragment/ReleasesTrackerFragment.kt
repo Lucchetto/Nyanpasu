@@ -28,6 +28,7 @@ class ReleasesTrackerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_releases_tracker, container, false)
+        val emptyViewHint = fragmentView.findViewById<View>(R.id.empty_view)
 
         val releaseTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
         val addBtn = fragmentView.findViewById<ExtendedFloatingActionButton>(R.id.add_btn)
@@ -41,6 +42,7 @@ class ReleasesTrackerFragment : Fragment() {
         trackedKeywordsList.adapter = trackedKeywordsAdapter
         //val subscribedUsersAdapter = SubscribedTrackersAdapter()
         releaseTrackerViewModel.subscribedTrackers.observe(viewLifecycleOwner, {
+            emptyViewHint.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             trackedKeywordsAdapter.setData(it)
         })
 

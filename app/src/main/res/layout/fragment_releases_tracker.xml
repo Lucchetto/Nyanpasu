@@ -20,6 +20,23 @@
             app:layout_scrollFlags="scroll|enterAlways" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <FrameLayout
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.zhenxiang.nyaa.view.KeepWithinParentBoundsScrollingBehavior"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/Style.EmptyView.Text"
+            android:text="@string/tracker_fragment_empty_hint"/>
+    </FrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keywords_trackers_list"
         android:layout_width="match_parent"
