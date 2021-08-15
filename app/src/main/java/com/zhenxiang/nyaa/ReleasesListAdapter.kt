@@ -41,7 +41,7 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
     }
     private val differ: AsyncListDiffer<NyaaReleasePreview> = AsyncListDiffer(this, DIFF_CALLBACK)
 
-    var listener: ItemClickedListener? = null
+    var listener: ItemListener? = null
 
     inner class DownloadItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //private val id: TextView = view.findViewById(R.id.release_id)
@@ -112,7 +112,7 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
         return differ.currentList
     }
 
-    interface ItemClickedListener {
+    interface ItemListener {
         fun itemClicked(item: NyaaReleasePreview)
         fun downloadMagnet(item: NyaaReleasePreview)
         fun downloadTorrent(item: NyaaReleasePreview)

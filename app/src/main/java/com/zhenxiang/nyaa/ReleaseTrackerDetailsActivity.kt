@@ -8,7 +8,9 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
@@ -19,11 +21,8 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.revengeos.revengeui.utils.NavigationModeUtils
-import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.DataSourceViewModel
 import com.zhenxiang.nyaa.api.ReleaseId
-import com.zhenxiang.nyaa.db.NyaaReleasePreview
-import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerRepo
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaa.util.FooterAdapter
@@ -33,21 +32,12 @@ import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.util.*
 
-class ReleaseTrackerDetailsActivity : AppCompatActivity() {
+class ReleaseTrackerDetailsActivity : AppCompatActivity(), ReleaseListParent {
 
     private lateinit var activityRoot: View
 
-    private var queuedDownload: ReleaseId? = null
-    private val storagePermissionGuard = createPermissionRequestLauncher {
-        queuedDownload?.let { releaseId ->
-            if (it) {
-                AppUtils.enqueueDownload(releaseId, activityRoot)
-            } else {
-                AppUtils.storagePermissionForDownloadDenied(activityRoot)
-            }
-            queuedDownload = null
-        }
-    }
+    private var mQueuedDownload: ReleaseId? = null
+    private val permissionRequestLauncher = ReleaseListParent.setupStoragePermissionRequestLauncher(this)
 
     // Ads stuff
     private lateinit var adBannerContainer: FrameLayout
@@ -140,24 +130,7 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
                 }
             })
 
-            latestReleasesAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
-                override fun itemClicked(item: NyaaReleasePreview) {
-                    NyaaReleaseActivity.startNyaaReleaseActivity(item, this@ReleaseTrackerDetailsActivity)
-                }
-
-                override fun downloadMagnet(item: NyaaReleasePreview) {
-                    AppUtils.openMagnetLink(item, activityRoot)
-                }
-
-                override fun downloadTorrent(item: NyaaReleasePreview) {
-                    val newDownload = item.getReleaseId()
-                    AppUtils.guardDownloadPermission(this@ReleaseTrackerDetailsActivity, storagePermissionGuard, {
-                        AppUtils.enqueueDownload(newDownload, activityRoot)
-                    }, {
-                        queuedDownload = newDownload
-                    })
-                }
-            }
+            latestReleasesAdapter.listener = ReleaseListParent.setupReleaseListListener(this)
 
             // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
             latestReleasesAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
@@ -265,5 +238,29 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity() {
                 RELEASE_TRACKER_INTENT_OBJ, tracker)
             activity.startActivity(intent)
         }
+    }
+
+    override fun getQueuedDownload(): ReleaseId? {
+        return mQueuedDownload
+    }
+
+    override fun getSnackBarParentView(): View {
+        return activityRoot
+    }
+
+    override fun getSnackBarAnchorView(): View? {
+        return null
+    }
+
+    override fun setQueuedDownload(releaseId: ReleaseId?) {
+        mQueuedDownload = releaseId
+    }
+
+    override fun storagePermissionRequestLauncher(): ActivityResultLauncher<String> {
+        return permissionRequestLauncher
+    }
+
+    override fun getCurrentActivity(): FragmentActivity {
+        return this
     }
 }

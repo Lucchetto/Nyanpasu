@@ -6,43 +6,34 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
-import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.DataSourceViewModel
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.api.ReleaseCategory
-import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
 import dev.chrisbanes.insetter.applyInsetter
 
-class NyaaSearchActivity : AppCompatActivity() {
+class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
     private lateinit var searchViewModel: DataSourceViewModel
     private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
 
     private lateinit var activityRoot: View
-    private var queuedDownload: ReleaseId? = null
-    private val storagePermissionGuard = createPermissionRequestLauncher { granted ->
-        queuedDownload?.let {
-            if (granted) {
-                AppUtils.enqueueDownload(it, activityRoot)
-            } else {
-                AppUtils.storagePermissionForDownloadDenied(activityRoot)
-            }
-            queuedDownload = null
-        }
-    }
+    private var mQueuedDownload: ReleaseId? = null
+    private val permissionRequestLauncher = ReleaseListParent.setupStoragePermissionRequestLauncher(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,24 +121,7 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
         })
 
-        resultsAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
-            override fun itemClicked(item: NyaaReleasePreview) {
-                NyaaReleaseActivity.startNyaaReleaseActivity(item, this@NyaaSearchActivity)
-            }
-
-            override fun downloadMagnet(item: NyaaReleasePreview) {
-                AppUtils.openMagnetLink(item, activityRoot)
-            }
-
-            override fun downloadTorrent(item: NyaaReleasePreview) {
-                val newDownload = ReleaseId(item.number, item.dataSourceSpecs.source)
-                AppUtils.guardDownloadPermission(this@NyaaSearchActivity, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(newDownload, activityRoot)
-                }, {
-                    queuedDownload = newDownload
-                })
-            }
-        }
+        resultsAdapter.listener = ReleaseListParent.setupReleaseListListener(this)
         // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
         resultsAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -201,5 +175,29 @@ class NyaaSearchActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    override fun getQueuedDownload(): ReleaseId? {
+        return mQueuedDownload
+    }
+
+    override fun getSnackBarParentView(): View {
+        return activityRoot
+    }
+
+    override fun getSnackBarAnchorView(): View? {
+        return null
+    }
+
+    override fun setQueuedDownload(releaseId: ReleaseId?) {
+        mQueuedDownload = releaseId
+    }
+
+    override fun getCurrentActivity(): FragmentActivity {
+        return this
+    }
+
+    override fun storagePermissionRequestLauncher(): ActivityResultLauncher<String> {
+        return permissionRequestLauncher
     }
 }

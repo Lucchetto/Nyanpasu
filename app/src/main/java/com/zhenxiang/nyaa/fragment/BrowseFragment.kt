@@ -10,16 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import android.content.Intent
-import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
 import com.zhenxiang.nyaa.*
-import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
-import com.zhenxiang.nyaa.AppUtils.Companion.guardDownloadPermission
-import com.zhenxiang.nyaa.AppUtils.Companion.storagePermissionForDownloadDenied
 import com.zhenxiang.nyaa.api.*
-import com.zhenxiang.nyaa.db.NyaaReleasePreview
-import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
 
@@ -28,24 +24,15 @@ import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
  * Use the [BrowseFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class BrowseFragment : Fragment() {
+class BrowseFragment : Fragment(), ReleaseListParent {
 
     private lateinit var browseViewModel: DataSourceViewModel
 
     private lateinit var fragmentView: View
     private lateinit var searchBtn: ExtendedFloatingActionButton
 
-    private var queuedDownload: ReleaseId? = null
-    private val storagePermissionGuard = createPermissionRequestLauncher {
-        queuedDownload?.let { releaseId ->
-            if (it) {
-                AppUtils.enqueueDownload(releaseId, fragmentView, searchBtn)
-            } else {
-                storagePermissionForDownloadDenied(fragmentView, searchBtn)
-            }
-            queuedDownload = null
-        }
-    }
+    private var mQueuedDownload: ReleaseId? = null
+    private val permissionRequestLauncher = ReleaseListParent.setupStoragePermissionRequestLauncher(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,24 +82,7 @@ class BrowseFragment : Fragment() {
             }
         })
 
-        releasesListAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
-            override fun itemClicked(item: NyaaReleasePreview) {
-                NyaaReleaseActivity.startNyaaReleaseActivity(item, requireActivity())
-            }
-
-            override fun downloadMagnet(item: NyaaReleasePreview) {
-                AppUtils.openMagnetLink(item, fragmentView, searchBtn)
-            }
-
-            override fun downloadTorrent(item: NyaaReleasePreview) {
-                val newDownload = item.getReleaseId()
-                guardDownloadPermission(fragmentView.context, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(newDownload, fragmentView, searchBtn)
-                }, {
-                    queuedDownload = newDownload
-                })
-            }
-        }
+        releasesListAdapter.listener = ReleaseListParent.setupReleaseListListener(this)
         releasesListAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
@@ -153,5 +123,29 @@ class BrowseFragment : Fragment() {
             }
 
         private val DEFAULT_SELECTED_DATA_SOURCE = "def_selected_data_source"
+    }
+
+    override fun getQueuedDownload(): ReleaseId? {
+        return mQueuedDownload
+    }
+
+    override fun getSnackBarParentView(): View {
+        return fragmentView
+    }
+
+    override fun getSnackBarAnchorView(): View? {
+        return searchBtn
+    }
+
+    override fun setQueuedDownload(releaseId: ReleaseId?) {
+        mQueuedDownload = releaseId
+    }
+
+    override fun storagePermissionRequestLauncher(): ActivityResultLauncher<String> {
+        return permissionRequestLauncher
+    }
+
+    override fun getCurrentActivity(): FragmentActivity {
+        return requireActivity()
     }
 }

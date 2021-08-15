@@ -5,21 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaa.*
-import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
-import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 import com.zhenxiang.nyaa.widget.ReleaseItemAnimator
 import dev.chrisbanes.insetter.applyInsetter
 
-open class ViewedReleasesFragment : Fragment() {
+open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
 
     private lateinit var releasesList: RecyclerView
     //private lateinit var toolbar: Toolbar
@@ -29,17 +29,8 @@ open class ViewedReleasesFragment : Fragment() {
 
     private lateinit var fragmentView: View
 
-    private var queuedDownload: ReleaseId? = null
-    private val storagePermissionGuard = createPermissionRequestLauncher { granted ->
-        queuedDownload?.let {
-            if (granted) {
-                AppUtils.enqueueDownload(it, fragmentView, parentSearchBtn())
-            } else {
-                AppUtils.storagePermissionForDownloadDenied(fragmentView, parentSearchBtn())
-            }
-            queuedDownload = null
-        }
-    }
+    private var mQueuedDownload: ReleaseId? = null
+    private val permissionRequestLauncher = ReleaseListParent.setupStoragePermissionRequestLauncher(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,24 +101,7 @@ open class ViewedReleasesFragment : Fragment() {
         }
         releasesList.layoutManager = LinearLayoutManager(fragmentView.context)
         releasesList.adapter = releasesListAdapter
-        releasesListAdapter.listener = object : ReleasesListAdapter.ItemClickedListener {
-            override fun itemClicked(item: NyaaReleasePreview) {
-                NyaaReleaseActivity.startNyaaReleaseActivity(item, requireActivity())
-            }
-
-            override fun downloadMagnet(item: NyaaReleasePreview) {
-                AppUtils.openMagnetLink(item, fragmentView, parentSearchBtn())
-            }
-
-            override fun downloadTorrent(item: NyaaReleasePreview) {
-                val newDownload = item.getReleaseId()
-                AppUtils.guardDownloadPermission(fragmentView.context, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(newDownload, fragmentView, parentSearchBtn())
-                }, {
-                     queuedDownload = newDownload
-                })
-            }
-        }
+        releasesListAdapter.listener = ReleaseListParent.setupReleaseListListener(this)
 
         return fragmentView
     }
@@ -177,5 +151,29 @@ open class ViewedReleasesFragment : Fragment() {
         fun newInstance() =
             ViewedReleasesFragment().apply {
             }
+    }
+
+    override fun getQueuedDownload(): ReleaseId? {
+        return mQueuedDownload
+    }
+
+    override fun getSnackBarParentView(): View {
+        return fragmentView
+    }
+
+    override fun getSnackBarAnchorView(): View? {
+        return parentSearchBtn()
+    }
+
+    override fun setQueuedDownload(releaseId: ReleaseId?) {
+        mQueuedDownload = releaseId
+    }
+
+    override fun storagePermissionRequestLauncher(): ActivityResultLauncher<String> {
+        return permissionRequestLauncher
+    }
+
+    override fun getCurrentActivity(): FragmentActivity {
+        return requireActivity()
     }
 }
