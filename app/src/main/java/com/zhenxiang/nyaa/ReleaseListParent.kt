@@ -1,12 +1,18 @@
 package com.zhenxiang.nyaa
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.view.View
+import android.widget.PopupMenu
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.snackbar.Snackbar
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
+import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 
 interface ReleaseListParent: ActivityResultCaller {
     fun getQueuedDownload(): ReleaseId?
@@ -43,7 +49,55 @@ interface ReleaseListParent: ActivityResultCaller {
                         listParent.setQueuedDownload(newDownload)
                     })
                 }
+
+                override fun copyMagnet(item: NyaaReleasePreview) {
+                    copyToClipboardShowSnackbar(item.name, item.magnet,
+                        listParent.getSnackBarParentView()
+                            .context.getString(R.string.magnet_link_copied), listParent)
+                }
+
+                override fun copyTorrent(item: NyaaReleasePreview) {
+                    copyToClipboardShowSnackbar(item.name, AppUtils.getReleaseTorrentUrl(item.getReleaseId()),
+                        listParent.getSnackBarParentView()
+                            .context.getString(R.string.torrent_link_copied), listParent)
+                }
+
+                override fun openMenuForItem(itemView: View, item: NyaaReleasePreview) {
+                    val popupMenu = PopupMenu(itemView.context, itemView)
+                    popupMenu.menuInflater.inflate(R.menu.release_preview_menu, popupMenu.menu)
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.copy_magnet -> {
+                                copyToClipboardShowSnackbar(item.name, item.magnet,
+                                    itemView.context.getString(R.string.magnet_link_copied), listParent)
+                                true
+                            }
+                            R.id.copy_torrent -> {
+                                copyToClipboardShowSnackbar(item.name, AppUtils.getReleaseTorrentUrl(item.getReleaseId()),
+                                    itemView.context.getString(R.string.torrent_link_copied), listParent)
+                                true
+                            }
+                            R.id.copy_release_link -> {
+                                copyToClipboardShowSnackbar(item.name, AppUtils.getReleasePageUrl(item.getReleaseId()),
+                                    itemView.context.getString(R.string.release_link_copied), listParent)
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    popupMenu.show()
+                }
             }
+        }
+
+        private fun copyToClipboardShowSnackbar(label: String, text: String, snackbarText: String, listParent: ReleaseListParent) {
+            val clipData = ClipData.newPlainText(label, text)
+            (listParent.getSnackBarParentView().context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(clipData)
+            val snack = Snackbar.make(listParent.getSnackBarParentView(), snackbarText, Snackbar.LENGTH_SHORT)
+            listParent.getSnackBarAnchorView()?.let {
+                snack.anchorView = it
+            }
+            snack.show()
         }
 
         fun setupStoragePermissionRequestLauncher(

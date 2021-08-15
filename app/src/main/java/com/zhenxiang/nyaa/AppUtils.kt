@@ -81,10 +81,18 @@ class AppUtils {
             snackbar.show()
         }
 
+        fun getReleaseTorrentUrl(releaseId: ReleaseId): String {
+            return "http://${releaseId.dataSource.url}/download/${releaseId.number}.torrent"
+        }
+
+        fun getReleasePageUrl(releaseId: ReleaseId): String {
+            return "https://${releaseId.dataSource.url}/view/${releaseId.number}"
+        }
+
         fun enqueueDownload(releaseId: ReleaseId, parentView: View, anchorView: View? = null): Long? {
             return try {
                 val manager = parentView.context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                val uri = Uri.parse("http://${releaseId.dataSource.url}/download/${releaseId.number}.torrent")
+                val uri = Uri.parse(getReleaseTorrentUrl(releaseId))
                 val request = DownloadManager.Request(uri)
                 request.setVisibleInDownloadsUi(true)
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)

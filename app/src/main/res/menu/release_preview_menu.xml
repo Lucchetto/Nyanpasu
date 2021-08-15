@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/copy_magnet"
+        android:title="@string/copy_magnet_link"/>
+
+    <item android:id="@+id/copy_torrent"
+        android:title="@string/copy_torrent_link"/>
+
+    <item android:id="@+id/copy_release_link"
+        android:title="@string/copy_release_link"/>
+</menu>

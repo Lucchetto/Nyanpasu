@@ -57,6 +57,13 @@
     <string name="category_photobooks_pictures">Real life Photobooks and Pictures</string>
     <string name="category_videos">Real life Videos</string>
 
+    <string name="copy_magnet_link">Copy magnet link</string>
+    <string name="magnet_link_copied">Magnet link copied to the clipboard</string>
+    <string name="copy_torrent_link">Copy torrent link</string>
+    <string name="torrent_link_copied">Torrent link copied to the clipboard</string>
+    <string name="copy_release_link">Copy release link</string>
+    <string name="release_link_copied">Release page\'s link copied to the clipboard</string>
+
     <string name="release_id_content">ID %1$s - From %2$s</string>
 
     <string name="release_category">Category: %1$s</string>

@@ -43,10 +43,13 @@
         <entry key="app/src/main/res/layout/titled_spinner.xml" value="0.32864583333333336" />
         <entry key="app/src/main/res/menu/browse_toolbar_menu.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/menu/home_bottom_nav.xml" value="0.22" />
+        <entry key="app/src/main/res/menu/release_item_menu.xml" value="0.1625" />
+        <entry key="app/src/main/res/menu/release_preview_menu.xml" value="0.264" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.175" />
         <entry key="app/src/main/res/xml/nyaa_search_history_config.xml" value="0.16302083333333334" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.4080370942812983" />
         <entry key="app/src/main/res/xml/search_history_config.xml" value="0.14895833333333333" />
+        <entry key="nativetemplates/src/main/res/layout/gnt_small_template_view.xml" value="0.23369565217391305" />
       </map>
     </option>
   </component>

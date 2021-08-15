@@ -1,12 +1,11 @@
 package com.zhenxiang.nyaa
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,6 +16,8 @@ import java.util.*
 import androidx.annotation.ColorInt
 
 import android.util.TypedValue
+import android.view.*
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 
@@ -54,29 +55,63 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
 
         init {
             if (!showActions) {
-                view.findViewById<View>(R.id.magnet_btn).visibility = View.GONE
-                view.findViewById<View>(R.id.download_btn).visibility = View.GONE
+                magnetBtn.visibility = View.GONE
+                downloadBtn.visibility = View.GONE
+            } else {
+                magnetBtn.setOnClickListener {
+                    val itemData = itemData
+                    val listener = listener
+                    if (itemData != null && listener != null) {
+                        listener.downloadMagnet(itemData)
+                    }
+                }
+
+                magnetBtn.setOnLongClickListener {
+                    val itemData = itemData
+                    val listener = listener
+                    if (itemData != null && listener != null) {
+                        listener.copyMagnet(itemData)
+                        true
+                    } else {
+                        false
+                    }
+                }
+                downloadBtn.setOnLongClickListener {
+                    val itemData = itemData
+                    val listener = listener
+                    if (itemData != null && listener != null) {
+                        listener.copyTorrent(itemData)
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                downloadBtn.setOnClickListener {
+                    val itemData = itemData
+                    val listener = listener
+                    if (itemData != null && listener != null) {
+                        listener.downloadTorrent(itemData)
+                    }
+                }
+
+                view.setOnLongClickListener {
+                    val itemData = itemData
+                    val listener = listener
+                    if (itemData != null && listener != null) {
+                        listener.openMenuForItem(it, itemData)
+                        true
+                    } else {
+                        false
+                    }
+                }
             }
+
             view.setOnClickListener {
                 val itemData = itemData
                 val listener = listener
                 if (itemData != null && listener != null) {
                     listener.itemClicked(itemData)
-                }
-            }
-            magnetBtn.setOnClickListener {
-                val itemData = itemData
-                val listener = listener
-                if (itemData != null && listener != null) {
-                    listener.downloadMagnet(itemData)
-                }
-            }
-
-            downloadBtn.setOnClickListener {
-                val itemData = itemData
-                val listener = listener
-                if (itemData != null && listener != null) {
-                    listener.downloadTorrent(itemData)
                 }
             }
         }
@@ -114,7 +149,10 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
 
     interface ItemListener {
         fun itemClicked(item: NyaaReleasePreview)
+        fun openMenuForItem(itemView: View, item: NyaaReleasePreview)
+        fun copyMagnet(item: NyaaReleasePreview)
         fun downloadMagnet(item: NyaaReleasePreview)
+        fun copyTorrent(item: NyaaReleasePreview)
         fun downloadTorrent(item: NyaaReleasePreview)
     }
 }

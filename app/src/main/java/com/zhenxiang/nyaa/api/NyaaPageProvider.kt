@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaa.api
 
 import android.util.Log
+import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import org.jsoup.Jsoup
@@ -18,16 +19,14 @@ class NyaaPageProvider {
 
         suspend fun getReleaseDetails(releaseId: ReleaseId): NyaaReleaseDetails? {
             return try {
-                releaseId.dataSource.url.let { sourceUrl ->
-                    val doc: Document = Jsoup.connect("https://${sourceUrl}/view/${releaseId.number}").get()
-                    doc.outputSettings().prettyPrint(false)
+                val doc: Document = Jsoup.connect(AppUtils.getReleasePageUrl(releaseId)).get()
+                doc.outputSettings().prettyPrint(false)
 
-                    val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
-                    val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
-                    val descriptionMarkdown = doc.getElementById("torrent-description").html()
+                val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
+                val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
+                val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
-                    NyaaReleaseDetails(releaseId, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
-                }
+                NyaaReleaseDetails(releaseId, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
             } catch(e: Exception) {
                 Log.w(TAG, e)
                 null
