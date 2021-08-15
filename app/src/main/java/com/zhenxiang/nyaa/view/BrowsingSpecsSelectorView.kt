@@ -152,16 +152,18 @@ class BrowsingSpecsSelectorView: LinearLayout {
             out.writeInt(selectedDataSourceIndex)
         }
 
-        @JvmField val CREATOR: Creator<SavedState> =
-            object : Creator<SavedState> {
-                override fun createFromParcel(`in`: Parcel): SavedState {
-                    return SavedState(`in`)
-                }
+        companion object {
+            @JvmField val CREATOR: Creator<SavedState> =
+                object : Creator<SavedState> {
+                    override fun createFromParcel(`in`: Parcel): SavedState {
+                        return SavedState(`in`)
+                    }
 
-                override fun newArray(size: Int): Array<SavedState?> {
-                    return arrayOfNulls(size)
+                    override fun newArray(size: Int): Array<SavedState?> {
+                        return arrayOfNulls(size)
+                    }
                 }
-            }
+        }
     }
 
     interface OnSpecsChangedListener {
