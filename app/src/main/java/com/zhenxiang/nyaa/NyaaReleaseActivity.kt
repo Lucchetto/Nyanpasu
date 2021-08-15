@@ -136,6 +136,11 @@ class NyaaReleaseActivity : AppCompatActivity() {
             magnetBtn.setOnClickListener { _ ->
                 AppUtils.openMagnetLink(it, scrollRoot)
             }
+            magnetBtn.setOnLongClickListener { _ ->
+                ReleaseListParent.copyToClipboardShowSnackbar(it.name, it.magnet,
+                    getString(R.string.magnet_link_copied), scrollRoot, null)
+                true
+            }
 
             val downloadBtn = findViewById<View>(R.id.download_btn)
             downloadBtn.setOnClickListener { _ ->
@@ -145,6 +150,13 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 }, {
                     queuedDownload = newDownload
                 })
+            }
+
+            downloadBtn.setOnLongClickListener { _ ->
+                ReleaseListParent.copyToClipboardShowSnackbar(it.name,
+                    AppUtils.getReleaseTorrentUrl(it.getReleaseId()),
+                    getString(R.string.torrent_link_copied), scrollRoot, null)
+                true
             }
 
             val category = findViewById<TextView>(R.id.category)

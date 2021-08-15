@@ -71,10 +71,15 @@ interface ReleaseListParent: ActivityResultCaller {
         }
 
         private fun copyToClipboardShowSnackbar(label: String, text: String, snackbarText: String, listParent: ReleaseListParent) {
+            copyToClipboardShowSnackbar(label, text, snackbarText,
+                listParent.getSnackBarParentView(), listParent.getSnackBarAnchorView())
+        }
+
+        fun copyToClipboardShowSnackbar(label: String, text: String, snackbarText: String, parentView: View, anchorView: View?) {
             val clipData = ClipData.newPlainText(label, text)
-            (listParent.getSnackBarParentView().context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(clipData)
-            val snack = Snackbar.make(listParent.getSnackBarParentView(), snackbarText, Snackbar.LENGTH_SHORT)
-            listParent.getSnackBarAnchorView()?.let {
+            (parentView.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(clipData)
+            val snack = Snackbar.make(parentView, snackbarText, Snackbar.LENGTH_SHORT)
+            anchorView?.let {
                 snack.anchorView = it
             }
             snack.show()
