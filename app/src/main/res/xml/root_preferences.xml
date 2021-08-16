@@ -27,7 +27,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/about_title">
-
         <Preference
             app:key="@string/open_discord_key"
             app:icon="@drawable/ic_outline_discord_24"
@@ -37,6 +36,9 @@
             app:icon="@drawable/ic_outline_info_24"
             app:title="@string/version_title"
             app:summary="@string/version_info"/>
+
+        <com.zhenxiang.nyaa.preference.FooterPreference
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
