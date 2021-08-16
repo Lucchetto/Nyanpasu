@@ -117,8 +117,9 @@
     </style>
 
     <style name="Style.EmptyView.Text" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:maxWidth">300dp</item>
+        <item name="android:textColor">?android:textColorTertiary</item>
     </style>
     
     <style name="TitledSpinner">
