@@ -100,6 +100,7 @@
     <string name="no_releases_found_for_tracker_hint">No releases found with these parameters, but you can still create the tracker if you want</string>
     <string name="finish_tracker_hint">The tracker will notify about the new releases found with these keywords.\nBelow you can see the latest releases</string>
     <string name="tracker_validation_failed_error">Can\'t validate the tracker</string>
+    <string name="tracker_validation_user_not_found">User not found</string>
     <string name="tracker_already_exists_error">Tracker with same paramaters already exists</string>
     <string name="latest_releases_found_title">Latest releases</string>
     <string name="search_query_title">Keywords</string>

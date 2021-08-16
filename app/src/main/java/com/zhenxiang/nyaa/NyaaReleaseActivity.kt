@@ -283,8 +283,12 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val subscribedUser = releasesTrackerViewModel.getTrackerByUsername(details.user, details.releaseId.dataSource)
             latestRelease?.let {
             } ?: run {
-                latestRelease = NyaaPageProvider.getPageItems(dataSource = details.releaseId.dataSource,
-                    pageIndex = 0, user = details.user)?.items?.getOrNull(0)
+                latestRelease = try {
+                    NyaaPageProvider.getPageItems(dataSource = details.releaseId.dataSource,
+                        pageIndex = 0, user = details.user)?.items?.getOrNull(0)
+                } catch (e: Exception) {
+                    null
+                }
             }
             val latestTimestamp = latestRelease?.let {
                 it.timestamp

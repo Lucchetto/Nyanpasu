@@ -3,6 +3,10 @@ package com.zhenxiang.nyaa.api
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jsoup.HttpStatusException
+
+const val PAGE_NOT_FOUND = 404
+const val GENERIC_JSOUP_ERROR = -1
 
 class NyaaRepository() {
 
@@ -31,22 +35,31 @@ class NyaaRepository() {
         endReached = false
     }
 
-    suspend fun getLinks(): Boolean = withContext(Dispatchers.IO) {
+    suspend fun getLinks(): Int = withContext(Dispatchers.IO) {
         val category = category
         if (!endReached && category != null) {
             pageIndex++
-            val newItems = NyaaPageProvider.getPageItems(category.getDataSource(), pageIndex, category, searchValue, username)
-            newItems?.let {
-                items.addAll(it.items)
-                endReached = if (it.bottomReached) {
+            try {
+                val newItems = NyaaPageProvider.getPageItems(category.getDataSource(), pageIndex, category, searchValue, username)
+                items.addAll(newItems.items)
+                endReached = if (newItems.bottomReached) {
                     true
                 } else {
                     // Prevent loading too many items in the repository
                     items.size > MAX_LOADABLE_ITEMS
                 }
+            } catch (e: Exception) {
+                // With an error we can't continue. So mark it as data ended
+                endReached = true
+                if (e is HttpStatusException && e.statusCode == 404) {
+                    return@withContext PAGE_NOT_FOUND
+                } else {
+                    return@withContext GENERIC_JSOUP_ERROR
+                }
             }
         }
-        endReached
+        // Return 0 if everything when fine
+        0
     }
 
     companion object {

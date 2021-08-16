@@ -37,14 +37,9 @@ class NyaaPageProvider {
                                  pageIndex: Int,
                                  category: ReleaseCategory? = null,
                                  searchQuery: String? = null,
-                                 user: String? = null): NyaaPageResults? {
+                                 user: String? = null): NyaaPageResults {
 
-            val sourceUrl = dataSource.url
-            if (sourceUrl == null) {
-                return null
-            }
-
-            var fullUrl = "https://${sourceUrl}/"
+            var fullUrl = "https://${dataSource.url}/"
             if (!user.isNullOrBlank()) {
                 fullUrl += "user/$user"
             }
@@ -63,7 +58,7 @@ class NyaaPageProvider {
                  pageItems = doc.select("tr >td > a[href~=^\\/view\\/\\d+\$]")
             } catch (e: Exception) {
                 Log.e(TAG, "exception", e)
-                return null
+                throw (e)
             }
 
             val foundReleases = mutableListOf<NyaaReleasePreview>()

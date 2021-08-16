@@ -10,6 +10,7 @@ class DataSourceViewModel: ViewModel() {
 
     private val repository = NyaaRepository()
     val resultsLiveData = MutableLiveData<List<NyaaReleasePreview>>()
+    val error = MutableLiveData<Int>()
     var firstInsert: Boolean = true
 
     fun setSearchText(searchText: String?) {
@@ -30,10 +31,15 @@ class DataSourceViewModel: ViewModel() {
 
     private fun loadFromRepo() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getLinks()
+            val errorCode = repository.getLinks()
             withContext(Dispatchers.Main) {
-                // Emit new values from repository
-                resultsLiveData.value = repository.items.toList()
+                // Emit error if not 0 (success)
+                if (errorCode != 0) {
+                    error.value = errorCode
+                } else {
+                    // Emit new values from repository
+                    resultsLiveData.value = repository.items.toList()
+                }
             }
         }
     }

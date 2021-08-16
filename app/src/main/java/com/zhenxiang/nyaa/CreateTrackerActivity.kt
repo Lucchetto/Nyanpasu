@@ -12,7 +12,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.view.WindowCompat
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,10 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.revengeos.revengeui.utils.NavigationModeUtils
-import com.zhenxiang.nyaa.api.ApiDataSource
-import com.zhenxiang.nyaa.api.DataSourceSpecs
-import com.zhenxiang.nyaa.api.NyaaReleaseCategory
-import com.zhenxiang.nyaa.api.DataSourceViewModel
+import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
 import dev.chrisbanes.insetter.applyInsetter
@@ -41,6 +37,7 @@ class CreateTrackerActivity : AppCompatActivity() {
         VALIDATED,
         VALIDATED_EMPTY,
         FAILED,
+        FAILED_USER_NOT_FOUND,
         FAILED_ALREADY_EXISTS,
     }
 
@@ -159,6 +156,14 @@ class CreateTrackerActivity : AppCompatActivity() {
                 setStatus(Status.VALIDATED)
             }
         })
+        searchViewModel.error.observe(this, {
+            setStatus(
+                when(it) {
+                    PAGE_NOT_FOUND -> Status.FAILED_USER_NOT_FOUND
+                    else -> Status.FAILED
+                }
+            )
+        })
 
         createBtn.setOnClickListener { _ ->
             val username = formatUsernameOrQueryForTracker(usernameInput.text)
@@ -262,10 +267,11 @@ class CreateTrackerActivity : AppCompatActivity() {
             createBtn.text = getString(if (status == Status.TO_VALIDATE || status == Status.LOADING) R.string.validate else R.string.create)
         }
 
-        if (status == Status.FAILED || status == Status.FAILED_ALREADY_EXISTS) {
+        if (status == Status.FAILED || status == Status.FAILED_ALREADY_EXISTS || status == Status.FAILED_USER_NOT_FOUND) {
             errorHint.visibility = View.VISIBLE
             when (status) {
                 Status.FAILED -> errorHint.text = getString(R.string.tracker_validation_failed_error)
+                Status.FAILED_USER_NOT_FOUND -> errorHint.text = getString(R.string.tracker_validation_user_not_found)
                 Status.FAILED_ALREADY_EXISTS -> errorHint.text = getString(R.string.tracker_already_exists_error)
             }
         } else {
