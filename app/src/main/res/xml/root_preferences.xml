@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/interface_settings_title">
 
@@ -26,6 +27,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/about_title">
+
+        <Preference
+            app:key="@string/open_discord_key"
+            app:icon="@drawable/ic_outline_discord_24"
+            app:title="@string/join_discord"/>
 
         <Preference
             app:icon="@drawable/ic_outline_info_24"
