@@ -123,12 +123,14 @@ class BrowsingSpecsSelectorView: LinearLayout {
         // Hax to avoid firing the listener
         dataSourceSpinner.onItemSelectedListener = null
         categorySpinner.onItemSelectedListener = null
-        super.onRestoreInstanceState(state)
         dataSourceSpinner.adapter = AppUtils.getDataSourcesAdapter(context, true)
         if (state != null && state is SavedState) {
             dataSourceSpinner.setSelection(state.selectedDataSourceIndex, false)
             updateCategories(ApiDataSource.values()[state.selectedDataSourceIndex])
             categorySpinner.setSelection(state.selectedCategoryIndex, false)
+            super.onRestoreInstanceState(state.superState)
+        } else {
+            super.onRestoreInstanceState(state)
         }
         // Hax to avoid firing the listener
         dataSourceSpinner.onItemSelectedListener = dataSourceListener
