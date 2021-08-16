@@ -119,6 +119,10 @@ class CreateTrackerActivity : AppCompatActivity() {
             setDataSource(ApiDataSource.values()[position])
         }
 
+        // Prefill username field if necessary
+        username?.let {
+            usernameInput.setText(it)
+        }
         if (savedInstanceState == null) {
             setDataSource(ApiDataSource.NYAA_SI)
             categoriesDropdown.setText(AppUtils.getReleaseCategoryString(this, ApiDataSource.NYAA_SI.categories[0]), false)
@@ -126,14 +130,13 @@ class CreateTrackerActivity : AppCompatActivity() {
             selectedCategoryIndex = 0
             selectedDataSourceIndex = 0
             searchQueryInput.requestFocus()
+
+            // Run validation on first creation
+            createBtn.isEnabled = !usernameInput.text.isNullOrBlank() || !searchQueryInput.text.isNullOrBlank()
         } else {
             selectedCategoryIndex = savedInstanceState.getInt("selectedCategoryIndex")
             selectedDataSourceIndex = savedInstanceState.getInt("selectedDataSourceIndex")
             setDataSource(ApiDataSource.values()[selectedDataSourceIndex])
-        }
-
-        username?.let {
-            usernameInput.setText(it)
         }
 
         searchQueryInput.addTextChangedListener(trackerValidator)
