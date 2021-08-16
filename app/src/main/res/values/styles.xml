@@ -110,6 +110,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/new_releases_counter_bg</item>
         <item name="android:includeFontPadding">false</item>
+        <item name="android:scrollbars">none</item>
     </style>
     
     <style name="TextAppearance.Spinner.Title" parent="TextAppearance.AppCompat.Body1">
