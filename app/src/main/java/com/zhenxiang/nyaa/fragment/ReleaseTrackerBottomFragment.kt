@@ -85,6 +85,7 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
         keywordsTrackerForUser.setOnClickListener {
             val intent = Intent(activity, CreateTrackerActivity::class.java)
             intent.putExtra(CreateTrackerActivity.PRESET_USERNAME, username)
+            intent.putExtra(CreateTrackerActivity.PRESET_DATA_SOURCE, dataSource.value)
             startActivity(intent)
             dismiss()
         }

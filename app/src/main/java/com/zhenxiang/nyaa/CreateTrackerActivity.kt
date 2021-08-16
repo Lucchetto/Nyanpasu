@@ -75,7 +75,7 @@ class CreateTrackerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_tracker)
 
-        val username = intent.getStringExtra(PRESET_USERNAME)
+        val presetUsername = intent.getStringExtra(PRESET_USERNAME)
         val releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
         searchViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
 
@@ -119,16 +119,20 @@ class CreateTrackerActivity : AppCompatActivity() {
             setDataSource(ApiDataSource.values()[position])
         }
 
-        // Prefill username field if necessary
-        username?.let {
-            usernameInput.setText(it)
-        }
         if (savedInstanceState == null) {
-            setDataSource(ApiDataSource.NYAA_SI)
-            categoriesDropdown.setText(AppUtils.getReleaseCategoryString(this, ApiDataSource.NYAA_SI.categories[0]), false)
-            dataSourcesDropdown.setText(ApiDataSource.NYAA_SI.url)
+            // Prefill username field if necessary
+            presetUsername?.let {
+                usernameInput.setText(it)
+            }
+            // Setup default dataSource correctly
+            val presetDataSource = ApiDataSource.values()[intent.getIntExtra(PRESET_DATA_SOURCE, 0)]
+            setDataSource(presetDataSource)
+            categoriesDropdown.setText(AppUtils.getReleaseCategoryString(this, presetDataSource.categories[0]), false)
+            dataSourcesDropdown.setText(presetDataSource.url)
             selectedCategoryIndex = 0
-            selectedDataSourceIndex = 0
+            selectedDataSourceIndex = presetDataSource.ordinal
+
+            // Focus search query field automatically
             searchQueryInput.requestFocus()
 
             // Run validation on first creation
@@ -289,5 +293,6 @@ class CreateTrackerActivity : AppCompatActivity() {
 
     companion object {
         const val PRESET_USERNAME = "presetUsername"
+        const val PRESET_DATA_SOURCE = "presetDataSource"
     }
 }
