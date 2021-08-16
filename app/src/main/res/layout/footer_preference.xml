@@ -10,8 +10,14 @@
         android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Nyaasi.Credits"
-        android:text="Developed by Zhenxiang Chen"/>
+        style="@style/Style.Nyaasi.Credits.Text"
+        android:text="@string/developer_credits"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Style.Nyaasi.Credits.Text"
+        android:text="@string/anime_time_sponsor"/>
 
     <ImageView
         android:id="@+id/renge"

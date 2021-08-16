@@ -23,6 +23,7 @@
         <entry key="app/src/main/res/layout/activity_release_tracker_details.xml" value="0.16458333333333333" />
         <entry key="app/src/main/res/layout/browsing_specs_selector_view.xml" value="0.32864583333333336" />
         <entry key="app/src/main/res/layout/download_item.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/footer_preference.xml" value="0.4" />
         <entry key="app/src/main/res/layout/fragment_browse.xml" value="0.3651452282157676" />
         <entry key="app/src/main/res/layout/fragment_create_tracker_dialog.xml" value="0.3515625" />
         <entry key="app/src/main/res/layout/fragment_library.xml" value="0.33" />
