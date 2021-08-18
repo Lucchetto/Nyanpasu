@@ -21,6 +21,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
+import com.zhenxiang.nyaa.AppUtils
 
 
 class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters):
@@ -122,8 +123,8 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
         while(true) {
             // Parse pages until we hit null or empty page
             val releases = try {
-                NyaaPageProvider.getPageItems(tracker.dataSourceSpecs.source, pageIndex,
-                    category = tracker.dataSourceSpecs.category,
+                NyaaPageProvider.getPageItems(tracker.dataSourceSpecs.source, AppUtils.getUseProxy(applicationContext),
+                    pageIndex, category = tracker.dataSourceSpecs.category,
                     user = tracker.username, searchQuery = tracker.searchQuery)
             } catch (e: Exception) {
                 null

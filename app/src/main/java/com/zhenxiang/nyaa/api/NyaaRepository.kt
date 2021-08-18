@@ -8,7 +8,7 @@ import org.jsoup.HttpStatusException
 const val PAGE_NOT_FOUND = 404
 const val GENERIC_JSOUP_ERROR = -1
 
-class NyaaRepository() {
+class NyaaRepository(private val useProxy: Boolean) {
 
     private val TAG = javaClass.name
 
@@ -40,7 +40,7 @@ class NyaaRepository() {
         if (!endReached && category != null) {
             pageIndex++
             try {
-                val newItems = NyaaPageProvider.getPageItems(category.getDataSource(), pageIndex, category, searchValue, username)
+                val newItems = NyaaPageProvider.getPageItems(category.getDataSource(), useProxy, pageIndex, category, searchValue, username)
                 items.addAll(newItems.items)
                 endReached = if (newItems.bottomReached) {
                     true

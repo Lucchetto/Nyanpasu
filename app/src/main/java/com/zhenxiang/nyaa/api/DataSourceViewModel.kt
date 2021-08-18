@@ -1,14 +1,17 @@
 package com.zhenxiang.nyaa.api
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import kotlinx.coroutines.*
 
-class DataSourceViewModel: ViewModel() {
+class DataSourceViewModel(application: Application): AndroidViewModel(application) {
 
-    private val repository = NyaaRepository()
+    private val repository = NyaaRepository(AppUtils.getUseProxy(application.applicationContext))
     val resultsLiveData = MutableLiveData<List<NyaaReleasePreview>>()
     val error = MutableLiveData<Int>()
     var firstInsert: Boolean = true

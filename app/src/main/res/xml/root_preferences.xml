@@ -26,6 +26,15 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/advanced_settings_title">
+
+        <SwitchPreferenceCompat
+            app:icon="@drawable/ic_outline_vpn_lock_24"
+            app:key="@string/use_proxy_key"
+            app:title="@string/use_proxy_title"
+            app:summary="@string/use_proxy_desc"/>
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/about_title">
         <Preference
             app:key="@string/open_discord_key"

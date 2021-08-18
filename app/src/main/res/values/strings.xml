@@ -118,13 +118,19 @@
     <string name="ui_mode_key">ui_mode</string>
     <string name="releases_tracker_notification_key">releases_tracker_notification</string>
     <string name="open_discord_key">open_discord</string>
+    <string name="use_proxy_key">use_proxy</string>
 
     <!-- Preference Titles -->
     <string name="notifications_settings_title">Notifications</string>
     <string name="interface_settings_title">Interface</string>
+    <string name="advanced_settings_title">Advanced</string>
 
     <!-- UI mode -->
     <string name="ui_mode_setting_title">Theme</string>
+
+    <!-- Use proxy -->
+    <string name="use_proxy_title">Bypass regional restrictions</string>
+    <string name="use_proxy_desc">Restart the app to apply this setting</string>
 
     <!-- About info -->
     <string name="about_title">About</string>

@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
@@ -81,18 +82,23 @@ class AppUtils {
             snackbar.show()
         }
 
-        fun getReleaseTorrentUrl(releaseId: ReleaseId): String {
-            return "http://${releaseId.dataSource.url}/download/${releaseId.number}.torrent"
+        fun getUseProxy(context: Context): Boolean {
+            return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(context.getString(R.string.use_proxy_key), false)
         }
 
-        fun getReleasePageUrl(releaseId: ReleaseId): String {
-            return "https://${releaseId.dataSource.url}/view/${releaseId.number}"
+        fun getReleaseTorrentUrl(releaseId: ReleaseId, useProxy: Boolean): String {
+            return "http://${if (useProxy) releaseId.dataSource.proxyUrl else releaseId.dataSource.url}/download/${releaseId.number}.torrent"
+        }
+
+        fun getReleasePageUrl(releaseId: ReleaseId, useProxy: Boolean): String {
+            return "https://${if (useProxy) releaseId.dataSource.proxyUrl else releaseId.dataSource.url}/view/${releaseId.number}"
         }
 
         fun enqueueDownload(releaseId: ReleaseId, parentView: View, anchorView: View? = null): Long? {
             return try {
                 val manager = parentView.context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                val uri = Uri.parse(getReleaseTorrentUrl(releaseId))
+                val uri = Uri.parse(getReleaseTorrentUrl(releaseId, getUseProxy(parentView.context)))
                 val request = DownloadManager.Request(uri)
                 request.setVisibleInDownloadsUi(true)
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)

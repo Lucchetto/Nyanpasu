@@ -154,7 +154,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             downloadBtn.setOnLongClickListener { _ ->
                 ReleaseListParent.copyToClipboardShowSnackbar(it.name,
-                    AppUtils.getReleaseTorrentUrl(it.getReleaseId()),
+                    AppUtils.getReleaseTorrentUrl(it.getReleaseId(), AppUtils.getUseProxy(this)),
                     getString(R.string.torrent_link_copied), scrollRoot, null)
                 true
             }
@@ -202,7 +202,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 }
 
                 if (localReleaseDetails == null && savedInstanceState == null) {
-                    NyaaPageProvider.getReleaseDetails(releaseId)?.let { details ->
+                    NyaaPageProvider.getReleaseDetails(releaseId, AppUtils.getUseProxy(this@NyaaReleaseActivity))?.let { details ->
                         localNyaaDbViewModel.addDetails(details)
 
                         setDetails(details)
@@ -285,6 +285,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             } ?: run {
                 latestRelease = try {
                     NyaaPageProvider.getPageItems(dataSource = details.releaseId.dataSource,
+                        AppUtils.getUseProxy(this@NyaaReleaseActivity),
                         pageIndex = 0, user = details.user)?.items?.getOrNull(0)
                 } catch (e: Exception) {
                     null

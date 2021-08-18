@@ -1,5 +1,6 @@
 package com.zhenxiang.nyaa.api
 
+import android.content.Context
 import android.util.Log
 import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
@@ -17,9 +18,9 @@ class NyaaPageProvider {
         private val categoryIdRegex = "^\\d+_\\d+\$".toRegex()
         private val TAG = javaClass.name
 
-        suspend fun getReleaseDetails(releaseId: ReleaseId): NyaaReleaseDetails? {
+        suspend fun getReleaseDetails(releaseId: ReleaseId, useProxy: Boolean): NyaaReleaseDetails? {
             return try {
-                val doc: Document = Jsoup.connect(AppUtils.getReleasePageUrl(releaseId)).get()
+                val doc: Document = Jsoup.connect(AppUtils.getReleasePageUrl(releaseId, useProxy)).get()
                 doc.outputSettings().prettyPrint(false)
 
                 val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
@@ -34,12 +35,13 @@ class NyaaPageProvider {
         }
 
         suspend fun getPageItems(dataSource: ApiDataSource,
+                                 useProxy: Boolean,
                                  pageIndex: Int,
                                  category: ReleaseCategory? = null,
                                  searchQuery: String? = null,
                                  user: String? = null): NyaaPageResults {
 
-            var fullUrl = "https://${dataSource.url}/"
+            var fullUrl = "https://${if (useProxy) dataSource.proxyUrl else dataSource.url}/"
             if (!user.isNullOrBlank()) {
                 fullUrl += "user/$user"
             }

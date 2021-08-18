@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ApiDataSource {
-    NYAA_SI(0, "nyaa.si", NyaaReleaseCategory.values()),
-    SUKEBEI_NYAA_SI(1, "sukebei.nyaa.si", SukebeiReleaseCategory.values());
+    NYAA_SI(0, "nyaa.si", "nyaaproxy.xyz", NyaaReleaseCategory.values()),
+    SUKEBEI_NYAA_SI(1, "sukebei.nyaa.si", "sukebei.nyaaproxy.xyz", SukebeiReleaseCategory.values());
 
     private int value;
     private String url;
+    private String proxyUrl;
     private ReleaseCategory[] categories;
     private static Map map = new HashMap<>();
 
@@ -22,9 +23,10 @@ public enum ApiDataSource {
         return (ApiDataSource) map.get(dataSource);
     }
 
-    private ApiDataSource(int value, String url, ReleaseCategory[] categories) {
+    private ApiDataSource(int value, String url, String proxyUrl, ReleaseCategory[] categories) {
         this.value = value;
         this.url = url;
+        this.proxyUrl = proxyUrl;
         this.categories = categories;
     }
 
@@ -34,5 +36,6 @@ public enum ApiDataSource {
     public String getUrl() {
         return url;
     }
+    public String getProxyUrl() { return proxyUrl; }
     public ReleaseCategory[] getCategories() {return categories; };
 }
