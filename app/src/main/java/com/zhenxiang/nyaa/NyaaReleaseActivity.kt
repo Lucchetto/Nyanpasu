@@ -199,12 +199,19 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 val localReleaseDetails = localNyaaDbViewModel.getDetailsById(releaseId)
                 localReleaseDetails?.let { details ->
                     setDetails(details)
+
+                    // Refresh data from server when opening the release again
+                    if (savedInstanceState == null) {
+                        NyaaPageProvider.getReleaseDetails(releaseId, AppUtils.getUseProxy(this@NyaaReleaseActivity))?.let { details ->
+                            localNyaaDbViewModel.addDetails(details)
+                            setDetails(details)
+                        }
+                    }
                 }
 
                 if (localReleaseDetails == null && savedInstanceState == null) {
                     NyaaPageProvider.getReleaseDetails(releaseId, AppUtils.getUseProxy(this@NyaaReleaseActivity))?.let { details ->
                         localNyaaDbViewModel.addDetails(details)
-
                         setDetails(details)
                     }
                 }
