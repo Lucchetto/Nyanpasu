@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
@@ -43,8 +44,9 @@ open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
     ): View? {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_viewed_releases, container, false)
-        val emptyViewHint = fragmentView.findViewById<TextView>(R.id.empty_view)
-        emptyViewHint.setText(emptyViewStringRes())
+        val emptyViewHint = fragmentView.findViewById<View>(R.id.empty_view)
+        fragmentView.findViewById<TextView>(R.id.empty_view_text).setText(emptyViewStringRes())
+        fragmentView.findViewById<ImageView>(R.id.empty_view_image).setImageResource(emptyViewDrawableRes())
         /*toolbar = fragmentView.findViewById(R.id.toolbar)
         toolbar.setTitle(getTitleRes())
         searchBar = fragmentView.findViewById(R.id.search_bar)
@@ -130,6 +132,10 @@ open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
 
     open fun emptyViewStringRes(): Int {
         return R.string.empty_viewed_releases_view_hint
+    }
+
+    open fun emptyViewDrawableRes(): Int {
+        return R.drawable.ic_outline_history_24
     }
 
     fun listHeight(): Int {

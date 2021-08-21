@@ -11,12 +11,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <LinearLayout
         android:id="@+id/empty_view"
-        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_gravity="center"
-        style="@style/Style.EmptyView.Text"/>
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/empty_view_image"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:adjustViewBounds="true"
+            tools:src="@drawable/ic_outline_history_24"/>
+
+        <TextView
+            android:id="@+id/empty_view_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/text_vertical_spacer"
+            style="@style/Style.EmptyView.Text"
+            tools:text="@string/empty_viewed_releases_view_hint"/>
+    </LinearLayout>
 
 </FrameLayout>

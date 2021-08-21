@@ -22,6 +22,10 @@ class SavedReleasesFragment: ViewedReleasesFragment() {
         return R.string.empty_saved_view_hint
     }
 
+    override fun emptyViewDrawableRes(): Int {
+        return R.drawable.ic_outline_bookmarks_24
+    }
+
     companion object {
         @JvmStatic
         fun newInstance() =
