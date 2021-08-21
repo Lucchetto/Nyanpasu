@@ -21,6 +21,10 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="TextAppearance.Nyaasi.Title.Secondary" parent="TextAppearance.Nyaasi.ReleaseTitle">
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="TextAppearance.Nyaasi.ReleaseId" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">?android:textColorSecondary</item>

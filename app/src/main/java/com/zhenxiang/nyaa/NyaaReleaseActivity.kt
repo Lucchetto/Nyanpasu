@@ -45,6 +45,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private lateinit var submitter: TextView
     private lateinit var manageTrackerBtn: Button
 
+    private lateinit var commentsSection: View
+    private lateinit var commentsCount: TextView
+
     private lateinit var releasesTrackerViewModel: ReleaseTrackerViewModel
     private lateinit var releaseTrackerFragmentSharedViewModel: ReleaseTrackerFragmentSharedViewModel
     private var latestRelease: NyaaReleasePreview? = null
@@ -102,6 +105,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
         markdownView.addStyleSheet(Github())
         markdownView.clipToOutline = true
         submitter = findViewById(R.id.submitter)
+
+        commentsSection = findViewById(R.id.comments_section)
+        commentsCount = findViewById(R.id.comments_count)
 
         val nyaaRelease = intent.getSerializableExtra(RELEASE_PREVIEW_INTENT_OBJ) as NyaaReleasePreview?
         latestRelease = savedInstanceState?.getSerializable(USER_LATEST_RELEASE_INTENT_OBJ) as NyaaReleasePreview?
@@ -270,6 +276,16 @@ class NyaaReleaseActivity : AppCompatActivity() {
         withContext(Dispatchers.Main) {
             submitter.text = getString(R.string.release_submitter,
                 details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
+
+            commentsSection.visibility = View.VISIBLE
+            commentsCount.text = if (details.comments.isNullOrEmpty()) {
+                commentsSection.isEnabled = false
+                getString(R.string.release_no_comments_title)
+            } else {
+                commentsSection.isEnabled = true
+                getString(R.string.release_comments_title, details.comments.size)
+            }
+
             markdownView.loadMarkdown(details.descriptionMarkdown)
 
             releaseTrackerFragmentSharedViewModel.currentUserTracked.value = isTracked == true

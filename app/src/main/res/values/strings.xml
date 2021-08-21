@@ -65,6 +65,8 @@
     <string name="release_link_copied">Release page\'s link copied to the clipboard</string>
 
     <string name="release_id_content">ID %1$s - From %2$s</string>
+    <string name="release_no_comments_title">No comments</string>
+    <string name="release_comments_title">Comments · %1$d</string>
     
     <string name="empty_saved_view_hint">The releases you saved will appear here</string>
     <string name="empty_viewed_releases_view_hint">The releases you viewed recently will appear here</string>
