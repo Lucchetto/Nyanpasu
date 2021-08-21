@@ -2,6 +2,7 @@ package com.zhenxiang.nyaa.db
 
 import androidx.room.*
 import com.zhenxiang.nyaa.api.DataSourceSpecs
+import com.zhenxiang.nyaa.api.ReleaseComment
 import com.zhenxiang.nyaa.api.ReleaseId
 import java.io.Serializable
 
@@ -29,10 +30,17 @@ data class NyaaReleasePreview(
     ForeignKey(entity = NyaaReleasePreview::class,
         parentColumns = ["number", "dataSource"], childColumns = ["parent_number", "parent_dataSource"],
         onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
-], primaryKeys = ["parent_number", "parent_dataSource"])
-data class NyaaReleaseDetails(
+], primaryKeys = ["parent_number", "parent_dataSource"]
+) data class NyaaReleaseDetails(
     @Embedded(prefix = "parent_") val releaseId: ReleaseId,
     val user: String?,
     val hash: String,
     val descriptionMarkdown: String,
-)
+    @Ignore
+    val comments: List<ReleaseComment>?,
+) {
+    constructor(releaseId: ReleaseId,
+                user: String?,
+                hash: String,
+                descriptionMarkdown: String): this(releaseId, user, hash, descriptionMarkdown, null)
+}

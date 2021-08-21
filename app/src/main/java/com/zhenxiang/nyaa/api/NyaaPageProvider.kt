@@ -1,6 +1,5 @@
 package com.zhenxiang.nyaa.api
 
-import android.content.Context
 import android.util.Log
 import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
@@ -27,7 +26,17 @@ class NyaaPageProvider {
                 val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
                 val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
-                NyaaReleaseDetails(releaseId, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown)
+                val comments = mutableListOf<ReleaseComment>()
+                val commentsContainer = doc.getElementById("collapse-comments")
+                commentsContainer?.select("*[id~=^com-\\d+\$]")?.forEach {
+                    val commentUsername = it.selectFirst("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
+                    val commentImage = it.selectFirst("img").attr("src")
+                    val timestamp = it.selectFirst("*[data-timestamp~=^\\d+\$]").attr("data-timestamp").toLong()
+                    val commentContent = it.select(".comment-content").text()
+                    comments.add(ReleaseComment(commentUsername, commentImage, timestamp, commentContent))
+                }
+
+                NyaaReleaseDetails(releaseId, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown, comments)
             } catch(e: Exception) {
                 Log.w(TAG, e)
                 null
