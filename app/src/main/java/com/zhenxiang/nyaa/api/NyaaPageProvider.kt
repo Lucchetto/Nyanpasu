@@ -32,7 +32,8 @@ class NyaaPageProvider {
                     val commentUsername = it.selectFirst("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
                     val commentImage = it.selectFirst("img").attr("src")
                     val timestamp = it.selectFirst("*[data-timestamp~=^\\d+\$]").attr("data-timestamp").toLong()
-                    val commentContent = it.select(".comment-content").text()
+                    //
+                    val commentContent = it.select(".comment-content").html()
                     comments.add(ReleaseComment(commentUsername, commentImage, timestamp, commentContent))
                 }
 

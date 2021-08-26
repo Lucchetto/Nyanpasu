@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingVertical="@dimen/vertical_spacer_small"
+    android:paddingHorizontal="@dimen/activity_insets"
+    android:clickable="true"
+    android:background="?selectableItemBackground"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/comment_profile_picture"
+        android:layout_width="@dimen/comment_profile_image_size"
+        android:layout_height="@dimen/comment_profile_image_size"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/renge" />
+
+    <TextView
+        android:id="@+id/comment_username_and_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_insets"
+        app:layout_constraintStart_toEndOf="@+id/comment_profile_picture"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Legal user · Today"
+        android:textAppearance="@style/TextAppearance.Nyaasi.ReleasePreviewDate"/>
+
+    <TextView
+        android:id="@+id/comment_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textAppearance="@style/TextAppearance.Nyaasi.CommentContent"
+        app:layout_constraintStart_toStartOf="@id/comment_username_and_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/comment_username_and_date"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

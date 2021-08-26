@@ -5,7 +5,7 @@
     
     <ProgressBar
         android:id="@+id/footer_loading_circle"
-        android:layout_marginVertical="10dp"
+        android:layout_marginVertical="@dimen/vertical_spacer_small"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">

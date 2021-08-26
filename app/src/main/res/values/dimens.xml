@@ -8,6 +8,7 @@
     <dimen name="text_input_layout_spacing">15dp</dimen>
     <dimen name="layout_spacer">15dp</dimen>
     <dimen name="text_vertical_spacer">20dp</dimen>
+    <dimen name="vertical_spacer_small">10dp</dimen>
 
     <dimen name="new_releases_counter_text_size">14sp</dimen>
     <dimen name="new_releases_counter_horizontal_padding">5sp</dimen>
@@ -17,4 +18,6 @@
     <dimen name="new_releases_counter_bottom_padding">5sp</dimen>
     <!-- should be new_releases_counter_text_size + new_releases_counter_horizontal_padding -->
     <dimen name="new_releases_counter_view_size">22sp</dimen>
+
+    <dimen name="comment_profile_image_size">60dp</dimen>
 </resources>

@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/activity_insets"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="@dimen/vertical_spacer_small">
 
         <Button
             android:id="@+id/delete_tracker_btn"

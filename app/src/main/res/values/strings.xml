@@ -2,6 +2,8 @@
     <string name="app_name">Nyanpasu</string>
 
     <!-- Generic -->
+    <string name="close">Close</string>
+    <string name="view_all">View all</string>
     <string name="comma_word">, %1$s</string>
     <string name="and_conjunction_word">\u0020and %1$s</string>
     <string name="search_hint">Search</string>
@@ -66,7 +68,9 @@
 
     <string name="release_id_content">ID %1$s - From %2$s</string>
     <string name="release_no_comments_title">No comments</string>
-    <string name="release_comments_title">Comments · %1$d</string>
+    <string name="release_comments_title">Comments</string>
+    <string name="release_comments_count_title">Comments · %1$d</string>
+    <string name="comment_username_and_date">%1$s · %2$s</string>
     
     <string name="empty_saved_view_hint">The releases you saved will appear here</string>
     <string name="empty_viewed_releases_view_hint">The releases you viewed recently will appear here</string>

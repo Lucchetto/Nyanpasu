@@ -10,6 +10,7 @@
         <entry key="../../../.gradle/caches/transforms-3/da253b433cf9777e30c61550b460c370/transformed/preference-1.1.1/res/layout/preference_category_material.xml" value="0.13958333333333334" />
         <entry key="../../../Android/Sdk/platforms/android-30/data/res/layout/simple_list_item_1.xml" value="0.12135416666666667" />
         <entry key="app/src/main/res/drawable/bookmark_status.xml" value="0.1625" />
+        <entry key="app/src/main/res/drawable/drag_handle.xml" value="0.1828125" />
         <entry key="app/src/main/res/drawable/ic_library_28_regular.xml" value="0.14739583333333334" />
         <entry key="app/src/main/res/drawable/ic_magnet.xml" value="0.178125" />
         <entry key="app/src/main/res/drawable/ic_outline_add_24.xml" value="0.1625" />
@@ -25,7 +26,7 @@
         <entry key="app/src/main/res/layout-land/activity_create_tracker.xml" value="0.16799999999999998" />
         <entry key="app/src/main/res/layout/activity_create_tracker.xml" value="0.4" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/activity_nyaa_release.xml" value="0.3431952662721893" />
+        <entry key="app/src/main/res/layout/activity_nyaa_release.xml" value="0.72" />
         <entry key="app/src/main/res/layout/activity_nyaa_search.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_release_tracker_details.xml" value="0.16458333333333333" />
         <entry key="app/src/main/res/layout/browsing_specs_selector_view.xml" value="0.32864583333333336" />
@@ -43,6 +44,7 @@
         <entry key="app/src/main/res/layout/pref_category.xml" value="0.13958333333333334" />
         <entry key="app/src/main/res/layout/pref_screen.xml" value="0.4" />
         <entry key="app/src/main/res/layout/preference.xml" value="0.13958333333333334" />
+        <entry key="app/src/main/res/layout/release_comment_item.xml" value="0.307518115942029" />
         <entry key="app/src/main/res/layout/release_data_item.xml" value="0.23641304347826086" />
         <entry key="app/src/main/res/layout/release_preview_item.xml" value="0.4275568181818182" />
         <entry key="app/src/main/res/layout/release_tracker_item.xml" value="0.47846153846153844" />
@@ -50,6 +52,7 @@
         <entry key="app/src/main/res/layout/subscribed_user_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/titled_spinner.xml" value="0.32864583333333336" />
         <entry key="app/src/main/res/menu/browse_toolbar_menu.xml" value="0.32083333333333336" />
+        <entry key="app/src/main/res/menu/comments_sheet_menu.xml" value="0.1625" />
         <entry key="app/src/main/res/menu/home_bottom_nav.xml" value="0.22" />
         <entry key="app/src/main/res/menu/release_item_menu.xml" value="0.1625" />
         <entry key="app/src/main/res/menu/release_preview_menu.xml" value="0.264" />

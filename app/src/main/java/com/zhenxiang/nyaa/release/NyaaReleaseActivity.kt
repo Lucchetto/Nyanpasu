@@ -10,19 +10,25 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.styles.Github
 import com.google.android.gms.ads.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.BuildConfig
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.ReleaseListParent
+import com.zhenxiang.nyaa.api.CommentsAdapter
 import com.zhenxiang.nyaa.api.NyaaPageProvider
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
@@ -39,15 +45,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
+import androidx.recyclerview.widget.LinearSmoothScroller
 
 class NyaaReleaseActivity : AppCompatActivity() {
 
     private val TAG = javaClass.name
 
-    private lateinit var scrollRoot: NestedScrollView
+    private lateinit var coordinatorRoot: View
     private lateinit var markdownView: MarkdownView
     private lateinit var submitter: TextView
     private lateinit var manageTrackerBtn: Button
+
+    private lateinit var commentsSheetBehaviour: BottomSheetBehavior<View>
 
     private lateinit var releasesTrackerViewModel: ReleaseTrackerViewModel
     private lateinit var releaseDetails: ReleaseDetailsHolderViewModel
@@ -57,9 +66,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private val storagePermissionGuard = createPermissionRequestLauncher { granted ->
         queuedDownload?.let {
             if (granted) {
-                AppUtils.enqueueDownload(it, scrollRoot)
+                AppUtils.enqueueDownload(it, coordinatorRoot)
             } else {
-                AppUtils.storagePermissionForDownloadDenied(scrollRoot)
+                AppUtils.storagePermissionForDownloadDenied(coordinatorRoot)
             }
             queuedDownload = null
         }
@@ -94,10 +103,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
         setContentView(R.layout.activity_nyaa_release)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        scrollRoot = findViewById(R.id.scroll_root)
-        scrollRoot.isNestedScrollingEnabled = false
-        scrollRoot.applyInsetter {
-            type(navigationBars = !NavigationModeUtils.isFullGestures(scrollRoot.context), statusBars = true) {
+        coordinatorRoot = findViewById(R.id.coordinator_root)
+        coordinatorRoot.applyInsetter {
+            type(navigationBars = !NavigationModeUtils.isFullGestures(coordinatorRoot.context), statusBars = true) {
                 margin()
             }
         }
@@ -106,9 +114,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
         markdownView.addStyleSheet(Github())
         markdownView.clipToOutline = true
         submitter = findViewById(R.id.submitter)
-
-        val commentsSection = findViewById<View>(R.id.comments_section)
-        val commentsCount = findViewById<TextView>(R.id.comments_count)
 
         val nyaaRelease = intent.getSerializableExtra(RELEASE_PREVIEW_INTENT_OBJ) as NyaaReleasePreview?
         latestRelease = savedInstanceState?.getSerializable(USER_LATEST_RELEASE_INTENT_OBJ) as NyaaReleasePreview?
@@ -142,12 +147,12 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val magnetBtn = findViewById<View>(R.id.magnet_btn)
             magnetBtn.setOnClickListener { _ ->
-                AppUtils.openMagnetLink(it, scrollRoot)
+                AppUtils.openMagnetLink(it, coordinatorRoot)
             }
             magnetBtn.setOnLongClickListener { _ ->
                 ReleaseListParent.copyToClipboardShowSnackbar(
                     it.name, it.magnet,
-                    getString(R.string.magnet_link_copied), scrollRoot, null
+                    getString(R.string.magnet_link_copied), coordinatorRoot, null
                 )
                 true
             }
@@ -156,7 +161,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             downloadBtn.setOnClickListener { _ ->
                 val newDownload = it.getReleaseId()
                 AppUtils.guardDownloadPermission(this, storagePermissionGuard, {
-                    AppUtils.enqueueDownload(newDownload, scrollRoot)
+                    AppUtils.enqueueDownload(newDownload, coordinatorRoot)
                 }, {
                     queuedDownload = newDownload
                 })
@@ -166,7 +171,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 ReleaseListParent.copyToClipboardShowSnackbar(
                     it.name,
                     AppUtils.getReleaseTorrentUrl(it.getReleaseId(), AppUtils.getUseProxy(this)),
-                    getString(R.string.torrent_link_copied), scrollRoot, null
+                    getString(R.string.torrent_link_copied), coordinatorRoot, null
                 )
                 true
             }
@@ -191,6 +196,64 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val releaseSizeView = findViewById<ReleaseDataItemView>(R.id.release_size)
             releaseSizeView.setValue(it.releaseSize)
 
+            val commentsSection = findViewById<View>(R.id.comments_section)
+            val commentsViewAll = findViewById<View>(R.id.show_all_comments)
+            val commentsCount = findViewById<TextView>(R.id.comments_count)
+            commentsSheetBehaviour =
+                (findViewById<View>(R.id.comments_sheet).layoutParams as CoordinatorLayout.LayoutParams)
+                    .behavior as BottomSheetBehavior<View>
+            val commentsBackToTop = findViewById<FloatingActionButton>(R.id.comments_back_to_top)
+            if (savedInstanceState == null) {
+                commentsSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
+
+                // Hax to hide fab while laying out the view already
+                commentsBackToTop.scaleX = 0f
+                commentsBackToTop.scaleY = 0f
+            }
+            commentsSection.setOnClickListener {
+                commentsSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+            val commentsSheetToolbar = findViewById<Toolbar>(R.id.comments_sheet_toolbar)
+            commentsSheetToolbar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.close_comments -> {
+                        commentsSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
+                        true
+                    }
+                    else -> false
+                }
+            }
+            val commentsList = findViewById<RecyclerView>(R.id.comments_list)
+            commentsList.applyInsetter {
+                type(navigationBars = true) {
+                    padding()
+                }
+            }
+            val commentsListLayoutManager = LinearLayoutManager(this)
+            val commentsListAdapter = CommentsAdapter()
+            commentsList.layoutManager = commentsListLayoutManager
+            commentsList.adapter = commentsListAdapter
+
+            val smoothScroller = object : LinearSmoothScroller(this) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+            commentsList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (commentsListLayoutManager.findFirstVisibleItemPosition() == 0) {
+                        commentsBackToTop.hide()
+                    } else {
+                        commentsBackToTop.show()
+                    }
+                }
+            })
+
+            commentsBackToTop.setOnClickListener {
+                smoothScroller.targetPosition = 0
+                commentsListLayoutManager.startSmoothScroll(smoothScroller)
+            }
+
             releaseDetails.details.observe(this, { details ->
 
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -203,13 +266,17 @@ class NyaaReleaseActivity : AppCompatActivity() {
                             R.string.release_submitter,
                             details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
 
+                        // Clear adapter if comments null
+                        commentsListAdapter.setList(details.comments ?: emptyList())
                         commentsSection.visibility = View.VISIBLE
                         commentsCount.text = if (details.comments.isNullOrEmpty()) {
                             commentsSection.isEnabled = false
+                            commentsViewAll.visibility = View.GONE
                             getString(R.string.release_no_comments_title)
                         } else {
                             commentsSection.isEnabled = true
-                            getString(R.string.release_comments_title, details.comments.size)
+                            commentsViewAll.visibility = View.VISIBLE
+                            getString(R.string.release_comments_count_title, details.comments.size)
                         }
 
                         markdownView.loadMarkdown(details.descriptionMarkdown)
@@ -264,6 +331,15 @@ class NyaaReleaseActivity : AppCompatActivity() {
     public override fun onResume() {
         super.onResume()
         adView.resume()
+    }
+
+    override fun onBackPressed() {
+        // Use back button also as collapse button for comments
+        if (commentsSheetBehaviour.state == BottomSheetBehavior.STATE_EXPANDED) {
+            commentsSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
+        } else {
+            super.onBackPressed()
+        }
     }
 
     /** Called before the activity is destroyed  */

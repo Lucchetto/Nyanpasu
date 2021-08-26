@@ -99,9 +99,9 @@
     <style name="Theme.Nyaasi.ReleaseDataItem">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">10dp</item>
-        <item name="android:layout_marginEnd">10dp</item>
-        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginStart">@dimen/vertical_spacer_small</item>
+        <item name="android:layout_marginEnd">@dimen/vertical_spacer_small</item>
+        <item name="android:layout_marginTop">@dimen/vertical_spacer_small</item>
     </style>
 
     <style name="Style.Nyaasi.NewReleasesCounter"  parent="TextAppearance.AppCompat.Body1">
@@ -121,6 +121,11 @@
     
     <style name="TextAppearance.Spinner.Title" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="TextAppearance.Nyaasi.CommentContent" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
     </style>
 
     <style name="Style.EmptyView.Text" parent="TextAppearance.AppCompat">
