@@ -279,8 +279,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
                             R.string.release_submitter,
                             details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
 
-                        // Clear adapter if comments null
-                        commentsListAdapter.setList(details.comments ?: emptyList())
+                        // Clear adapter if comments null, reverse list to sort from most recent
+                        commentsListAdapter.setList(if (details.comments != null) details.comments.reversed() else emptyList())
                         commentsSection.visibility = View.VISIBLE
                         commentsCount.text = if (details.comments.isNullOrEmpty()) {
                             commentsSection.isEnabled = false
