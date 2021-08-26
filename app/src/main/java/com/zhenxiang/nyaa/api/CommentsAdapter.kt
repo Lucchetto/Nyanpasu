@@ -1,5 +1,6 @@
 package com.zhenxiang.nyaa.api
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,11 +41,7 @@ class CommentsAdapter: RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>()
 
     inner class CommentViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-        private val markwon = Markwon.builder(view.context)
-            .usePlugin(LinkifyPlugin.create(true))
-            .usePlugin(ImagesPlugin.create())
-            .usePlugin(SoftBreakAddsNewLinePlugin.create())
-            .build()
+        private val markwon = setupMarkwon(view.context)
 
         private val userImage = view.findViewById<ImageView>(R.id.comment_profile_picture)
         private val usernameAndDate = view.findViewById<TextView>(R.id.comment_username_and_date)
@@ -80,5 +77,15 @@ class CommentsAdapter: RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>()
 
     fun setList(newList: List<ReleaseComment>) {
         differ.submitList(newList)
+    }
+
+    companion object {
+        fun setupMarkwon(context: Context): Markwon {
+            return Markwon.builder(context)
+                .usePlugin(LinkifyPlugin.create(true))
+                .usePlugin(ImagesPlugin.create())
+                .usePlugin(SoftBreakAddsNewLinePlugin.create())
+                .build()
+        }
     }
 }

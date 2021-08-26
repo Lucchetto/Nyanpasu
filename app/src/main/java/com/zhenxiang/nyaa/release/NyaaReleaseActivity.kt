@@ -5,10 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -46,6 +43,7 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.bumptech.glide.Glide
 
 class NyaaReleaseActivity : AppCompatActivity() {
 
@@ -203,6 +201,15 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val commentsSection = findViewById<View>(R.id.comments_section)
             val commentsViewAll = findViewById<View>(R.id.show_all_comments)
             val commentsCount = findViewById<TextView>(R.id.comments_count)
+
+            val latestCommentView = findViewById<View>(R.id.latest_comment)
+            latestCommentView.isClickable = false
+            latestCommentView.background = null
+            val markwon = CommentsAdapter.setupMarkwon(this)
+            val latestCommentUserImage = latestCommentView.findViewById<ImageView>(R.id.comment_profile_picture)
+            val latestCommentUsernameAndDate = latestCommentView.findViewById<TextView>(R.id.comment_username_and_date)
+            val latestCommentContent = latestCommentView.findViewById<TextView>(R.id.comment_content)
+            
             commentsSheetBehaviour =
                 (findViewById<View>(R.id.comments_sheet).layoutParams as CoordinatorLayout.LayoutParams)
                     .behavior as BottomSheetBehavior<View>
@@ -284,11 +291,26 @@ class NyaaReleaseActivity : AppCompatActivity() {
                         commentsSection.visibility = View.VISIBLE
                         commentsCount.text = if (details.comments.isNullOrEmpty()) {
                             commentsSection.isEnabled = false
+                            latestCommentView.visibility = View.GONE
                             commentsViewAll.visibility = View.GONE
                             getString(R.string.release_no_comments_title)
                         } else {
                             commentsSection.isEnabled = true
-                            commentsViewAll.visibility = View.VISIBLE
+                            commentsViewAll.visibility = if (details.comments.size > 1) View.VISIBLE else View.GONE
+
+                            val latestComment = details.comments[details.comments.size - 1]
+                            Glide.with(latestCommentUserImage).load(latestComment.userImage)
+                                .placeholder(R.drawable.default_pic)
+                                .into(latestCommentUserImage)
+                            latestCommentUsernameAndDate.text = getString(R.string.comment_username_and_date,
+                                latestComment.username, DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(
+                                    Date(latestComment.timestamp * 1000)
+                                )
+                            )
+                            // TODO: Fix markup parsing
+                            markwon.setMarkdown(latestCommentContent, latestComment.content)
+                            latestCommentView.visibility = View.VISIBLE
+
                             getString(R.string.release_comments_count_title, details.comments.size)
                         }
 
