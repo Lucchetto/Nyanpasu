@@ -161,59 +161,41 @@
                     android:layout_gravity="center"/>
             </FrameLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:id="@+id/comments_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingVertical="@dimen/layout_spacer"
+                android:paddingHorizontal="@dimen/activity_insets"
+                android:visibility="gone"
                 android:background="?selectableItemBackground"
                 android:clickable="true"
                 android:enabled="false"
-                android:gravity="center_vertical"
-                android:paddingVertical="@dimen/layout_spacer"
-                android:visibility="gone"
                 tools:visibility="visible">
 
                 <TextView
                     android:id="@+id/comments_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_insets"
-                    android:layout_marginBottom="@dimen/vertical_spacer_small"
                     android:text="@string/release_comments_count_title"
-                    android:textAppearance="@style/TextAppearance.Nyaasi.Title.Secondary"
-                    app:layout_constraintEnd_toStartOf="@id/show_all_comments"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/latest_comment" />
+                    android:textAppearance="@style/TextAppearance.Nyaasi.Title.Secondary"/>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
                 <TextView
                     android:id="@+id/show_all_comments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/activity_insets"
-                    android:layout_marginBottom="@dimen/vertical_spacer_small"
-                    android:text="@string/view_all"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                     android:textColor="?android:colorPrimary"
+                    android:text="@string/view_all"
                     android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@id/show_all_comments"
-                    app:layout_constraintBottom_toTopOf="@id/latest_comment"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible" />
-
-                <include
-                    android:id="@+id/latest_comment"
-                    layout="@layout/release_comment_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    tools:visibility="visible" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                    tools:visibility="visible"/>
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
