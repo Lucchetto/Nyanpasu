@@ -40,12 +40,6 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
         savedReleasesSearchFilter.value = null
     }
 
-    suspend fun getDetailsById(id: ReleaseId): NyaaReleaseDetails? {
-        return withContext(Dispatchers.IO) {
-            nyaaLocalRepo.detailsDao.getItemById(id.number, id.dataSource)
-        }
-    }
-
     fun addToViewed(release: NyaaReleasePreview) {
         nyaaLocalRepo.previewsDao.upsert(release)
         nyaaLocalRepo.viewedDao.insert(ViewedNyaaRelease(release.getReleaseId(), System.currentTimeMillis()))
@@ -86,10 +80,6 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
             nyaaLocalRepo.savedDao.insert(SavedNyaaRelease(release.getReleaseId(), System.currentTimeMillis()))
             return true
         }
-    }
-
-    fun addDetails(details: NyaaReleaseDetails) {
-        nyaaLocalRepo.detailsDao.insert(details)
     }
 }
 

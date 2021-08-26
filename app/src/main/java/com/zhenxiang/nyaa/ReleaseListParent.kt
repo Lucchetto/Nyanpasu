@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.view.View
-import android.widget.PopupMenu
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
@@ -13,6 +12,7 @@ import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
+import com.zhenxiang.nyaa.release.NyaaReleaseActivity
 
 interface ReleaseListParent: ActivityResultCaller {
     fun getQueuedDownload(): ReleaseId?

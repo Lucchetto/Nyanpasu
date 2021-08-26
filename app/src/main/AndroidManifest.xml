@@ -23,7 +23,7 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.zhenxiang.nyaa.NyaaReleaseActivity"
+            android:name="com.zhenxiang.nyaa.release.NyaaReleaseActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
