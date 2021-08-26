@@ -142,6 +142,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+            <br.tiagohm.markdownview.MarkdownView
+                android:id="@+id/release_details_markdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_spacer"
+                android:visibility="gone"/>
+
+            <FrameLayout
+                android:id="@+id/progress_frame"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
+
             <LinearLayout
                 android:id="@+id/comments_section"
                 android:layout_width="match_parent"
@@ -177,24 +196,6 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                     tools:visibility="visible"/>
             </LinearLayout>
-
-            <br.tiagohm.markdownview.MarkdownView
-                android:id="@+id/release_details_markdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
-
-            <FrameLayout
-                android:id="@+id/progress_frame"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"/>
-            </FrameLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

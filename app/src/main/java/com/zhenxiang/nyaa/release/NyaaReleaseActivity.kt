@@ -104,9 +104,13 @@ class NyaaReleaseActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         coordinatorRoot = findViewById(R.id.coordinator_root)
-        coordinatorRoot.applyInsetter {
-            type(navigationBars = !NavigationModeUtils.isFullGestures(coordinatorRoot.context), statusBars = true) {
-                margin()
+
+        if (NavigationModeUtils.isFullGestures(coordinatorRoot.context)) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            coordinatorRoot.applyInsetter {
+                type(statusBars = true) {
+                    margin()
+                }
             }
         }
 
@@ -224,11 +228,20 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 }
             }
             val commentsList = findViewById<RecyclerView>(R.id.comments_list)
-            commentsList.applyInsetter {
-                type(navigationBars = true) {
-                    padding()
+
+            if (NavigationModeUtils.isFullGestures(coordinatorRoot.context)) {
+                commentsList.applyInsetter {
+                    type(navigationBars = true) {
+                        padding()
+                    }
+                }
+                commentsSection.applyInsetter {
+                    type(navigationBars = true) {
+                        margin()
+                    }
                 }
             }
+
             val commentsListLayoutManager = LinearLayoutManager(this)
             val commentsListAdapter = CommentsAdapter()
             commentsList.layoutManager = commentsListLayoutManager
