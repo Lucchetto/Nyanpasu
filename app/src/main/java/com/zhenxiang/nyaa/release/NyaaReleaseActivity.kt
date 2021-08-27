@@ -56,6 +56,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private lateinit var submitter: TextView
     private lateinit var manageTrackerBtn: Button
 
+    private lateinit var commentsBackToTop: FloatingActionButton
     private lateinit var commentsSheetBehaviour: BottomSheetBehavior<View>
 
     private lateinit var releasesTrackerViewModel: ReleaseTrackerViewModel
@@ -118,6 +119,19 @@ class NyaaReleaseActivity : AppCompatActivity() {
         markdownView.addStyleSheet(Github())
         markdownView.clipToOutline = true
         submitter = findViewById(R.id.submitter)
+
+        commentsSheetBehaviour =
+            (findViewById<View>(R.id.comments_sheet).layoutParams as CoordinatorLayout.LayoutParams)
+                .behavior as BottomSheetBehavior<View>
+        if (savedInstanceState == null) {
+            commentsSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        commentsBackToTop = findViewById(R.id.comments_back_to_top)
+        // Hax to hide fab while laying out the view already
+        if (savedInstanceState == null || savedInstanceState.getBoolean("goBackFabHidden", true)) {
+            commentsBackToTop.scaleX = 0f
+            commentsBackToTop.scaleY = 0f
+        }
 
         val nyaaRelease = intent.getSerializableExtra(RELEASE_PREVIEW_INTENT_OBJ) as NyaaReleasePreview?
         latestRelease = savedInstanceState?.getSerializable(USER_LATEST_RELEASE_INTENT_OBJ) as NyaaReleasePreview?
@@ -203,17 +217,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val commentsSection = findViewById<View>(R.id.comments_section)
             val commentsViewAll = findViewById<View>(R.id.show_all_comments)
             val commentsCount = findViewById<TextView>(R.id.comments_count)
-            commentsSheetBehaviour =
-                (findViewById<View>(R.id.comments_sheet).layoutParams as CoordinatorLayout.LayoutParams)
-                    .behavior as BottomSheetBehavior<View>
-            val commentsBackToTop = findViewById<FloatingActionButton>(R.id.comments_back_to_top)
-            if (savedInstanceState == null) {
-                commentsSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
-
-                // Hax to hide fab while laying out the view already
-                commentsBackToTop.scaleX = 0f
-                commentsBackToTop.scaleY = 0f
-            }
             commentsSection.setOnClickListener {
                 commentsSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
             }
@@ -368,6 +371,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable(USER_LATEST_RELEASE_INTENT_OBJ, latestRelease)
+        outState.putBoolean("goBackFabHidden", commentsBackToTop.isOrWillBeHidden)
         super.onSaveInstanceState(outState)
     }
 
