@@ -252,6 +252,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val commentsListLayoutManager = LinearLayoutManager(this)
             val commentsListAdapter = CommentsAdapter()
+            commentsListAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             commentsList.layoutManager = commentsListLayoutManager
             commentsList.adapter = commentsListAdapter
 
