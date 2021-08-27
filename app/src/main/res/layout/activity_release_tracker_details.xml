@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,20 +12,26 @@
 
     <TextView
         android:id="@+id/tracker_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/activity_insets"
         android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTitle"
         android:breakStrategy="simple"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Tracker title" />
 
     <TextView
         android:id="@+id/tracker_created_date"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:layout_marginHorizontal="@dimen/activity_insets"
         android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseId"
+        app:layout_constraintStart_toStartOf="@id/tracker_title"
+        app:layout_constraintEnd_toEndOf="@id/tracker_title"
+        app:layout_constraintTop_toBottomOf="@id/tracker_title"
+        app:layout_constraintHorizontal_bias="0"
         tools:text="Tracker created on Today"/>
 
     <TextView
@@ -33,47 +39,53 @@
         android:id="@+id/tracker_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/activity_insets"
         android:textAppearance="@style/TextAppearance.Nyaasi.Details"
-        tools:text="Category: Literature non English translated"/>
+        tools:text="Category: Literature non English translated"
+        app:layout_constraintStart_toStartOf="@id/tracker_created_date"
+        app:layout_constraintEnd_toEndOf="@id/tracker_title"
+        app:layout_constraintTop_toBottomOf="@id/tracker_created_date"
+        app:layout_constraintHorizontal_bias="0"/>
 
     <TextView
         android:id="@+id/tracker_source_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/activity_insets"
         android:textAppearance="@style/TextAppearance.Nyaasi.Details"
         android:breakStrategy="simple"
+        app:layout_constraintStart_toStartOf="@id/tracker_title"
+        app:layout_constraintEnd_toEndOf="@id/tracker_title"
+        app:layout_constraintTop_toBottomOf="@id/tracker_category"
+        app:layout_constraintHorizontal_bias="0"
         tools:text="From user Random_user" />
 
     <TextView
         android:id="@+id/latest_release_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/activity_insets"
         android:textAppearance="@style/TextAppearance.Nyaasi.Details"
         android:breakStrategy="simple"
+        app:layout_constraintStart_toStartOf="@id/tracker_title"
+        app:layout_constraintEnd_toEndOf="@id/tracker_title"
+        app:layout_constraintTop_toBottomOf="@id/tracker_source_username"
+        app:layout_constraintHorizontal_bias="0"
         tools:text="Date: 31 February -123" />
 
-    <LinearLayout
-        android:gravity="center_vertical|end"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/delete_tracker_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/activity_insets"
-        android:layout_marginTop="@dimen/vertical_spacer_small">
-
-        <Button
-            android:id="@+id/delete_tracker_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete_tracker"/>
-    </LinearLayout>
+        android:layout_marginTop="@dimen/vertical_spacer_small"
+        app:layout_constraintStart_toStartOf="@id/tracker_title"
+        app:layout_constraintEnd_toEndOf="@id/tracker_title"
+        app:layout_constraintTop_toBottomOf="@id/latest_release_date"
+        app:layout_constraintHorizontal_bias="1"
+        android:text="@string/delete_tracker"/>
 
     <FrameLayout
         android:id="@+id/ad_banner_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/activity_insets" />
+        app:layout_constraintTop_toBottomOf="@id/delete_tracker_btn" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/latest_releases_list"
@@ -81,5 +93,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="@dimen/layout_spacer"
-        android:clipToPadding="false" />
-</LinearLayout>
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/ad_banner_container" />
+</androidx.constraintlayout.widget.ConstraintLayout>
