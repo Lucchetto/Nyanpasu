@@ -5,10 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -46,6 +43,7 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.zhenxiang.nyaa.widget.QuietSpinner
 
 class NyaaReleaseActivity : AppCompatActivity() {
 
@@ -58,6 +56,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
     private lateinit var commentsBackToTop: FloatingActionButton
     private lateinit var commentsSheetBehaviour: BottomSheetBehavior<View>
+    private lateinit var commentsSortingOptions: ArrayAdapter<String>
 
     private lateinit var releasesTrackerViewModel: ReleaseTrackerViewModel
     private lateinit var releaseDetails: ReleaseDetailsHolderViewModel
@@ -132,6 +131,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
             commentsBackToTop.scaleX = 0f
             commentsBackToTop.scaleY = 0f
         }
+        commentsSortingOptions = ArrayAdapter(this, R.layout.spinner_dropdown_item,
+            resources.getStringArray(R.array.comments_sorting_order))
 
         val nyaaRelease = intent.getSerializableExtra(RELEASE_PREVIEW_INTENT_OBJ) as NyaaReleasePreview?
         latestRelease = savedInstanceState?.getSerializable(USER_LATEST_RELEASE_INTENT_OBJ) as NyaaReleasePreview?
@@ -220,16 +221,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             commentsSection.setOnClickListener {
                 commentsSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
             }
-            val commentsSheetToolbar = findViewById<Toolbar>(R.id.comments_sheet_toolbar)
-            commentsSheetToolbar.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.close_comments -> {
-                        commentsSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
-                        true
-                    }
-                    else -> false
-                }
-            }
+
             val commentsList = findViewById<RecyclerView>(R.id.comments_list)
 
             if (NavigationModeUtils.isFullGestures(coordinatorRoot.context)) {
@@ -276,6 +268,53 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 commentsListLayoutManager.startSmoothScroll(smoothScroller)
             }
 
+            val commentsSheetToolbar = findViewById<Toolbar>(R.id.comments_sheet_toolbar)
+            val commentsSortingMenuBtn = commentsSheetToolbar.menu.findItem(R.id.comments_sorting).actionView
+            val commentsSortingSpinner = commentsSortingMenuBtn.findViewById<QuietSpinner>(R.id.comments_sorting_spinner)
+            commentsSortingSpinner.adapter = commentsSortingOptions
+            commentsSortingSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val newValue = position == 0
+                    val oldValue = releaseDetails.fromMostRecent.value
+                    if (newValue != oldValue) {
+                        releaseDetails.fromMostRecent.value = newValue
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+            }
+            commentsSortingMenuBtn.setOnClickListener {
+                commentsSortingSpinner.performClick()
+            }
+
+            commentsSheetToolbar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.close_comments -> {
+                        commentsSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
+                        true
+                    }
+                    else -> false
+                }
+            }
+
+            releaseDetails.fromMostRecent.observe(this, { _ ->
+                // Clear adapter if comments null, reverse list to sort from most recent
+                val comments = releaseDetails.details.value?.comments
+
+                commentsList.stopScroll()
+                // Hax to scroll to the top
+                commentsListAdapter.setList(null)
+                if (comments != null) {
+                    commentsListAdapter.setList(releaseDetails.sortCommentsIfNecessary(comments))
+                }
+            })
+
             releaseDetails.details.observe(this, { details ->
 
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -289,7 +328,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
                             details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
 
                         // Clear adapter if comments null, reverse list to sort from most recent
-                        commentsListAdapter.setList(if (details.comments != null) details.comments.reversed() else emptyList())
+                        commentsListAdapter.setList(
+                            if (details.comments != null) releaseDetails.sortCommentsIfNecessary(details.comments) else null
+                        )
                         commentsSection.visibility = View.VISIBLE
                         commentsCount.text = if (details.comments.isNullOrEmpty()) {
                             commentsSection.isEnabled = false

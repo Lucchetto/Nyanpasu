@@ -77,7 +77,7 @@ class CommentsAdapter: RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>()
         return differ.currentList.size
     }
 
-    fun setList(newList: List<ReleaseComment>) {
+    fun setList(newList: List<ReleaseComment>?) {
         differ.submitList(newList)
     }
 }

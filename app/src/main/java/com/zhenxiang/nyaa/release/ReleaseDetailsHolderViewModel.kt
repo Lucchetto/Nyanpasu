@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.api.NyaaPageProvider
+import com.zhenxiang.nyaa.api.ReleaseComment
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaDb
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
@@ -17,7 +18,7 @@ class ReleaseDetailsHolderViewModel(application: Application): AndroidViewModel(
     private val detailsDao = NyaaDb(application.applicationContext).nyaaReleasesDetailsDao()
 
     val details = MutableLiveData<NyaaReleaseDetails>()
-
+    val fromMostRecent = MutableLiveData(true)
 
     fun requestDetails(id: ReleaseId) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,6 +35,15 @@ class ReleaseDetailsHolderViewModel(application: Application): AndroidViewModel(
                 // Sync local database's data with new data from server
                 detailsDao.insert(it)
             }
+        }
+    }
+
+    fun sortCommentsIfNecessary(comments: List<ReleaseComment>): List<ReleaseComment> {
+        // Assume we got data from NyaaPageProvider which gives by default from least recent comment
+        return if (fromMostRecent.value == true) {
+            comments.reversed()
+        } else {
+            comments
         }
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    style="?actionButtonStyle"
+    android:focusable="true">
+
+    <com.zhenxiang.nyaa.widget.QuietSpinner
+        android:id="@+id/comments_sorting_spinner"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="invisible"
+        android:layout_gravity="bottom|start" />
+
+    <androidx.appcompat.widget.ActionMenuView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_outline_sort_24"/>
+</FrameLayout>
