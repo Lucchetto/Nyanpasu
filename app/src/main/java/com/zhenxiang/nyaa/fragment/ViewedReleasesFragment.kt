@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -69,7 +70,8 @@ open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
         val releasesListAdapter = ReleasesListAdapter()
 
         liveDataSource().observe(viewLifecycleOwner, {
-            emptyViewHint.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            // Show empty hint when data source is empty and search query is empty as well
+            emptyViewHint.visibility = if (it.isEmpty() && searchQueryLiveData().value.isNullOrEmpty()) View.VISIBLE else View.GONE
             releasesListAdapter.setItems(it)
         })
 
@@ -126,8 +128,12 @@ open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
         return localNyaaDbViewModel.viewedReleases
     }
 
-    open fun searchQuery(query: String?) {
-        localNyaaDbViewModel.viewedReleasesSearchFilter.value = query
+    open fun searchQueryLiveData(): MutableLiveData<String> {
+        return localNyaaDbViewModel.viewedReleasesSearchFilter
+    }
+
+    fun setSearchQuery(query: String?) {
+        searchQueryLiveData().value = query
     }
 
     open fun emptyViewStringRes(): Int {

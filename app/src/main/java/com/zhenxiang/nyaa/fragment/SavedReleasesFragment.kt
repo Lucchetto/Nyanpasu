@@ -1,6 +1,7 @@
 package com.zhenxiang.nyaa.fragment
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 
@@ -14,8 +15,8 @@ class SavedReleasesFragment: ViewedReleasesFragment() {
         return localNyaaDbViewModel.savedReleases
     }
 
-    override fun searchQuery(query: String?) {
-        localNyaaDbViewModel.savedReleasesSearchFilter.value = query
+    override fun searchQueryLiveData(): MutableLiveData<String> {
+        return localNyaaDbViewModel.savedReleasesSearchFilter
     }
 
     override fun emptyViewStringRes(): Int {

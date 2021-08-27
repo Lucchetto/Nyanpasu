@@ -95,7 +95,7 @@ class LibraryFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 val fragment = childFragmentManager.findFragmentByTag("android:switcher:${R.id.library_pager}:${viewPager.currentItem}")
                 if (fragment is ViewedReleasesFragment) {
-                    fragment.searchQuery(newText)
+                    fragment.setSearchQuery(newText)
                 }
                 return true
             }
