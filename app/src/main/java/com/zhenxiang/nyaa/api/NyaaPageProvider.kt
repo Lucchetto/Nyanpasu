@@ -6,6 +6,7 @@ import com.zhenxiang.nyaa.db.NyaaReleaseDetails
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.parser.Parser
 import org.jsoup.select.Elements
 import java.net.URLEncoder
 
@@ -32,8 +33,7 @@ class NyaaPageProvider {
                     val commentUsername = it.selectFirst("a[href~=^(.*?)\\/user\\/(.+)\$]").text()
                     val commentImage = it.selectFirst("img").attr("src")
                     val timestamp = it.selectFirst("*[data-timestamp~=^\\d+\$]").attr("data-timestamp").toLong()
-                    //
-                    val commentContent = it.select(".comment-content").html()
+                    val commentContent = Parser.unescapeEntities(it.select(".comment-content").html(), true)
                     comments.add(ReleaseComment(commentUsername, commentImage, timestamp, commentContent))
                 }
 

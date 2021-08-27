@@ -59,7 +59,6 @@ class CommentsAdapter: RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>()
                     Date(comment.timestamp * 1000)
                 )
             )
-            // TODO: Fix markup parsing
             markwon.setMarkdown(content, comment.content)
         }
     }
