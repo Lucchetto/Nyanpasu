@@ -13,165 +13,211 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:clipToPadding="false"
             android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
             android:paddingTop="@dimen/activity_insets">
 
             <TextView
                 android:id="@+id/release_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/activity_insets"
-                android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTitle"
                 android:breakStrategy="simple"
+                android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Release title, may be very long or short" />
 
             <TextView
                 android:id="@+id/release_id"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:layout_marginHorizontal="@dimen/activity_insets"
                 android:textAppearance="@style/TextAppearance.Nyaasi.ReleaseId"
-                tools:text="ID: 1232213113"/>
+                app:layout_constraintEnd_toEndOf="@id/release_title"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/release_title"
+                app:layout_constraintTop_toBottomOf="@id/release_title"
+                tools:text="ID: 1232213113" />
 
             <TextView
-                android:layout_marginTop="15dp"
                 android:id="@+id/submitter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_insets"
-                android:textAppearance="@style/TextAppearance.Nyaasi.Details"
+                android:layout_marginTop="15dp"
                 android:breakStrategy="simple"
+                android:textAppearance="@style/TextAppearance.Nyaasi.Details"
+                app:layout_constraintEnd_toEndOf="@id/release_title"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/release_title"
+                app:layout_constraintTop_toBottomOf="@id/release_id"
                 tools:text="Posted by Random_user" />
 
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_insets"
-                android:textAppearance="@style/TextAppearance.Nyaasi.Details"
                 android:breakStrategy="simple"
+                android:textAppearance="@style/TextAppearance.Nyaasi.Details"
+                app:layout_constraintEnd_toEndOf="@id/release_title"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/release_title"
+                app:layout_constraintTop_toBottomOf="@id/submitter"
                 tools:text="Date: 31 February -123" />
 
             <TextView
                 android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_insets"
+                android:paddingBottom="@dimen/vertical_spacer_small"
                 android:textAppearance="@style/TextAppearance.Nyaasi.Details"
-                tools:text="Category: Literature non English translated"/>
+                app:layout_constraintEnd_toEndOf="@id/release_title"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/release_title"
+                app:layout_constraintTop_toBottomOf="@id/date"
+                tools:text="Category: Literature non English translated" />
 
-            <LinearLayout
-                android:gravity="center_vertical"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/add_to_tracker"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_insets"
-                android:layout_marginTop="@dimen/vertical_spacer_small">
+                android:enabled="false"
+                android:text="@string/add_tracker_title"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@id/release_extra_data"
+                app:layout_constraintEnd_toStartOf="@id/btn_spacer"
+                app:layout_constraintStart_toStartOf="@id/release_title"
+                app:layout_constraintTop_toBottomOf="@id/category"
+                tools:visibility="visible" />
 
-                <Button
-                    android:id="@+id/add_to_tracker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:visibility="invisible"
-                    android:text="@string/add_tracker_title"/>
+            <Space
+                android:id="@+id/btn_spacer"
+                android:layout_height="1dp"
+                android:layout_width="0dp"
+                app:layout_constraintEnd_toStartOf="@id/save_btn"
+                app:layout_constraintStart_toEndOf="@id/add_to_tracker" />
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+            <ImageButton
+                android:id="@+id/save_btn"
+                style="@style/Theme.Nyaasi.ReleaseActionButton"
+                android:src="@drawable/bookmark_status"
+                app:layout_constraintBottom_toTopOf="@id/release_extra_data"
+                app:layout_constraintEnd_toStartOf="@id/magnet_btn"
+                app:layout_constraintHorizontal_bias="10"
+                app:layout_constraintStart_toEndOf="@id/btn_spacer"
+                app:layout_constraintTop_toBottomOf="@id/category" />
 
-                <ImageButton
-                    android:id="@+id/save_btn"
-                    android:src="@drawable/bookmark_status"
-                    style="@style/Theme.Nyaasi.ReleaseActionButton" />
+            <ImageButton
+                android:id="@+id/magnet_btn"
+                style="@style/Theme.Nyaasi.ReleaseActionButton"
+                android:src="@drawable/ic_magnet"
+                app:layout_constraintBottom_toBottomOf="@id/save_btn"
+                app:layout_constraintEnd_toStartOf="@id/download_btn"
+                app:layout_constraintStart_toEndOf="@id/save_btn"
+                app:layout_constraintTop_toTopOf="@id/save_btn" />
 
-                <ImageButton
-                    android:id="@+id/magnet_btn"
-                    android:src="@drawable/ic_magnet"
-                    style="@style/Theme.Nyaasi.ReleaseActionButton" />
+            <ImageButton
+                android:id="@+id/download_btn"
+                style="@style/Theme.Nyaasi.ReleaseActionButton"
+                android:src="@drawable/ic_outline_download_24"
+                app:layout_constraintBottom_toBottomOf="@id/save_btn"
+                app:layout_constraintEnd_toEndOf="@id/release_title"
+                app:layout_constraintStart_toEndOf="@id/magnet_btn"
+                app:layout_constraintTop_toTopOf="@id/save_btn" />
 
-                <ImageButton
-                    android:id="@+id/download_btn"
-                    android:src="@drawable/ic_outline_download_24"
-                    style="@style/Theme.Nyaasi.ReleaseActionButton" />
-            </LinearLayout>
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/btn_bottom_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="add_to_tracker, download_btn" />
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/release_extra_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_insets"
                 android:visibility="gone"
-                tools:visibility="visible"
+                app:flexWrap="wrap"
                 app:justifyContent="center"
-                app:flexWrap="wrap">
+                app:layout_constraintEnd_toEndOf="@id/release_title"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/release_title"
+                app:layout_constraintTop_toBottomOf="@id/btn_bottom_barrier"
+                tools:visibility="visible">
 
                 <com.zhenxiang.nyaa.view.ReleaseDataItemView
                     android:id="@+id/seeders"
                     style="@style/Theme.Nyaasi.ReleaseDataItem"
                     app:title="Seeders"
-                    tools:value="15"/>
+                    tools:value="15" />
 
                 <com.zhenxiang.nyaa.view.ReleaseDataItemView
                     android:id="@+id/leechers"
                     style="@style/Theme.Nyaasi.ReleaseDataItem"
                     app:title="Leechers"
-                    tools:value="69"/>
+                    tools:value="69" />
 
                 <com.zhenxiang.nyaa.view.ReleaseDataItemView
                     android:id="@+id/completed"
                     style="@style/Theme.Nyaasi.ReleaseDataItem"
                     app:title="Completed"
-                    tools:value="420"/>
+                    tools:value="420" />
 
                 <com.zhenxiang.nyaa.view.ReleaseDataItemView
                     android:id="@+id/release_size"
                     style="@style/Theme.Nyaasi.ReleaseDataItem"
                     app:title="Release size"
-                    tools:value="143.2 MiB"/>
+                    tools:value="143.2 MiB" />
             </com.google.android.flexbox.FlexboxLayout>
 
             <FrameLayout
                 android:id="@+id/ad_banner_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/release_extra_data" />
 
             <br.tiagohm.markdownview.MarkdownView
                 android:id="@+id/release_details_markdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_spacer"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/comments_section"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ad_banner_container" />
 
-            <FrameLayout
+            <ProgressBar
                 android:id="@+id/progress_frame"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"/>
-            </FrameLayout>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ad_banner_container" />
 
             <LinearLayout
                 android:id="@+id/comments_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingVertical="@dimen/layout_spacer"
-                android:paddingHorizontal="@dimen/activity_insets"
-                android:visibility="gone"
                 android:background="?selectableItemBackground"
                 android:clickable="true"
                 android:enabled="false"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/activity_insets"
+                android:paddingVertical="@dimen/layout_spacer"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/release_details_markdown"
                 tools:visibility="visible">
 
                 <TextView
@@ -179,24 +225,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/release_comments_count_title"
-                    android:textAppearance="@style/TextAppearance.Nyaasi.Title.Secondary"/>
+                    android:textAppearance="@style/TextAppearance.Nyaasi.Title.Secondary" />
 
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/show_all_comments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?android:colorPrimary"
                     android:text="@string/view_all"
-                    android:visibility="gone"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-                    tools:visibility="visible"/>
+                    android:textColor="?android:colorPrimary"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
             </LinearLayout>
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.revengeos.revengeui.widget.BounceNestedScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout

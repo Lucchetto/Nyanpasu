@@ -26,7 +26,7 @@
         <entry key="app/src/main/res/layout-land/activity_create_tracker.xml" value="0.16799999999999998" />
         <entry key="app/src/main/res/layout/activity_create_tracker.xml" value="0.4" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/activity_nyaa_release.xml" value="0.6" />
+        <entry key="app/src/main/res/layout/activity_nyaa_release.xml" value="0.4" />
         <entry key="app/src/main/res/layout/activity_nyaa_search.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_release_tracker_details.xml" value="0.16458333333333333" />
         <entry key="app/src/main/res/layout/browsing_specs_selector_view.xml" value="0.32864583333333336" />
