@@ -14,7 +14,7 @@ import java.text.DateFormat
 import java.util.*
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
-import io.noties.markwon.image.ImagesPlugin
+import io.noties.markwon.image.glide.GlideImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 
 
@@ -42,7 +42,7 @@ class CommentsAdapter: RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>()
 
         private val markwon = Markwon.builder(view.context)
             .usePlugin(LinkifyPlugin.create(true))
-            .usePlugin(ImagesPlugin.create())
+            .usePlugin(GlideImagesPlugin.create(view.context))
             .usePlugin(SoftBreakAddsNewLinePlugin.create())
             .build()
 
