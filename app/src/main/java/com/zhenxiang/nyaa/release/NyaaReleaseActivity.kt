@@ -240,6 +240,11 @@ class NyaaReleaseActivity : AppCompatActivity() {
                         margin()
                     }
                 }
+                commentsBackToTop.applyInsetter {
+                    type(navigationBars = true) {
+                        margin()
+                    }
+                }
             }
 
             val commentsListLayoutManager = LinearLayoutManager(this)

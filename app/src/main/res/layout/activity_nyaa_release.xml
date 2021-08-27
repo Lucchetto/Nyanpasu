@@ -248,6 +248,6 @@
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_baseline_arrow_upward_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
