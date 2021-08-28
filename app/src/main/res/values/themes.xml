@@ -27,6 +27,10 @@
         <item name="preferenceTheme">@style/Theme.Nyaasi.PreferenceFragment</item>
     </style>
 
+    <style name="Theme.Nyaasi.NoListSelector" parent="Theme.Nyaasi">
+        <item name="android:dropDownListViewStyle">@style/Widget.Nyaasi.ListView.DropDown.NoListSelector</item>
+    </style>
+
     <!-- Custom Preference Theme -->
     <style name="Theme.Nyaasi.PreferenceFragment" parent="@style/PreferenceThemeOverlay.v14.Material">
         <item name="preferenceFragmentCompatStyle">@style/Style.Nyaasi.PreferenceFragment</item>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true">
+        <shape>
+            <solid android:color="?colorControlHighlight"/>
+        </shape>
+    </item>
+    <item>
+        <layer-list>
+            <item android:drawable="?selectableItemBackground"/>
+        </layer-list>
+    </item>
+</selector>

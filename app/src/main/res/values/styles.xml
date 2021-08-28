@@ -153,4 +153,8 @@
     <style name="Style.Nyaasi.PreferenceFragment" parent="@style/PreferenceFragment.Material">
         <item name="android:layout">@layout/pref_screen</item>
     </style>
+
+    <style name="Widget.Nyaasi.ListView.DropDown.NoListSelector" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:listSelector">@android:color/transparent</item>
+    </style>
 </resources>

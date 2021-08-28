@@ -43,7 +43,6 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
 import androidx.recyclerview.widget.LinearSmoothScroller
-import com.zhenxiang.nyaa.widget.QuietSpinner
 
 class NyaaReleaseActivity : AppCompatActivity() {
 
@@ -270,7 +269,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
 
             val commentsSheetToolbar = findViewById<Toolbar>(R.id.comments_sheet_toolbar)
             val commentsSortingMenuBtn = commentsSheetToolbar.menu.findItem(R.id.comments_sorting).actionView
-            val commentsSortingSpinner = commentsSortingMenuBtn.findViewById<QuietSpinner>(R.id.comments_sorting_spinner)
+            val commentsSortingSpinner = commentsSortingMenuBtn.findViewById<Spinner>(R.id.comments_sorting_spinner)
             commentsSortingSpinner.adapter = commentsSortingOptions
             commentsSortingSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
