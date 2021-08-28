@@ -130,7 +130,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             commentsBackToTop.scaleX = 0f
             commentsBackToTop.scaleY = 0f
         }
-        commentsSortingOptions = ArrayAdapter(this, R.layout.spinner_dropdown_item,
+        commentsSortingOptions = ArrayAdapter(this, R.layout.spinner_dropdown_activatable_item,
             resources.getStringArray(R.array.comments_sorting_order))
 
         val nyaaRelease = intent.getSerializableExtra(RELEASE_PREVIEW_INTENT_OBJ) as NyaaReleasePreview?

@@ -6,11 +6,13 @@
         <entry key="../../../../../../home/lucchetto/.gradle/caches/transforms-3/9e3c8edbc4fae10b2cf45573f866600a/transformed/appcompat-1.3.0/res/drawable/abc_ic_search_api_material.xml" value="0.33697916666666666" />
         <entry key="../../../../../../layout/custom_preview.xml" value="0.36354166666666665" />
         <entry key="../../../../../layout/custom_preview.xml" value="0.18229166666666666" />
+        <entry key="../../../.gradle/caches/transforms-3/c190ec81ec2e22fe5ff35c900884a648/transformed/appcompat-1.3.1/res/drawable/abc_item_background_holo_light.xml" value="0.2140625" />
         <entry key="../../../.gradle/caches/transforms-3/da253b433cf9777e30c61550b460c370/transformed/preference-1.1.1/res/layout/preference.xml" value="0.13958333333333334" />
         <entry key="../../../.gradle/caches/transforms-3/da253b433cf9777e30c61550b460c370/transformed/preference-1.1.1/res/layout/preference_category_material.xml" value="0.13958333333333334" />
         <entry key="../../../Android/Sdk/platforms/android-30/data/res/layout/simple_list_item_1.xml" value="0.12135416666666667" />
         <entry key="app/src/main/res/drawable/bookmark_status.xml" value="0.1625" />
         <entry key="app/src/main/res/drawable/drag_handle.xml" value="0.1828125" />
+        <entry key="app/src/main/res/drawable/hightlight_color.xml" value="0.1828125" />
         <entry key="app/src/main/res/drawable/ic_library_28_regular.xml" value="0.14739583333333334" />
         <entry key="app/src/main/res/drawable/ic_magnet.xml" value="0.178125" />
         <entry key="app/src/main/res/drawable/ic_outline_add_24.xml" value="0.1625" />
@@ -22,7 +24,11 @@
         <entry key="app/src/main/res/drawable/ic_outline_info_24.xml" value="0.1625" />
         <entry key="app/src/main/res/drawable/ic_spinner_caret.xml" value="0.3072916666666667" />
         <entry key="app/src/main/res/drawable/ic_vector.xml" value="0.33697916666666666" />
+        <entry key="app/src/main/res/drawable/item_background_material_rounded.xml" value="0.20625" />
         <entry key="app/src/main/res/drawable/new_releases_counter_bg.xml" value="0.125" />
+        <entry key="app/src/main/res/drawable/selectable_item_background_activatable.xml" value="0.2140625" />
+        <entry key="app/src/main/res/drawable/selectable_item_bg.xml" value="0.1828125" />
+        <entry key="app/src/main/res/drawable/selectable_item_bg_activatable.xml" value="0.1828125" />
         <entry key="app/src/main/res/layout-land/activity_create_tracker.xml" value="0.16799999999999998" />
         <entry key="app/src/main/res/layout/activity_create_tracker.xml" value="0.4" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
@@ -49,6 +55,8 @@
         <entry key="app/src/main/res/layout/release_data_item.xml" value="0.23641304347826086" />
         <entry key="app/src/main/res/layout/release_preview_item.xml" value="0.4275568181818182" />
         <entry key="app/src/main/res/layout/release_tracker_item.xml" value="0.47846153846153844" />
+        <entry key="app/src/main/res/layout/spinner_dropdown_item.xml" value="0.17074275362318841" />
+        <entry key="app/src/main/res/layout/spinner_dropdown_item_activatable.xml" value="0.1859375" />
         <entry key="app/src/main/res/layout/spinner_item.xml" value="0.32864583333333336" />
         <entry key="app/src/main/res/layout/subscribed_user_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/titled_spinner.xml" value="0.32864583333333336" />
