@@ -12,8 +12,8 @@ android {
         applicationId "com.zhenxiang.nyaa"
         minSdk 21
         targetSdk 30
-        versionCode 2
-        versionName "0.2"
+        versionCode 3
+        versionName "0.3"
 
         javaCompileOptions {
             annotationProcessorOptions {
