@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
+import androidx.preference.SwitchPreferenceCompat
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.util.UIModeUtils
 
@@ -47,6 +49,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         when (key) {
             getString(R.string.ui_mode_key) -> {
                 UIModeUtils.updateUIMode(requireContext())
+            }
+            getString(R.string.use_proxy_key) -> {
+                // Refresh state if someone else changed the preference
+                findPreference<SwitchPreferenceCompat>(key)?.isChecked = preferenceManager.sharedPreferences.getBoolean(key, false)
             }
         }
     }

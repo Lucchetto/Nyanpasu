@@ -14,10 +14,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
+import com.google.android.material.snackbar.Snackbar
 import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
+
 
 /**
  * A simple [Fragment] subclass.
@@ -62,9 +64,31 @@ class BrowseFragment : Fragment(), ReleaseListParent {
 
         val releasesListAdapter = ReleasesListAdapter()
         val footerAdapter = FooterAdapter()
-        browseViewModel.resultsLiveData.observe(viewLifecycleOwner,  {
+        browseViewModel.resultsLiveData.observe(viewLifecycleOwner, {
             releasesListAdapter.setItems(it)
             footerAdapter.showLoading(!browseViewModel.endReached())
+        })
+        browseViewModel.error.observe(viewLifecycleOwner, {
+            // Potential regional block detected
+            if (it == REGIONAL_BLOCK && !prefsManager.getBoolean(
+                    fragmentView.context.getString(R.string.use_proxy_key), false)) {
+
+                val snackbar = Snackbar.make(getSnackBarParentView(),
+                    fragmentView.context.getString(R.string.connection_reset_error),
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                snackbar.setAction(R.string.turn_on_regional_bypass) {
+                    prefsManager.edit()
+                        .putBoolean(fragmentView.context.getString(R.string.use_proxy_key), true).commit()
+
+                    // Reload everything
+                    browseViewModel.setUseProxy(true)
+                    browseViewModel.clearResults()
+                    browseViewModel.loadResults()
+                }
+                snackbar.anchorView = getSnackBarAnchorView()
+                snackbar.show()
+            }
         })
 
         val releasesList = fragmentView.findViewById<RecyclerView>(R.id.releases_list)
@@ -122,7 +146,10 @@ class BrowseFragment : Fragment(), ReleaseListParent {
             BrowseFragment().apply {
             }
 
-        private val DEFAULT_SELECTED_DATA_SOURCE = "def_selected_data_source"
+        private const val DEFAULT_SELECTED_DATA_SOURCE = "def_selected_data_source"
+
+        // Use this to communicate to host activity
+        const val SHOULD_TURN_ON_BYPASS_RESTRICTIONS = "should_turn_on_bypass_restrictions"
     }
 
     override fun getQueuedDownload(): ReleaseId? {
@@ -133,7 +160,7 @@ class BrowseFragment : Fragment(), ReleaseListParent {
         return fragmentView
     }
 
-    override fun getSnackBarAnchorView(): View? {
+    override fun getSnackBarAnchorView(): View {
         return searchBtn
     }
 

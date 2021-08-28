@@ -9,7 +9,6 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.zhenxiang.nyaa.fragment.BrowseFragment
 import com.zhenxiang.nyaa.fragment.LibraryFragment
@@ -44,7 +43,8 @@ class MainActivity : AppCompatActivity() {
             }
         }*/
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fragment_container)) { v, inset ->
+        val fragmentContainer = findViewById<View>(R.id.fragment_container)
+        ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer) { v, inset ->
             val imeInset = WindowInsetsCompat(inset).getInsets(WindowInsetsCompat.Type.ime()).bottom
             if (imeInset > 0) {
                 val navInset = WindowInsetsCompat(inset).getInsets(WindowInsetsCompat.Type.navigationBars()).bottom

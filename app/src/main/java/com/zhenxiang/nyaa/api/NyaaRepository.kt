@@ -4,11 +4,14 @@ import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.HttpStatusException
+import java.net.SocketException
+import javax.net.ssl.SSLHandshakeException
 
 const val PAGE_NOT_FOUND = 404
+const val REGIONAL_BLOCK = -40
 const val GENERIC_JSOUP_ERROR = -1
 
-class NyaaRepository(private val useProxy: Boolean) {
+class NyaaRepository(var useProxy: Boolean) {
 
     private val TAG = javaClass.name
 
@@ -51,10 +54,14 @@ class NyaaRepository(private val useProxy: Boolean) {
             } catch (e: Exception) {
                 // With an error we can't continue. So mark it as data ended
                 endReached = true
-                if (e is HttpStatusException && e.statusCode == 404) {
-                    return@withContext PAGE_NOT_FOUND
+
+                return@withContext if (e is HttpStatusException && e.statusCode == 404) {
+                    PAGE_NOT_FOUND
+                } else if ((e is SocketException && e.message == "Connection reset")
+                    || (e is SSLHandshakeException && e.message?.contains("Connection reset by peer", true) == true)) {
+                    REGIONAL_BLOCK
                 } else {
-                    return@withContext GENERIC_JSOUP_ERROR
+                    GENERIC_JSOUP_ERROR
                 }
             }
         }

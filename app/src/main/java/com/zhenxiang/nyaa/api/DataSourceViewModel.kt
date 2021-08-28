@@ -59,6 +59,10 @@ class DataSourceViewModel(application: Application): AndroidViewModel(applicatio
         repository.username = username
     }
 
+    fun setUseProxy(useProxy: Boolean) {
+        repository.useProxy = useProxy
+    }
+
     fun clearResults() {
         firstInsert = true
         repository.clearRepo()
