@@ -100,7 +100,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nyaa_release)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         coordinatorRoot = findViewById(R.id.coordinator_root)
 
