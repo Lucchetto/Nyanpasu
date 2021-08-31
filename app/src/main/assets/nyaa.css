@@ -185,7 +185,8 @@ h6:hover .header-anchor {
 /* Dark theme */
 
 body.dark {
-	color: #afafaf;
+	color: #fff;
+	background-color: #151515;
 }
 
 body.dark .navbar a {
