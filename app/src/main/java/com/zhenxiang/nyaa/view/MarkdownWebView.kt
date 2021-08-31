@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.webkit.WebView
 import com.zhenxiang.nyaa.BuildConfig
+import com.zhenxiang.nyaa.R
 import org.commonmark.Extension
 import org.commonmark.ext.autolink.AutolinkExtension
 import org.commonmark.ext.gfm.tables.TableBlock
@@ -14,6 +15,8 @@ import org.commonmark.renderer.html.AttributeProvider
 import org.commonmark.renderer.html.HtmlRenderer
 
 class MarkdownWebView: WebView {
+
+    private val darkMode = resources.getBoolean(R.bool.is_dark)
 
     private val extensions: List<Extension> = listOf(AutolinkExtension.create(), TablesExtension.create())
     private val parser: Parser = Parser.builder().extensions(extensions).build()
@@ -32,14 +35,16 @@ class MarkdownWebView: WebView {
         if (BuildConfig.DEBUG) {
             setWebContentsDebuggingEnabled(true)
         }
+        isVerticalScrollBarEnabled = false
     }
 
     fun loadMarkdown(data: String) {
         val document: Node = parser.parse(data)
         super.loadDataWithBaseURL("file:///android_asset/",
-            "<head>${getHtmlForCSSAsset("bootstrap.css")}" +
+            "<head>${getHtmlForCSSAsset("${ if (darkMode) "bootstrap-dark.css" else "bootstrap.css" }")}" +
                     "${getHtmlForCSSAsset("nyaa.css")}</head>" +
-                    "<body id=\"torrent-description\">${renderer.render(document)}</body>",
+                    "<body id=\"torrent-description\" ${if (darkMode) "class=\"dark\"" else ""}>" +
+                    "${renderer.render(document)}</body>",
             null, null, null)
     }
 
