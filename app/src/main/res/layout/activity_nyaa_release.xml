@@ -184,7 +184,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/release_extra_data" />
 
-            <br.tiagohm.markdownview.MarkdownView
+            <com.zhenxiang.nyaa.view.MarkdownWebView
                 android:id="@+id/release_details_markdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
+import android.webkit.WebView
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -14,8 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import br.tiagohm.markdownview.MarkdownView
-import br.tiagohm.markdownview.css.styles.Github
 import com.google.android.gms.ads.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -43,13 +42,14 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.zhenxiang.nyaa.view.MarkdownWebView
 
 class NyaaReleaseActivity : AppCompatActivity() {
 
     private val TAG = javaClass.name
 
     private lateinit var coordinatorRoot: View
-    private lateinit var markdownView: MarkdownView
+    private lateinit var markdownView: MarkdownWebView
     private lateinit var submitter: TextView
     private lateinit var manageTrackerBtn: Button
 
@@ -113,7 +113,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
         }
 
         markdownView = findViewById(R.id.release_details_markdown)
-        markdownView.addStyleSheet(Github())
         markdownView.clipToOutline = true
         submitter = findViewById(R.id.submitter)
 
