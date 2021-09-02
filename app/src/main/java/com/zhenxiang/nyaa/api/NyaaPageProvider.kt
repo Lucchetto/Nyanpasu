@@ -18,12 +18,12 @@ data class NyaaPageResults(val items: List<NyaaReleasePreview>, val bottomReache
 class NyaaPageProvider {
 
     companion object {
-        private val categoryIdRegexString = "(?<=c(%3D)|=)(\\d+_\\d+)(?=(&.*|\$))"
-        private val categoryIdRegex = categoryIdRegexString.toRegex()
-        private val releaseIdRegexString = "(?<=view(%2F)|\\/)(\\d+)(?=(&.*|\$))"
-        private val releaseIdRegex = releaseIdRegexString.toRegex()
-        private val userRegexString = "(?<=view(%2F)|\\/)(.+)(?=(&.*|$))"
-        private val TAG = javaClass.name
+        private const val categoryIdRegexString = "(?<=c(%3D)|=)(\\d+_\\d+)(?=(&.*|\$))"
+        @JvmStatic private val categoryIdRegex = categoryIdRegexString.toRegex()
+        private const val releaseIdRegexString = "(?<=view(%2F)|\\/)(\\d+)(?=(&.*|\$))"
+        @JvmStatic private val releaseIdRegex = releaseIdRegexString.toRegex()
+        private const val userRegexString = "(?<=view(%2F)|\\/)(.+)(?=(&.*|$))"
+        @JvmStatic private val TAG = javaClass.name
 
         suspend fun getReleaseDetails(releaseId: ReleaseId, useProxy: Boolean): NyaaReleaseDetails? {
             return try {
