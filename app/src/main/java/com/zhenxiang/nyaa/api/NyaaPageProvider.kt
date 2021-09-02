@@ -64,16 +64,16 @@ class NyaaPageProvider {
                                  searchQuery: String? = null,
                                  user: String? = null): NyaaPageResults {
 
-            var fullUrl = "https://${getProperUrl(dataSource, useProxy)}%2F"
+            var fullUrl = "https://${getProperUrl(dataSource, useProxy)}/"
             if (!user.isNullOrBlank()) {
-                fullUrl += "user%2F$user"
+                fullUrl += "user/$user"
             }
-            fullUrl += "%3Fp%3D${pageIndex}"
+            fullUrl += "?p=${pageIndex}"
             searchQuery?.let {
-                fullUrl += "%26q%3D${URLEncoder.encode(it, "utf-8")}"
+                fullUrl += "&q=${URLEncoder.encode(it, "utf-8")}"
             }
             if (category != null) {
-                fullUrl += "%26c%3D${category.getId()}"
+                fullUrl += "&c=${category.getId()}"
             }
 
             val pageItems: Elements
