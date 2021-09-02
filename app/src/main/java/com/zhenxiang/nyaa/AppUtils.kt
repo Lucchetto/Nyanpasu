@@ -88,7 +88,7 @@ class AppUtils {
         }
 
         fun getReleaseTorrentUrl(releaseId: ReleaseId, useProxy: Boolean): String {
-            return "http://${NyaaPageProvider.getProperUrl(releaseId.dataSource, useProxy)}/download/${releaseId.number}.torrent"
+            return "https://${NyaaPageProvider.getProperUrl(releaseId.dataSource, useProxy)}/download/${releaseId.number}.torrent"
         }
 
         fun getReleasePageUrl(releaseId: ReleaseId, useProxy: Boolean): String {
@@ -100,9 +100,11 @@ class AppUtils {
                 val manager = parentView.context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 val uri = Uri.parse(getReleaseTorrentUrl(releaseId, getUseProxy(parentView.context)))
                 val request = DownloadManager.Request(uri)
+                val filename = "${releaseId.number}.torrent"
+                request.setTitle(filename)
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
                 request.setVisibleInDownloadsUi(true)
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, uri.lastPathSegment)
                 manager.enqueue(request)
             } catch (e: Exception) {
                 val snack = Snackbar.make(parentView, R.string.cannot_download_release_hint, Snackbar.LENGTH_SHORT)
