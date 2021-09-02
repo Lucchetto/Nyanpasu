@@ -12,14 +12,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
-import com.zhenxiang.nyaa.api.ApiDataSource
-import com.zhenxiang.nyaa.api.DataSourceViewModel
-import com.zhenxiang.nyaa.api.ReleaseId
-import com.zhenxiang.nyaa.api.ReleaseCategory
+import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
 import com.zhenxiang.nyaa.util.FooterAdapter
@@ -43,6 +41,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
         activityRoot = findViewById(R.id.search_activity_root)
 
+        val prefsManager = PreferenceManager.getDefaultSharedPreferences(this)
         val searchBar = findViewById<SearchView>(R.id.search_bar)
         searchBar.setSearchableInfo((getSystemService(Context.SEARCH_SERVICE) as SearchManager).getSearchableInfo(componentName))
 
@@ -66,6 +65,8 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             resultsAdapter.setItems(it)
             footerAdapter.showLoading(!searchViewModel.endReached())
         })
+        searchViewModel.setupRegionalBlockDetection(this, this, prefsManager)
+
         if (savedInstanceState == null) {
             searchViewModel.setSearchText(null)
             searchBar.requestFocus()

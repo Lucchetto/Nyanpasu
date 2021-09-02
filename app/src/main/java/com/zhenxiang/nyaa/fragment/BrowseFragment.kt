@@ -68,28 +68,7 @@ class BrowseFragment : Fragment(), ReleaseListParent {
             releasesListAdapter.setItems(it)
             footerAdapter.showLoading(!browseViewModel.endReached())
         })
-        browseViewModel.error.observe(viewLifecycleOwner, {
-            // Potential regional block detected
-            if (it == REGIONAL_BLOCK && !prefsManager.getBoolean(
-                    fragmentView.context.getString(R.string.use_proxy_key), false)) {
-
-                val snackbar = Snackbar.make(getSnackBarParentView(),
-                    fragmentView.context.getString(R.string.connection_reset_error),
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                snackbar.setAction(R.string.turn_on_regional_bypass) {
-                    prefsManager.edit()
-                        .putBoolean(fragmentView.context.getString(R.string.use_proxy_key), true).commit()
-
-                    // Reload everything
-                    browseViewModel.setUseProxy(true)
-                    browseViewModel.clearResults()
-                    browseViewModel.loadResults()
-                }
-                snackbar.anchorView = getSnackBarAnchorView()
-                snackbar.show()
-            }
-        })
+        browseViewModel.setupRegionalBlockDetection(this, viewLifecycleOwner, prefsManager)
 
         val releasesList = fragmentView.findViewById<RecyclerView>(R.id.releases_list)
         val listLayoutManager = LinearLayoutManager(fragmentView.context)

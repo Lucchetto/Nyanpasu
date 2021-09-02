@@ -1,11 +1,13 @@
 package com.zhenxiang.nyaa.api
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.content.SharedPreferences
+import androidx.lifecycle.*
+import androidx.preference.PreferenceManager
+import com.google.android.material.snackbar.Snackbar
 import com.zhenxiang.nyaa.AppUtils
+import com.zhenxiang.nyaa.R
+import com.zhenxiang.nyaa.ReleaseListParent
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import kotlinx.coroutines.*
 
@@ -59,8 +61,10 @@ class DataSourceViewModel(application: Application): AndroidViewModel(applicatio
         repository.username = username
     }
 
-    fun setUseProxy(useProxy: Boolean) {
+    fun setUseProxyAndReload(useProxy: Boolean) {
         repository.useProxy = useProxy
+        clearResults()
+        loadResults()
     }
 
     fun clearResults() {
@@ -70,4 +74,29 @@ class DataSourceViewModel(application: Application): AndroidViewModel(applicatio
     }
 
     fun endReached() = this.repository.endReached
+}
+
+fun DataSourceViewModel.setupRegionalBlockDetection(parent: ReleaseListParent,
+                                                    lifecycleOwner: LifecycleOwner, prefs: SharedPreferences) {
+    val useProxyPrefKey = parent.getSnackBarParentView().context.getString(R.string.use_proxy_key)
+    this.error.observe(lifecycleOwner, { error ->
+        // Potential regional block detected
+        if (error == REGIONAL_BLOCK && !prefs.getBoolean(useProxyPrefKey, false)) {
+
+            val snackbar = Snackbar.make(parent.getSnackBarParentView(),
+                parent.getSnackBarParentView().context.getString(R.string.connection_reset_error),
+                Snackbar.LENGTH_INDEFINITE
+            )
+            snackbar.setAction(R.string.turn_on_regional_bypass) {
+                prefs.edit().putBoolean(useProxyPrefKey, true).commit()
+
+                // Reload everything
+                this.setUseProxyAndReload(true)
+            }
+            parent.getSnackBarAnchorView()?.let {
+                snackbar.anchorView = it
+            }
+            snackbar.show()
+        }
+    })
 }
