@@ -96,7 +96,7 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-ads:20.2.0'
 
-    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'org.jsoup:jsoup:1.14.2'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'dev.chrisbanes.insetter:insetter:0.6.0'
     implementation 'it.gilvegliach.android:transparent-text-textview:1.0.3'
