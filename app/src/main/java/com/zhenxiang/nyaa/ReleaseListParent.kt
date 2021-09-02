@@ -58,14 +58,14 @@ interface ReleaseListParent: ActivityResultCaller {
 
                 override fun copyTorrent(item: NyaaReleasePreview) {
                     copyToClipboardShowSnackbar(item.name, AppUtils.getReleaseTorrentUrl(
-                        item.getReleaseId(), AppUtils.getUseProxy(listParent.getSnackBarParentView().context)),
+                        item.getReleaseId(), false),
                         listParent.getSnackBarParentView()
                             .context.getString(R.string.torrent_link_copied), listParent)
                 }
 
                 override fun copyReleaseLink(item: NyaaReleasePreview) {
                     copyToClipboardShowSnackbar(item.name, AppUtils.getReleasePageUrl(
-                        item.getReleaseId(), AppUtils.getUseProxy(listParent.getSnackBarParentView().context)),
+                        item.getReleaseId(), false),
                         listParent.getSnackBarParentView()
                             .context.getString(R.string.release_link_copied), listParent)
                 }

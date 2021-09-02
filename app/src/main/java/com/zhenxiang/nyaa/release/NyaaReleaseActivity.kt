@@ -186,7 +186,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
             downloadBtn.setOnLongClickListener { _ ->
                 ReleaseListParent.copyToClipboardShowSnackbar(
                     it.name,
-                    AppUtils.getReleaseTorrentUrl(it.getReleaseId(), AppUtils.getUseProxy(this)),
+                    AppUtils.getReleaseTorrentUrl(it.getReleaseId(), false),
                     getString(R.string.torrent_link_copied), coordinatorRoot, null
                 )
                 true
