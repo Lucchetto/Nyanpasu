@@ -62,6 +62,7 @@
 
     <string name="connection_reset_error">Potential regional block detected</string>
     <string name="turn_on_regional_bypass">Bypass restrictions</string>
+    <string name="regional_bypass_turned_on_hint">Regional restrictions bypass enabled ! Please wait</string>
 
     <string name="copy_magnet_link">Copy magnet link</string>
     <string name="magnet_link_copied">Magnet link copied to the clipboard</string>

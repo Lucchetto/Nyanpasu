@@ -92,6 +92,15 @@ fun DataSourceViewModel.setupRegionalBlockDetection(parent: ReleaseListParent,
 
                 // Reload everything
                 this.setUseProxyAndReload(true)
+
+                val successSnackbar = Snackbar.make(parent.getSnackBarParentView(),
+                    parent.getSnackBarParentView().context.getString(R.string.regional_bypass_turned_on_hint),
+                    Snackbar.LENGTH_SHORT
+                )
+                parent.getSnackBarAnchorView()?.let {
+                    successSnackbar.anchorView = it
+                }
+                successSnackbar.show()
             }
             parent.getSnackBarAnchorView()?.let {
                 snackbar.anchorView = it
