@@ -88,11 +88,11 @@ class AppUtils {
         }
 
         fun getReleaseTorrentUrl(releaseId: ReleaseId, useProxy: Boolean): String {
-            return "http://${if (useProxy) releaseId.dataSource.proxyUrl else releaseId.dataSource.url}/download/${releaseId.number}.torrent"
+            return "http://${NyaaPageProvider.getProperUrl(releaseId.dataSource, useProxy)}/download/${releaseId.number}.torrent"
         }
 
         fun getReleasePageUrl(releaseId: ReleaseId, useProxy: Boolean): String {
-            return "https://${if (useProxy) releaseId.dataSource.proxyUrl else releaseId.dataSource.url}/view/${releaseId.number}"
+            return "https://${NyaaPageProvider.getProperUrl(releaseId.dataSource, useProxy)}/view/${releaseId.number}"
         }
 
         fun enqueueDownload(releaseId: ReleaseId, parentView: View, anchorView: View? = null): Long? {

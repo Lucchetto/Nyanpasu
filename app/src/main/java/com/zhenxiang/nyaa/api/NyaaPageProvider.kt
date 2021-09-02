@@ -9,8 +9,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
 import org.jsoup.select.Elements
-import java.net.URI
-import java.net.URLDecoder
 import java.net.URLEncoder
 
 data class NyaaPageResults(val items: List<NyaaReleasePreview>, val bottomReached: Boolean)
@@ -18,12 +16,20 @@ data class NyaaPageResults(val items: List<NyaaReleasePreview>, val bottomReache
 class NyaaPageProvider {
 
     companion object {
+
+        const val proxyBaseUrl = "sitenable.top"
+        private const val proxyUrl = proxyBaseUrl + "/o.php?b=4&u=https://"
+
         private const val categoryIdRegexString = "(?<=c(%3D)|=)(\\d+_\\d+)(?=(&.*|\$))"
         @JvmStatic private val categoryIdRegex = categoryIdRegexString.toRegex()
         private const val releaseIdRegexString = "(?<=view(%2F)|\\/)(\\d+)(?=(&.*|\$))"
         @JvmStatic private val releaseIdRegex = releaseIdRegexString.toRegex()
         private const val userRegexString = "(?<=view(%2F)|\\/)(.+)(?=(&.*|$))"
         @JvmStatic private val TAG = javaClass.name
+
+        fun getProperUrl(dataSource: ApiDataSource, useProxy: Boolean): String {
+            return if (useProxy) proxyUrl + dataSource.url else dataSource.url
+        }
 
         suspend fun getReleaseDetails(releaseId: ReleaseId, useProxy: Boolean): NyaaReleaseDetails? {
             return try {
@@ -38,10 +44,10 @@ class NyaaPageProvider {
                 val commentsContainer = doc.getElementById("collapse-comments")
                 commentsContainer?.select("*[id~=^com-\\d+\$]")?.forEach {
                     val commentUsername = it.selectFirst("a[href~=$userRegexString]").text()
-                    val commentImage = it.selectFirst("img").attr("src")
+                    val commentUrlImage = it.selectFirst("img").absUrl("src")
                     val timestamp = it.selectFirst("*[data-timestamp~=^\\d+\$]").attr("data-timestamp").toLong()
                     val commentContent = Parser.unescapeEntities(it.select(".comment-content").html(), true)
-                    comments.add(ReleaseComment(commentUsername, commentImage, timestamp, commentContent))
+                    comments.add(ReleaseComment(commentUsername, commentUrlImage, timestamp, commentContent))
                 }
 
                 NyaaReleaseDetails(releaseId, if (userName.isNullOrBlank()) null else userName, hash, descriptionMarkdown, comments)
@@ -58,7 +64,7 @@ class NyaaPageProvider {
                                  searchQuery: String? = null,
                                  user: String? = null): NyaaPageResults {
 
-            var fullUrl = "https://${if (useProxy) dataSource.proxyUrl else dataSource.url}%2F"
+            var fullUrl = "https://${getProperUrl(dataSource, useProxy)}%2F"
             if (!user.isNullOrBlank()) {
                 fullUrl += "user%2F$user"
             }
