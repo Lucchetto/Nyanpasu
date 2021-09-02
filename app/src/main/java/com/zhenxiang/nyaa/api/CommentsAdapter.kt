@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.zhenxiang.nyaa.R
 import java.text.DateFormat
 import java.util.*
@@ -20,6 +22,10 @@ import io.noties.markwon.linkify.LinkifyPlugin
 
 
 class CommentsAdapter: RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>() {
+
+    private val glideHeaders = LazyHeaders.Builder()
+        .addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0")
+        .build()
 
     private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<ReleaseComment>() {
         override fun areItemsTheSame(
@@ -53,7 +59,7 @@ class CommentsAdapter: RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>()
         private val content = view.findViewById<TextView>(R.id.comment_content)
 
         fun bind(comment: ReleaseComment) {
-            Glide.with(userImage).load(comment.userImage)
+            Glide.with(userImage).load(GlideUrl(comment.userImage, glideHeaders))
                 .placeholder(R.drawable.default_pic)
                 .into(userImage)
             usernameAndDate.text = content.context.getString(R.string.comment_username_and_date,
