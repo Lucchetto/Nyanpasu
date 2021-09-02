@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".release.NyaaReleaseActivity">
 
-    <com.revengeos.revengeui.widget.BounceNestedScrollView
+    <com.zhenxiang.spring.SpringNestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -246,7 +246,7 @@
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.revengeos.revengeui.widget.BounceNestedScrollView>
+    </com.zhenxiang.spring.SpringNestedScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/comments_sheet"
