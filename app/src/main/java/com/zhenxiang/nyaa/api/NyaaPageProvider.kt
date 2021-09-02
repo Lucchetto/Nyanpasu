@@ -18,8 +18,10 @@ data class NyaaPageResults(val items: List<NyaaReleasePreview>, val bottomReache
 class NyaaPageProvider {
 
     companion object {
-        private val categoryIdRegex = "([^(.*?)(\\?|(%3F))c(=|(%3D))])*\$".toRegex()
-        private val releaseIdRegex = "[^(.*?)(\\/|(%2F))view(\\/|(%2F))]\\d+\$".toRegex()
+        private val categoryIdRegexString = "(?<=c(%3D)|=)(\\d+_\\d+)(?=(&.*|\$))"
+        private val categoryIdRegex = categoryIdRegexString.toRegex()
+        private val releaseIdRegexString = "(?<=view(%2F)|\\/)(\\d+)(?=(&.*|\$))"
+        private val releaseIdRegex = releaseIdRegexString.toRegex()
         private val TAG = javaClass.name
 
         suspend fun getReleaseDetails(releaseId: ReleaseId, useProxy: Boolean): NyaaReleaseDetails? {
@@ -71,7 +73,7 @@ class NyaaPageProvider {
             val doc: Document
             try {
                 doc = Jsoup.connect(fullUrl).get()
-                pageItems = doc.select("tr >td > a[href~=(.*?)([\\/]|(%2F))view([\\/]|(%2F))\\d+\$]")
+                pageItems = doc.select("tr >td > a[href~=$releaseIdRegexString]")
             } catch (e: Exception) {
                 Log.e(TAG, "exception", e)
                 throw (e)
@@ -83,7 +85,7 @@ class NyaaPageProvider {
                     // Get parent tr since we select element by a
                     val parentRow = it.parent().parent()
 
-                    val categoryHref =  parentRow.selectFirst("td > a[href~=(.*?)(\\?|(%3F))c(=|(%3D))\\d+_\\d+\$]").attr("href")
+                    val categoryHref =  parentRow.selectFirst("td > a[href~=$categoryIdRegexString]").attr("href")
                     val category = DataSourceSpecs.getCategoryFromId(dataSource, categoryIdRegex.find(categoryHref)!!.groupValues[0])
 
                     val number = releaseIdRegex.find(it.attr("href"))!!.groupValues[0].toInt()
