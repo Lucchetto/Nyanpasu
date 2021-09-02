@@ -22,6 +22,7 @@ class NyaaPageProvider {
         private val categoryIdRegex = categoryIdRegexString.toRegex()
         private val releaseIdRegexString = "(?<=view(%2F)|\\/)(\\d+)(?=(&.*|\$))"
         private val releaseIdRegex = releaseIdRegexString.toRegex()
+        private val userRegexString = "(?<=view(%2F)|\\/)(.+)(?=(&.*|$))"
         private val TAG = javaClass.name
 
         suspend fun getReleaseDetails(releaseId: ReleaseId, useProxy: Boolean): NyaaReleaseDetails? {
@@ -29,14 +30,14 @@ class NyaaPageProvider {
                 val doc: Document = Jsoup.connect(AppUtils.getReleasePageUrl(releaseId, useProxy)).get()
                 doc.outputSettings().prettyPrint(false)
 
-                val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=(.*?)([\\/]|(%2F))user([\\/]|(%2F))(.+)\$]").text()
+                val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)").parent().select("a[href~=$userRegexString]").text()
                 val hash = doc.selectFirst("div.col-md-1:matches(Info hash:)").parent().select("kbd:matches(^(\\w{40})\$)").text()
                 val descriptionMarkdown = doc.getElementById("torrent-description").html()
 
                 val comments = mutableListOf<ReleaseComment>()
                 val commentsContainer = doc.getElementById("collapse-comments")
                 commentsContainer?.select("*[id~=^com-\\d+\$]")?.forEach {
-                    val commentUsername = it.selectFirst("a[href~=(.*?)([\\/]|(%2F))user([\\/]|(%2F))(.+)\$]").text()
+                    val commentUsername = it.selectFirst("a[href~=$userRegexString]").text()
                     val commentImage = it.selectFirst("img").attr("src")
                     val timestamp = it.selectFirst("*[data-timestamp~=^\\d+\$]").attr("data-timestamp").toLong()
                     val commentContent = Parser.unescapeEntities(it.select(".comment-content").html(), true)

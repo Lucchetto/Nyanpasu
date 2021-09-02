@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ApiDataSource {
-    NYAA_SI(0, "nyaa.si", "unblockweb.me/?cdURL=http://nyaa.si", NyaaReleaseCategory.values()),
-    SUKEBEI_NYAA_SI(1, "sukebei.nyaa.si", "unblockweb.me/?cdURL=http://sukebei.nyaa.si", SukebeiReleaseCategory.values());
+    NYAA_SI(0, "nyaa.si", "sitenable.top/o.php?b=4&u=https://nyaa.si", NyaaReleaseCategory.values()),
+    SUKEBEI_NYAA_SI(1, "sukebei.nyaa.si", "sitenable.top/o.php?b=4&u=https://sukebei.nyaa.si", SukebeiReleaseCategory.values());
 
     private int value;
     private String url;
