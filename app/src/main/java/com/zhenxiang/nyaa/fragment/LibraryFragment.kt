@@ -110,10 +110,16 @@ class LibraryFragment : Fragment() {
         savedInstanceState?.getBoolean("searchMode")?.let {
             setSearchMode(it)
         }
+        if (savedInstanceState?.getBoolean("searchWasFocused") == true) {
+            // Do nothing, searchBar.isIconified = false already applies focus
+        } else {
+            searchBar.clearFocus()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean("searchMode", searchMode)
+        outState.putBoolean("searchWasFocused", searchBar.hasFocus())
         super.onSaveInstanceState(outState)
     }
 
@@ -127,7 +133,6 @@ class LibraryFragment : Fragment() {
         if (search) {
             appBar.setExpanded(true, true)
             searchBar.isIconified = false
-            searchBar.requestFocus()
             searchBtn.hide()
         } else {
             searchBtn.show()
