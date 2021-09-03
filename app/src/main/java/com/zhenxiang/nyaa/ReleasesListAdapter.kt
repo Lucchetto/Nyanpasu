@@ -215,7 +215,7 @@ class SwipedCallback(context: Context, swipeDirs: Int = ItemTouchHelper.LEFT or 
         if (viewHolder is ReleasesListAdapter.DownloadItemViewHolder) {
             viewHolder.popupMenu?.dismiss()
         }
-        listener?.onDeleteItem(viewHolder.adapterPosition)
+        listener?.onDeleteItem(viewHolder.bindingAdapterPosition)
     }
 
     override fun getSwipeDirs(

@@ -17,7 +17,7 @@ class SearchHistoryAdapter: RecyclerView.Adapter<SearchHistoryAdapter.ViewHolder
         init {
             view.setOnClickListener { _ ->
                 listener?.let {
-                    suggestions.getOrNull(adapterPosition)?.let { suggestion ->
+                    suggestions.getOrNull(bindingAdapterPosition)?.let { suggestion ->
                         it.onSuggestionSelected(suggestion)
                     }
                 }
