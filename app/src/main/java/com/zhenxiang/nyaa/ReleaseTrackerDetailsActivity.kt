@@ -98,9 +98,6 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity(), ReleaseListParent {
             }
 
             val subscribedTrackerDao = ReleaseTrackerRepo(application).dao
-            lifecycleScope.launch(Dispatchers.IO) {
-                subscribedTrackerDao.clearNewReleasesCount(tracker.id)
-            }
 
             val title = findViewById<TextView>(R.id.tracker_title)
             val category = findViewById<TextView>(R.id.tracker_category)
@@ -147,6 +144,17 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity(), ReleaseListParent {
             searchViewModel.resultsLiveData.observe(this, {
                 latestReleasesAdapter.setItems(it)
                 footerAdapter.showLoading(!searchViewModel.endReached())
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val mostRecentRelease = it.getOrNull(0)
+                    if (mostRecentRelease != null && mostRecentRelease.timestamp > tracker.latestReleaseTimestamp) {
+                        // Sync tracker with new data from server
+                        tracker.latestReleaseTimestamp = mostRecentRelease.timestamp
+                        tracker.hasPreviousReleases = true
+                        subscribedTrackerDao.update(tracker)
+                    }
+                    subscribedTrackerDao.clearNewReleasesCount(tracker.id)
+                }
             })
 
             if (savedInstanceState == null) {
