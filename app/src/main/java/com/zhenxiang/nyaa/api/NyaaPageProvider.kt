@@ -64,22 +64,29 @@ class NyaaPageProvider {
                                  searchQuery: String? = null,
                                  user: String? = null): NyaaPageResults {
 
-            var fullUrl = "https://${getProperUrl(dataSource, useProxy)}/"
+            val hostUrl = "https://${getProperUrl(dataSource, useProxy)}/"
+
+            var pathAndParams = ""
             if (!user.isNullOrBlank()) {
-                fullUrl += "user/$user"
+                pathAndParams += "user/$user"
             }
-            fullUrl += "?p=${pageIndex}"
+            pathAndParams += "?p=${pageIndex}"
             searchQuery?.let {
-                fullUrl += "&q=${URLEncoder.encode(it, "utf-8")}"
+                pathAndParams += "&q=${URLEncoder.encode(it, "utf-8")}"
             }
             if (category != null) {
-                fullUrl += "&c=${category.getId()}"
+                pathAndParams += "&c=${category.getId()}"
+            }
+
+            // The proxy we're using requires the encoded url, but but the site itself breaks with proxy
+            if (useProxy) {
+                pathAndParams = URLEncoder.encode(pathAndParams, "utf-8")
             }
 
             val pageItems: Elements
             val doc: Document
             try {
-                doc = Jsoup.connect(fullUrl).get()
+                doc = Jsoup.connect(hostUrl + pathAndParams).get()
                 pageItems = doc.select("tr >td > a[href~=$releaseIdRegexString]")
             } catch (e: Exception) {
                 Log.e(TAG, "exception", e)
