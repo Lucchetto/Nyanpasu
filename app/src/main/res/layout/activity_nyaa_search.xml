@@ -38,13 +38,26 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/search_hint"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"
+        <LinearLayout
+            android:id="@+id/suggestions_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Type the keywords then press search"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/search_hint"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Type the keywords then press search"/>
+
+            <com.revengeos.revengeui.widget.BounceRecyclerView
+                android:id="@+id/search_suggestions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="ifContentScrolls"/>
+        </LinearLayout>
 
         <com.revengeos.revengeui.widget.BounceRecyclerView
             android:id="@+id/search_results"

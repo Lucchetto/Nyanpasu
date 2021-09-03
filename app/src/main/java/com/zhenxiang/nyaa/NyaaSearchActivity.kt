@@ -1,7 +1,5 @@
 package com.zhenxiang.nyaa
 
-import android.app.SearchManager
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -20,6 +18,7 @@ import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
+import com.zhenxiang.nyaa.db.SearchHistoryAdapter
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
 import dev.chrisbanes.insetter.applyInsetter
@@ -30,6 +29,8 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
     private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
 
     private lateinit var activityRoot: View
+    private lateinit var searchSuggestionsContainer: View
+    private lateinit var resultsList: RecyclerView
     private var mQueuedDownload: ReleaseId? = null
     private val permissionRequestLauncher = ReleaseListParent.setupStoragePermissionRequestLauncher(this)
 
@@ -43,9 +44,8 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
         val prefsManager = PreferenceManager.getDefaultSharedPreferences(this)
         val searchBar = findViewById<SearchView>(R.id.search_bar)
-        searchBar.setSearchableInfo((getSystemService(Context.SEARCH_SERVICE) as SearchManager).getSearchableInfo(componentName))
 
-        val resultsList = findViewById<RecyclerView>(R.id.search_results)
+        resultsList = findViewById<RecyclerView>(R.id.search_results)
         findViewById<CoordinatorLayout>(R.id.search_activity_root).applyInsetter {
             type(navigationBars = !NavigationModeUtils.isFullGestures(this@NyaaSearchActivity), statusBars = true, ime = true) {
                 margin()
@@ -56,57 +56,41 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         searchViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
         searchHistoryViewModel = ViewModelProvider(this).get(NyaaSearchHistoryViewModel::class.java)
 
-        searchViewModel.resultsLiveData.observe(this, {
-            if (it.size > 0 && resultsList.visibility == View.GONE) {
-                resultsList.visibility = View.VISIBLE
-                val hintText = findViewById<View>(R.id.search_hint)
+        val hintText = findViewById<View>(R.id.search_hint)
+        searchSuggestionsContainer = findViewById<View>(R.id.suggestions_container)
+        val searchSuggestionsList = findViewById<RecyclerView>(R.id.search_suggestions)
+        searchSuggestionsList.layoutManager = LinearLayoutManager(this)
+        val suggestionsAdapter = SearchHistoryAdapter()
+        searchSuggestionsList.adapter = suggestionsAdapter
+        searchHistoryViewModel.searchHistory.observe(this, {
+            if (it.isEmpty()) {
+                hintText.visibility = View.VISIBLE
+                searchSuggestionsList.visibility = View.GONE
+            } else {
                 hintText.visibility = View.GONE
+                searchSuggestionsList.visibility = View.VISIBLE
             }
+            suggestionsAdapter.updateList(it)
+        })
+        suggestionsAdapter.listener = object: SearchHistoryAdapter.OnSuggestionActionListener {
+            override fun onSuggestionSelected(suggestion: NyaaSearchHistoryItem) {
+                searchBar.setQuery(suggestion.searchQuery, true)
+            }
+        }
+
+        searchViewModel.resultsLiveData.observe(this, {
             resultsAdapter.setItems(it)
             footerAdapter.showLoading(!searchViewModel.endReached())
         })
         searchViewModel.setupRegionalBlockDetection(this, this, prefsManager)
 
+        // Handle saved instance or new instance
         if (savedInstanceState == null) {
             searchViewModel.setSearchText(null)
             searchBar.requestFocus()
+        } else {
+            setShowSuggestions(searchBar.hasFocus() || searchViewModel.firstInsert)
         }
-
-        /*val searchSuggestionsAdapter = SimpleCursorAdapter(searchBar.context, android.R.layout.simple_list_item_1, null, arrayOf("searchQuery"), intArrayOf(android.R.id.text1), CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
-        lifecycleScope.launch(Dispatchers.IO) {
-            val newCursor = searchHistoryViewModel.getSearchCursor()
-            withContext(Dispatchers.Main) {
-                searchSuggestionsAdapter.changeCursor(newCursor)
-            }
-        }
-        searchBar.suggestionsAdapter = searchSuggestionsAdapter
-        searchBar.setOnSuggestionListener(object: SearchView.OnSuggestionListener {
-            override fun onSuggestionSelect(position: Int): Boolean {
-                return true
-            }
-
-            override fun onSuggestionClick(position: Int): Boolean {
-                return false
-            }
-
-        })*/
-        val suggestionsAdapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
-        searchHistoryViewModel.searchHistory.observe(this, {
-            suggestionsAdapter.clear()
-            suggestionsAdapter.addAll(it.map { item -> item.searchQuery })
-        })
-        val searchBarTextField = searchBar.findViewById<AutoCompleteTextView>(androidx.appcompat.R.id.search_src_text)
-        searchBarTextField.threshold = 0
-        searchBarTextField.setAdapter(suggestionsAdapter)
-        searchBarTextField.setOnItemClickListener { parent, view, position, id ->
-            searchBar.setQuery(suggestionsAdapter.getItem(position), true)
-        }
-
-        /*searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                //searchBar.suggestionsAdapter = searchSuggestionsAdapter
-            }
-        }*/
 
         val listLayoutManager = LinearLayoutManager(this)
         resultsList.layoutManager = listLayoutManager
@@ -146,36 +130,40 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             }
         }
 
+        searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            setShowSuggestions(hasFocus || searchViewModel.firstInsert)
+        }
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                    if (resultsList.visibility == View.GONE) {
-                        resultsList.visibility = View.VISIBLE
-                        val hintText = findViewById<View>(R.id.search_hint)
-                        hintText.visibility = View.GONE
-                    }
                     // Clear results so it will show loading status
                     searchViewModel.clearResults()
                     searchViewModel.setSearchText(it)
                     searchViewModel.loadResults()
                     searchHistoryViewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))
+
                     searchBar.clearFocus()
+                    setShowSuggestions(false)
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                /*lifecycleScope.launch(Dispatchers.IO) {
-                    Log.w("asdsasd", newText.toString())
-                    val newCursor = searchHistoryViewModel.getSearchCursor(newText)
-                    withContext(Dispatchers.Main) {
-                        //searchBar.suggestionsAdapter = SimpleCursorAdapter(searchBar.context, android.R.layout.simple_list_item_1, newCursor, arrayOf("searchQuery"), intArrayOf(android.R.id.text1), CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER)
-                    }
-                }*/
-                return false
+                searchHistoryViewModel.searchHistoryFilter.value = newText
+                return true
             }
 
         })
+    }
+
+    private fun setShowSuggestions(value: Boolean) {
+        if (value) {
+            resultsList.visibility = View.GONE
+            searchSuggestionsContainer.visibility = View.VISIBLE
+        } else {
+            searchSuggestionsContainer.visibility = View.GONE
+            resultsList.visibility = View.VISIBLE
+        }
     }
 
     override fun getQueuedDownload(): ReleaseId? {

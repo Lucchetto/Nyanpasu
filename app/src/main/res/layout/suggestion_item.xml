@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/vertical_spacer_small"
+    android:paddingHorizontal="@dimen/activity_insets"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="?selectableItemBackground"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/suggestion_string"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Style.Nyaasi.ReleasePreviewTitle"
+        tools:text="Random suggestion" />
+
+</LinearLayout>

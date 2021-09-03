@@ -31,14 +31,6 @@ class NyaaSearchHistoryViewModel(application: Application): AndroidViewModel(app
         searchHistoryFilter.value = null
     }
 
-    suspend fun getSearchCursor(query: String? = null): Cursor {
-        return if (query.isNullOrBlank()) {
-            dao.getAllAsCursor()
-        } else {
-            dao.searchByQueryAsCursor(query)
-        }
-    }
-
     fun insert(item: NyaaSearchHistoryItem) {
         val formattedItem = NyaaSearchHistoryItem(item.searchQuery.trim(), item.searchTimestamp)
         viewModelScope.launch(Dispatchers.IO) {
