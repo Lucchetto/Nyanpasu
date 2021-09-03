@@ -39,7 +39,8 @@
         <Preference
             app:key="@string/open_discord_key"
             app:icon="@drawable/ic_outline_discord_24"
-            app:title="@string/join_discord"/>
+            app:title="@string/join_discord_title"
+            android:summary="@string/join_discord_summary"/>
 
         <Preference
             app:icon="@drawable/ic_outline_info_24"
