@@ -16,7 +16,13 @@ import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.ReleaseCategory
 import com.zhenxiang.nyaa.widget.QuietSpinner
 
-class BrowsingSpecsSelectorView: LinearLayout {
+class BrowsingSpecsSelectorView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    defStyleRes: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {
+
     private val categorySpinner: QuietSpinner
     private val dataSourceSpinner: QuietSpinner
 
@@ -28,16 +34,9 @@ class BrowsingSpecsSelectorView: LinearLayout {
     private val dataSourceListener: AdapterView.OnItemSelectedListener
     private val categoryListener: AdapterView.OnItemSelectedListener
 
-    constructor (context: Context) : this(context, null)
-
-    constructor(context: Context, @Nullable attrs: AttributeSet?) : this(context, attrs, 0)
-
-    constructor(context: Context, @Nullable attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
-
-    constructor(context: Context, @Nullable attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+    init {
         LayoutInflater.from(context).inflate(R.layout.browsing_specs_selector_view, this, true)
         orientation = HORIZONTAL
-
         categorySpinner = findViewById(R.id.categories_selection)
         findViewById<View>(R.id.categories_selection_container).setOnClickListener {
             categorySpinner.performClick()
@@ -46,7 +45,6 @@ class BrowsingSpecsSelectorView: LinearLayout {
         findViewById<View>(R.id.data_source_selection_container).setOnClickListener {
             dataSourceSpinner.performClick()
         }
-
         categoryListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -62,7 +60,6 @@ class BrowsingSpecsSelectorView: LinearLayout {
             }
 
         }
-
         dataSourceListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -79,7 +76,6 @@ class BrowsingSpecsSelectorView: LinearLayout {
             }
 
         }
-
         setupDataSources()
     }
 
