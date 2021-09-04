@@ -155,7 +155,7 @@
     <string name="about_title">About</string>
     <string name="version_title">Version</string>
     <string name="join_discord_title">Join our Discord</string>
-    <string name="join_discord_summary">You report bugs and suggest new features here</string>
+    <string name="join_discord_summary">You can report bugs and suggest new features here</string>
     <string name="developer_credits">Developed by Zhenxiang Chen</string>
     <string name="anime_time_sponsor">Supported by animetime.pw</string>
 
