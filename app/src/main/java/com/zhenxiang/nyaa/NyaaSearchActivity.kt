@@ -172,6 +172,9 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
     }
 
     private fun disappearView(view: View, suggestionsAnim: Boolean = false) {
+        if (view.visibility == View.GONE) {
+            return
+        }
         val animation = AnimationUtils.loadAnimation(
             view.context, if (suggestionsAnim) R.anim.suggestions_disappear else R.anim.results_disappear
         )
@@ -191,6 +194,9 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
     }
 
     private fun appearView(view: View, suggestionsAnim: Boolean = false) {
+        if (view.visibility == View.VISIBLE && view.animation == null) {
+           return
+        }
         val animation = AnimationUtils.loadAnimation(
             view.context, if (suggestionsAnim) R.anim.suggestions_appear else R.anim.results_appear
         )
