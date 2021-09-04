@@ -3,6 +3,8 @@ package com.zhenxiang.nyaa
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.widget.SearchView
@@ -158,12 +160,50 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
     private fun setShowSuggestions(value: Boolean) {
         if (value) {
-            resultsList.visibility = View.GONE
-            searchSuggestionsContainer.visibility = View.VISIBLE
+            disappearView(resultsList)
+            appearView(searchSuggestionsContainer, true)
         } else {
-            searchSuggestionsContainer.visibility = View.GONE
-            resultsList.visibility = View.VISIBLE
+            disappearView(searchSuggestionsContainer, true)
+            appearView(resultsList)
         }
+    }
+
+    private fun disappearView(view: View, suggestionsAnim: Boolean = false) {
+        val animation = AnimationUtils.loadAnimation(
+            view.context, if (suggestionsAnim) R.anim.suggestions_disappear else R.anim.results_disappear
+        )
+        animation.setAnimationListener(object: Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                view.visibility = View.GONE
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+
+        })
+        view.startAnimation(animation)
+    }
+
+    private fun appearView(view: View, suggestionsAnim: Boolean = false) {
+        val animation = AnimationUtils.loadAnimation(
+            view.context, if (suggestionsAnim) R.anim.suggestions_appear else R.anim.results_appear
+        )
+        animation.setAnimationListener(object: Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                view.visibility = View.VISIBLE
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+
+        })
+        view.startAnimation(animation)
     }
 
     override fun getQueuedDownload(): ReleaseId? {
