@@ -10,6 +10,8 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:clipChildren="false"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context=".NyaaSearchActivity">
 
