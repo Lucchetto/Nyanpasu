@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
@@ -23,6 +24,7 @@ import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
 import com.zhenxiang.nyaa.db.SearchHistoryAdapter
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
+import com.zhenxiang.nyaa.widget.SwipedCallback
 import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
@@ -65,6 +67,19 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         searchSuggestionsList.layoutManager = LinearLayoutManager(this)
         val suggestionsAdapter = SearchHistoryAdapter()
         searchSuggestionsList.adapter = suggestionsAdapter
+
+        // Setup swipe to delete
+        val swipedCallback = SwipedCallback(this, ItemTouchHelper.LEFT)
+        swipedCallback.listener = object: SwipedCallback.ItemDeleteListener {
+            override fun onDeleteItem(position: Int) {
+                suggestionsAdapter.getItem(position)?.let {
+                    searchHistoryViewModel.delete(it)
+                }
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipedCallback)
+        itemTouchHelper.attachToRecyclerView(searchSuggestionsList)
+
         searchHistoryViewModel.searchHistory.observe(this, {
             if (it.isEmpty()) {
                 hintText.visibility = View.VISIBLE

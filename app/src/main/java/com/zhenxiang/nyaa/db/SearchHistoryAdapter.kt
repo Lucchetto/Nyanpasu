@@ -45,6 +45,10 @@ class SearchHistoryAdapter: RecyclerView.Adapter<SearchHistoryAdapter.ViewHolder
         return suggestions.size
     }
 
+    fun getItem(position: Int): NyaaSearchHistoryItem? {
+        return suggestions.getOrNull(position)
+    }
+
     fun updateList(newList: List<NyaaSearchHistoryItem>) {
         suggestions = newList
         notifyDataSetChanged()

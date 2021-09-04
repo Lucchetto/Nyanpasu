@@ -38,4 +38,10 @@ class NyaaSearchHistoryViewModel(application: Application): AndroidViewModel(app
             dao.deleteExcessiveRecents()
         }
     }
+
+    fun delete(item: NyaaSearchHistoryItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.delete(item)
+        }
+    }
 }

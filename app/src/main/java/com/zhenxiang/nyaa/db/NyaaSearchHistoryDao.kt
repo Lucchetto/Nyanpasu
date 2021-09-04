@@ -21,4 +21,7 @@ interface NyaaSearchHistoryDao {
 
     @Query("DELETE FROM nyaasearchhistoryitem WHERE searchQuery NOT IN (SELECT searchQuery FROM nyaasearchhistoryitem ORDER BY searchTimestamp DESC LIMIT 25)")
     fun deleteExcessiveRecents(): Int
+
+    @Delete
+    fun delete(item: NyaaSearchHistoryItem)
 }

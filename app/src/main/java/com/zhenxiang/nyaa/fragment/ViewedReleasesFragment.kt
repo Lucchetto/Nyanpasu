@@ -20,6 +20,7 @@ import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.widget.ReleaseItemAnimator
+import com.zhenxiang.nyaa.widget.SwipedCallback
 import dev.chrisbanes.insetter.applyInsetter
 
 open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
@@ -97,7 +98,7 @@ open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
         }
 
         if (hasDelete()) {
-            val swipedCallback = SwipedCallback(releasesList.context, swipeDirection())
+            val swipedCallback = ReleaseSwipedCallback(releasesList.context, swipeDirection())
             swipedCallback.listener = object: SwipedCallback.ItemDeleteListener {
                 override fun onDeleteItem(position: Int) {
                     val releaseToDelete = releasesListAdapter.getItems()[position]
