@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="is_dark">false</bool>
+
+    <integer name="suggestions_container_animation_length">400</integer>
 </resources>

@@ -2,7 +2,7 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:interpolator="@android:interpolator/fast_out_slow_in"
     android:shareInterpolator="true"
-    android:duration="475">
+    android:duration="@integer/suggestions_container_animation_length">
 
     <alpha
         android:fromAlpha="1"
