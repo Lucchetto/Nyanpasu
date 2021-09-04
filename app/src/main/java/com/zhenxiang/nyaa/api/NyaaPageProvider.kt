@@ -17,8 +17,7 @@ class NyaaPageProvider {
 
     companion object {
 
-        const val proxyBaseUrl = "sitenable.top"
-        private const val proxyUrl = proxyBaseUrl + "/o.php?b=4&u=https://"
+        private const val proxyUrl = "unblockweb.me/?cdURL=https://"
 
         private const val categoryIdRegexString = "(?<=c(%3D)|=)(\\d+_\\d+)(?=(&.*|\$))"
         @JvmStatic private val categoryIdRegex = categoryIdRegexString.toRegex()
