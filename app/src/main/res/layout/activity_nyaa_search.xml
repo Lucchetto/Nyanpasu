@@ -54,12 +54,23 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Type the keywords then press search"/>
+                android:text="@string/releases_search_hint"/>
+
+            <TextView
+                android:id="@+id/search_suggestions_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/activity_insets"
+                android:layout_marginVertical="@dimen/layout_spacer"
+                android:visibility="gone"
+                android:text="@string/releases_search_suggestions_title"
+                android:textAppearance="@style/TextAppearance.Nyaasi.Title.Secondary" />
 
             <com.revengeos.revengeui.widget.BounceRecyclerView
                 android:id="@+id/search_suggestions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:overScrollMode="ifContentScrolls"/>
         </LinearLayout>
 

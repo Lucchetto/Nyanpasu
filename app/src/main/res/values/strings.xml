@@ -64,6 +64,9 @@
     <string name="turn_on_regional_bypass">Bypass restrictions</string>
     <string name="regional_bypass_turned_on_hint">Regional restrictions bypass enabled ! Please wait</string>
 
+    <string name="releases_search_hint">Type the keywords then press search</string>
+    <string name="releases_search_suggestions_title">Recently searched</string>
+
     <string name="copy_magnet_link">Copy magnet link</string>
     <string name="magnet_link_copied">Magnet link copied to the clipboard</string>
     <string name="copy_torrent_link">Copy torrent link</string>

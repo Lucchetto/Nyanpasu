@@ -60,6 +60,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
         val hintText = findViewById<View>(R.id.search_hint)
         searchSuggestionsContainer = findViewById<View>(R.id.suggestions_container)
+        val searchSuggestionsTitle = findViewById<View>(R.id.search_suggestions_title)
         val searchSuggestionsList = findViewById<RecyclerView>(R.id.search_suggestions)
         searchSuggestionsList.layoutManager = LinearLayoutManager(this)
         val suggestionsAdapter = SearchHistoryAdapter()
@@ -67,9 +68,11 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         searchHistoryViewModel.searchHistory.observe(this, {
             if (it.isEmpty()) {
                 hintText.visibility = View.VISIBLE
+                searchSuggestionsTitle.visibility = View.GONE
                 searchSuggestionsList.visibility = View.GONE
             } else {
                 hintText.visibility = View.GONE
+                searchSuggestionsTitle.visibility = View.VISIBLE
                 searchSuggestionsList.visibility = View.VISIBLE
             }
             suggestionsAdapter.updateList(it)
