@@ -4,12 +4,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.zhenxiang.nyaa.R
 
 class SearchHistoryAdapter: RecyclerView.Adapter<SearchHistoryAdapter.ViewHolder>() {
 
-    private var suggestions = emptyList<NyaaSearchHistoryItem>()
+    private val DIFF_CALLBACK = object: DiffUtil.ItemCallback<NyaaSearchHistoryItem>() {
+        override fun areItemsTheSame(
+            oldItem: NyaaSearchHistoryItem,
+            newItem: NyaaSearchHistoryItem
+        ): Boolean {
+            return oldItem.searchQuery == newItem.searchQuery
+        }
+
+        override fun areContentsTheSame(
+            oldItem: NyaaSearchHistoryItem,
+            newItem: NyaaSearchHistoryItem
+        ): Boolean {
+            return oldItem == newItem
+        }
+    }
+    private val differ: AsyncListDiffer<NyaaSearchHistoryItem> = AsyncListDiffer(this, DIFF_CALLBACK)
+
     var listener: OnSuggestionActionListener? = null
 
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -17,7 +35,7 @@ class SearchHistoryAdapter: RecyclerView.Adapter<SearchHistoryAdapter.ViewHolder
         init {
             view.setOnClickListener { _ ->
                 listener?.let {
-                    suggestions.getOrNull(bindingAdapterPosition)?.let { suggestion ->
+                    differ.currentList.getOrNull(bindingAdapterPosition)?.let { suggestion ->
                         it.onSuggestionSelected(suggestion)
                     }
                 }
@@ -38,20 +56,19 @@ class SearchHistoryAdapter: RecyclerView.Adapter<SearchHistoryAdapter.ViewHolder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(suggestions[position])
+        holder.bind(differ.currentList[position])
     }
 
     override fun getItemCount(): Int {
-        return suggestions.size
+        return differ.currentList.size
     }
 
     fun getItem(position: Int): NyaaSearchHistoryItem? {
-        return suggestions.getOrNull(position)
+        return differ.currentList.getOrNull(position)
     }
 
     fun updateList(newList: List<NyaaSearchHistoryItem>) {
-        suggestions = newList
-        notifyDataSetChanged()
+        differ.submitList(newList)
     }
 
     interface OnSuggestionActionListener {
