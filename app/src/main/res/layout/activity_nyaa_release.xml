@@ -175,15 +175,6 @@
                     tools:value="143.2 MiB" />
             </com.google.android.flexbox.FlexboxLayout>
 
-            <FrameLayout
-                android:id="@+id/ad_banner_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/release_extra_data" />
-
             <com.zhenxiang.nyaa.view.MarkdownWebView
                 android:id="@+id/release_details_markdown"
                 android:layout_width="match_parent"
@@ -195,7 +186,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintVertical_bias="0"
-                app:layout_constraintTop_toBottomOf="@id/ad_banner_container" />
+                app:layout_constraintTop_toBottomOf="@id/release_extra_data" />
 
             <ProgressBar
                 android:id="@+id/progress_frame"
@@ -205,7 +196,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ad_banner_container" />
+                app:layout_constraintTop_toBottomOf="@id/release_extra_data" />
 
             <LinearLayout
                 android:id="@+id/comments_section"

@@ -11,14 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
-import com.google.android.gms.ads.initialization.InitializationStatus
-
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
-
-import com.google.android.gms.ads.MobileAds
-
-
-
 
 class NyaaApplication: Application() {
 
@@ -33,7 +25,6 @@ class NyaaApplication: Application() {
     private fun delayedInit() {
         applicationScope.launch {
             setupWorks()
-            setupAdMob()
             setupNotificationChannels()
         }
     }
@@ -49,13 +40,6 @@ class NyaaApplication: Application() {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
         }
-
-    }
-
-    private fun setupAdMob() {
-        MobileAds.initialize(
-            this
-        ) { }
 
     }
 

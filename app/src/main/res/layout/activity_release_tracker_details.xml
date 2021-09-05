@@ -81,12 +81,6 @@
         app:layout_constraintHorizontal_bias="1"
         android:text="@string/delete_tracker"/>
 
-    <FrameLayout
-        android:id="@+id/ad_banner_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/delete_tracker_btn" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/latest_releases_list"
         android:layout_width="match_parent"
@@ -94,5 +88,5 @@
         android:layout_weight="1"
         android:layout_marginTop="@dimen/layout_spacer"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/ad_banner_container" />
+        app:layout_constraintTop_toBottomOf="@id/delete_tracker_btn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
