@@ -1,7 +1,6 @@
 package com.zhenxiang.nyaa.db
 
 import android.app.Application
-import android.database.Cursor
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
