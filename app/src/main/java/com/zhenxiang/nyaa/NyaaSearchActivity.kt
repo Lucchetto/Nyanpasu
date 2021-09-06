@@ -141,12 +141,14 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
         val browsingSpecsSelectorView = findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
         browsingSpecsSelectorView.selectDataSource(0)
+        searchHistoryViewModel.searchHistoryDataSource.value = ApiDataSource.NYAA_SI
         browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
             override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
                 searchViewModel.setCategory(releaseCategory)
             }
 
             override fun dataSourceChanged(apiDataSource: ApiDataSource) {
+                searchHistoryViewModel.searchHistoryDataSource.value = apiDataSource
             }
         }
 

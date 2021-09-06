@@ -1,10 +1,9 @@
 package com.zhenxiang.nyaa.db
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
+import android.util.Log
+import androidx.lifecycle.*
+import com.zhenxiang.nyaa.api.ApiDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -12,23 +11,25 @@ class NyaaSearchHistoryViewModel(application: Application): AndroidViewModel(app
     private val dao = NyaaDb(application.applicationContext).nyaaSearchHistoryDao()
 
     val searchHistoryFilter = MutableLiveData<String>()
+    val searchHistoryDataSource = MutableLiveData<ApiDataSource>()
     // Source of data
     private val preFilterSearchHistory = dao.getAllLive()
 
-    val searchHistory = Transformations.switchMap(searchHistoryFilter) { query ->
-        if (query.isNullOrBlank()) {
-            preFilterSearchHistory
-        } else {
+    val searchHistory = Transformations.switchMap(DoubleTrigger(searchHistoryFilter, searchHistoryDataSource)) { pair ->
             Transformations.map(preFilterSearchHistory) {
-                it.filter { item -> item.searchQuery.contains(query, true) }
+                it.filter { item ->
+                    pair.first?.let {
+                            searchQuery -> item.searchQuery.contains(searchQuery, true)
+                    } ?:run {
+                        true
+                    } && pair.second?.let { dataSource ->
+                         item.dataSource == null || dataSource == item.dataSource
+                    } ?: run {
+                        true
+                    }
+                }
             }
         }
-    }
-
-    init {
-        // Required to emit value for searchHistory on start
-        searchHistoryFilter.value = null
-    }
 
     fun insert(item: NyaaSearchHistoryItem) {
         val formattedItem = NyaaSearchHistoryItem(item.searchQuery.trim(), item.searchTimestamp, item.dataSource)
@@ -42,5 +43,12 @@ class NyaaSearchHistoryViewModel(application: Application): AndroidViewModel(app
         viewModelScope.launch(Dispatchers.IO) {
             dao.delete(item)
         }
+    }
+}
+
+class DoubleTrigger<A, B>(a: LiveData<A>, b: LiveData<B>) : MediatorLiveData<Pair<A?, B?>>() {
+    init {
+        addSource(a) { value = it to b.value }
+        addSource(b) { value = a.value to it }
     }
 }
