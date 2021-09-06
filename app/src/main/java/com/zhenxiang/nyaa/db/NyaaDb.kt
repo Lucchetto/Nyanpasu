@@ -8,7 +8,7 @@ import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
 import com.zhenxiang.nyaa.releasetracker.SubscribedTrackerDao
 
 @Database(entities = [NyaaReleasePreview::class, NyaaReleaseDetails::class, NyaaSearchHistoryItem::class,
-    ViewedNyaaRelease::class, SavedNyaaRelease::class, SubscribedTracker::class], version = 2,
+    ViewedNyaaRelease::class, SavedNyaaRelease::class, SubscribedTracker::class], version = 3,
 )
 @TypeConverters(DbTypeConverters::class)
 abstract class NyaaDb : RoomDatabase() {
@@ -48,6 +48,11 @@ abstract class NyaaDb : RoomDatabase() {
             }
         }
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE nyaaSearchHistoryItem ADD COLUMN dataSource INTEGER")
+            }
+        }
 
         @Volatile private var instance: NyaaDb? = null
         private val LOCK = Any()
@@ -59,6 +64,7 @@ abstract class NyaaDb : RoomDatabase() {
         private fun buildDatabase(context: Context) = Room.databaseBuilder(context,
             NyaaDb::class.java, "local_nyaa.db")
             .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             .build()
     }
 }

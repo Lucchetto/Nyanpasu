@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "6c50634c2e6c00fd1c385033a52a9e93",
+    "version": 3,
+    "identityHash": "5ee3f29d18488b61a22ac103415415f0",
     "entities": [
       {
         "tableName": "NyaaReleasePreview",
@@ -140,7 +140,7 @@
       },
       {
         "tableName": "NyaaSearchHistoryItem",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`searchQuery` TEXT NOT NULL COLLATE NOCASE, `searchTimestamp` INTEGER NOT NULL, `dataSource` INTEGER NOT NULL, PRIMARY KEY(`searchQuery`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`searchQuery` TEXT NOT NULL COLLATE NOCASE, `searchTimestamp` INTEGER NOT NULL, `dataSource` INTEGER, PRIMARY KEY(`searchQuery`))",
         "fields": [
           {
             "fieldPath": "searchQuery",
@@ -158,7 +158,7 @@
             "fieldPath": "dataSource",
             "columnName": "dataSource",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -336,7 +336,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6c50634c2e6c00fd1c385033a52a9e93')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5ee3f29d18488b61a22ac103415415f0')"
     ]
   }
 }

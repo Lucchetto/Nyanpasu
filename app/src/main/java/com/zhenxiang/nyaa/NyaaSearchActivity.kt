@@ -160,7 +160,8 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
                     searchViewModel.clearResults()
                     searchViewModel.setSearchText(it)
                     searchViewModel.loadResults()
-                    searchHistoryViewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))
+                    searchHistoryViewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis(),
+                        browsingSpecsSelectorView.selectedCategory.getDataSource()))
 
                     searchBar.clearFocus()
                     setShowSuggestions(false)
