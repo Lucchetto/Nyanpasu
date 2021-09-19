@@ -70,7 +70,12 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                             applicationContext.getString(R.string.release_tracker_new_releases_only_search_query, it.searchQuery)
                         }
                         it.username != null && it.searchQuery != null -> {
-                            applicationContext.getString(R.string.release_tracker_new_releases_from_user_with_search_query, it.searchQuery, it.username)
+                            if (it.name == null) {
+                                applicationContext.getString(R.string.release_tracker_new_releases_from_user_with_search_query,
+                                    it.searchQuery, it.username)
+                            } else {
+                                it.name
+                            }
                         }
                         // Else should never happen
                         else -> ""
