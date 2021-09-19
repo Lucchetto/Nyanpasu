@@ -34,7 +34,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_nyaa_release.xml" value="0.3815104166666667" />
         <entry key="app/src/main/res/layout/activity_nyaa_search.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_release_tracker_details.xml" value="0.16458333333333333" />
+        <entry key="app/src/main/res/layout/activity_release_tracker_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/browsing_specs_selector_view.xml" value="0.32864583333333336" />
         <entry key="app/src/main/res/layout/comments_sorting_action_view.xml" value="0.8" />
         <entry key="app/src/main/res/layout/download_item.xml" value="0.33" />

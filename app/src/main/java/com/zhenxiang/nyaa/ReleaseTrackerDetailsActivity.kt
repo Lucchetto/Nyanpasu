@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.WindowCompat
@@ -21,7 +19,9 @@ import com.zhenxiang.nyaa.api.DataSourceViewModel
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerRepo
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
+import com.zhenxiang.nyaa.releasetracker.SubscribedTrackerFormattedTexts
 import com.zhenxiang.nyaa.util.FooterAdapter
+import com.zhenxiang.nyaa.view.setTextOrGone
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,8 +65,9 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity(), ReleaseListParent {
             }
 
             val title = findViewById<TextView>(R.id.tracker_title)
-            val category = findViewById<TextView>(R.id.tracker_category)
-            val sourceAndUsername = findViewById<TextView>(R.id.tracker_source_username)
+            val subtitle = findViewById<TextView>(R.id.tracker_subtitle)
+            val categoryAndDataSource = findViewById<TextView>(R.id.tracker_category)
+            val username = findViewById<TextView>(R.id.tracker_source_username)
             val latestRelease = findViewById<TextView>(R.id.latest_release_date)
             val trackerCreatedDate = findViewById<TextView>(R.id.tracker_created_date)
             val deleteBtn = findViewById<TextView>(R.id.delete_tracker_btn)
@@ -115,35 +116,16 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity(), ReleaseListParent {
                 searchViewModel.loadResults()
             }
 
-            category.text = AppUtils.getReleaseCategoryString(this, tracker.dataSourceSpecs.category)
-            latestRelease.text = if (tracker.hasPreviousReleases) {
-                getString(R.string.tracker_latest_release,
-                    DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.latestReleaseTimestamp * 1000))
-                )
-            } else {
-                getString(R.string.tracker_no_releases_yet)
-            }
             trackerCreatedDate.text = getString(R.string.tracker_created_on,
                     DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.createdTimestamp))
             )
+            val formattedTexts = SubscribedTrackerFormattedTexts.fromTracker(tracker, this)
 
-            if (tracker.searchQuery != null) {
-                // First line the query
-                title.text = tracker.searchQuery
-                // Show username if username is present
-                sourceAndUsername.text = tracker.username?.let {
-                    getString(R.string.tracker_from_data_source_and_user,
-                        tracker.dataSourceSpecs.source.url, it)
-                } ?: run {
-                    getString(R.string.tracker_from_data_source,
-                        tracker.dataSourceSpecs.source.url)
-                }
-            } else if (tracker.username != null) {
-                // Username as page title
-                title.text = getString(R.string.tracker_all_releases_from_user, tracker.username)
-                sourceAndUsername.text = getString(R.string.tracker_from_data_source,
-                    tracker.dataSourceSpecs.source.url)
-            }
+            title.setTextOrGone(formattedTexts.title)
+            subtitle.setTextOrGone(formattedTexts.subtitle)
+            categoryAndDataSource.setTextOrGone(formattedTexts.categoryAndDataSource)
+            username.setTextOrGone(formattedTexts.username)
+            latestRelease.setTextOrGone(formattedTexts.latestRelease)
 
             deleteBtn.setOnClickListener {
                 lifecycleScope.launch(Dispatchers.IO) {
