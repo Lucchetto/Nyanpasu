@@ -36,6 +36,7 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
 
     inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         private val title = view.findViewById<TextView>(R.id.tracker_title)
+        private val subtitle = view.findViewById<TextView>(R.id.subtitle)
         private val category = view.findViewById<TextView>(R.id.tracker_category)
         private val sourceAndUsername = view.findViewById<TextView>(R.id.tracker_source_username)
         private val latestRelease = view.findViewById<TextView>(R.id.latest_release_date)
@@ -55,7 +56,8 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
 
         fun bind(tracker: SubscribedTracker) {
             itemData = tracker
-            category.text = AppUtils.getReleaseCategoryString(category.context, tracker.dataSourceSpecs.category)
+            category.text = title.context.getString(R.string.release_category,
+                AppUtils.getReleaseCategoryString(category.context, tracker.dataSourceSpecs.category))
             latestRelease.text = if (tracker.hasPreviousReleases) {
                 latestRelease.context.getString(R.string.tracker_latest_release,
                     DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(tracker.latestReleaseTimestamp * 1000))
@@ -81,9 +83,14 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
                 }
             }
 
+            val titleText: String?
             if (tracker.searchQuery != null) {
                 // First line the query
-                title.text = tracker.searchQuery
+                titleText = if (tracker.name == null) {
+                    tracker.searchQuery
+                } else {
+                    title.context.getString(R.string.tracker_keywords, tracker.searchQuery)
+                }
                 sourceAndUsername.text = tracker.username?.let {
                     sourceAndUsername.context.getString(R.string.tracker_from_data_source_and_user,
                         tracker.dataSourceSpecs.source.url, it)
@@ -94,14 +101,25 @@ class SubscribedTrackersAdapter: RecyclerView.Adapter<SubscribedTrackersAdapter.
 
             } else if (tracker.username != null) {
                 // First line the username
-                title.text = title.context.getString(R.string.tracker_all_releases_from_user, tracker.username)
+                titleText = title.context.getString(R.string.tracker_all_releases_from_user, tracker.username)
                 // Hide username because not already showing in title
                 sourceAndUsername.text = sourceAndUsername.context.getString(R.string.tracker_from_data_source,
                     tracker.dataSourceSpecs.source.url)
             } else {
                 // else condition should never happen
-                title.text = null
+                titleText = null
                 sourceAndUsername.text = null
+            }
+
+            // If tracker has a custom name, show the name as title
+            // then move the titleText to subtitle
+            if (tracker.name == null) {
+                subtitle.visibility = View.GONE
+                title.text = titleText
+            } else {
+                title.text = tracker.name
+                subtitle.text = titleText
+                subtitle.visibility = View.VISIBLE
             }
         }
     }

@@ -9,6 +9,7 @@ import java.io.Serializable
 @Entity
 data class SubscribedTracker(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val name: String? = null,
     val username: String? = null,
     val searchQuery: String? = null,
     @Embedded val dataSourceSpecs: DataSourceSpecs,

@@ -29,7 +29,7 @@
         <entry key="app/src/main/res/drawable/selectable_item_background_activatable.xml" value="0.2140625" />
         <entry key="app/src/main/res/drawable/selectable_item_bg.xml" value="0.1828125" />
         <entry key="app/src/main/res/drawable/selectable_item_bg_activatable.xml" value="0.1828125" />
-        <entry key="app/src/main/res/layout-land/activity_create_tracker.xml" value="0.16799999999999998" />
+        <entry key="app/src/main/res/layout-land/activity_create_tracker.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_create_tracker.xml" value="0.4" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_nyaa_release.xml" value="0.3815104166666667" />

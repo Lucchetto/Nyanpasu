@@ -47,6 +47,7 @@ class CreateTrackerActivity : AppCompatActivity() {
     private lateinit var finishHint: TextView
     private lateinit var loading: View
     private lateinit var latestReleasesList: RecyclerView
+    private lateinit var trackerNameInput: TextInputEditText
     private lateinit var searchQueryInput: TextInputEditText
     private lateinit var usernameInput: TextInputEditText
     private lateinit var categoriesDropdown: MaterialAutoCompleteTextView
@@ -102,6 +103,7 @@ class CreateTrackerActivity : AppCompatActivity() {
 
         // Initially this button will be validate and not enabled
         createBtn = findViewById(R.id.create_btn)
+        trackerNameInput = findViewById(R.id.tracker_name_input)
         searchQueryInput = findViewById<TextInputEditText>(R.id.search_query_input)
         usernameInput = findViewById<TextInputEditText>(R.id.username_input)
         categoriesDropdown = findViewById<MaterialAutoCompleteTextView>(R.id.categories_selection)
@@ -173,6 +175,7 @@ class CreateTrackerActivity : AppCompatActivity() {
         })
 
         createBtn.setOnClickListener { _ ->
+            val trackerName = formatUsernameOrQueryForTracker(trackerNameInput.text)
             val username = formatUsernameOrQueryForTracker(usernameInput.text)
             val searchQuery = formatUsernameOrQueryForTracker(searchQueryInput.text)
             val category = ApiDataSource.values()[selectedDataSourceIndex].categories[selectedCategoryIndex]
@@ -198,6 +201,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                     latestReleasesAdapter.getItems().getOrNull(0)?.let {
                         val newTracker = SubscribedTracker(
                             dataSourceSpecs = DataSourceSpecs(category.getDataSource(), category),
+                            name = trackerName,
                             username = username,
                             searchQuery = searchQuery,
                             latestReleaseTimestamp = it.timestamp,
@@ -212,6 +216,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                     // Explicitly tell that hasPreviousReleases is false
                     val newTracker = SubscribedTracker(
                         dataSourceSpecs = DataSourceSpecs(category.getDataSource(), category),
+                        name = trackerName,
                         username = username,
                         searchQuery = searchQuery,
                         latestReleaseTimestamp = System.currentTimeMillis() / 1000,
