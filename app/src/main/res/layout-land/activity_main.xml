@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="?android:colorBackground"
+        app:labelVisibilityMode="unlabeled"
         app:menu="@menu/home_bottom_nav"/>
 
     <FrameLayout

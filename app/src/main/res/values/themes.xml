@@ -1,10 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="BaseTheme.Nyaasi.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="BaseTheme.Nyaasi.Light" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:statusBarColor">@color/black</item>
         <item name="android:navigationBarColor">@color/black</item>
     </style>
 
-    <style name="BaseTheme.Nyaasi.Dark" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="BaseTheme.Nyaasi.Dark" parent="Theme.Material3.Dark.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:enforceNavigationBarContrast">false</item>
@@ -38,7 +38,7 @@
         <item name="preferenceCategoryStyle">@style/Style.Nyaasi.Preference.Category</item>
     </style>
 
-    <style name="Theme.Nyaasi.CreateTrackerDialog" parent="Theme.MaterialComponents.DayNight.Dialog.MinWidth">
+    <style name="Theme.Nyaasi.CreateTrackerDialog" parent="Theme.Material3.DayNight.Dialog.MinWidth">
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 </resources>

@@ -225,13 +225,12 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <TextView
+                <Button
                     android:id="@+id/show_all_comments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/view_all"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-                    android:textColor="?android:colorPrimary"
+                    style="@style/Widget.Material3.Button.TextButton"
                     android:visibility="gone"
                     tools:visibility="visible" />
             </LinearLayout>
