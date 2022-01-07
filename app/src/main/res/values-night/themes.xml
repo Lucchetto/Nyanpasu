@@ -28,6 +28,8 @@
         <item name="colorSurfaceInverse">@color/md_theme_dark_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_dark_primaryInverse</item>
 
+        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+
         <item name="preferenceTheme">@style/Theme.Nyaasi.PreferenceFragment</item>
         <item name="appBarLayoutStyle">@style/Widget.Nyaasi.AppBarLayout</item>
         <item name="navigationRailStyle">@style/Widget.Nyaasi.NavigationRailView</item>
