@@ -183,6 +183,9 @@ class NyaaReleaseActivity : AppCompatActivity() {
             commentsSection.setOnClickListener {
                 commentsSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
             }
+            commentsViewAll.setOnClickListener {
+                commentsSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             val commentsList = findViewById<RecyclerView>(R.id.comments_list)
 
