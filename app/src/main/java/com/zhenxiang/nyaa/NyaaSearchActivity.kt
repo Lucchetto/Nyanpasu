@@ -49,10 +49,17 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         val prefsManager = PreferenceManager.getDefaultSharedPreferences(this)
         val searchBar = findViewById<SearchView>(R.id.search_bar)
 
-        resultsList = findViewById<RecyclerView>(R.id.search_results)
-        findViewById<CoordinatorLayout>(R.id.search_activity_root).applyInsetter {
-            type(navigationBars = !NavigationModeUtils.isFullGestures(this@NyaaSearchActivity), statusBars = true, ime = true) {
-                margin()
+        resultsList = findViewById(R.id.search_results)
+        if (!NavigationModeUtils.isFullGestures(this@NyaaSearchActivity)) {
+            findViewById<CoordinatorLayout>(R.id.search_activity_root).applyInsetter {
+                type(navigationBars = true) {
+                    margin()
+                }
+            }
+        }
+        findViewById<View>(R.id.content).applyInsetter {
+            type(ime = true, navigationBars = NavigationModeUtils.isFullGestures(this@NyaaSearchActivity)) {
+                padding()
             }
         }
         val resultsAdapter = ReleasesListAdapter()

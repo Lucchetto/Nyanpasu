@@ -7,18 +7,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.ReleasesTrackerFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:colorBackground">
+        android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="@string/releases_tracker_title"
             app:layout_scrollFlags="scroll|enterAlways" />
-    </com.google.android.material.appbar.AppBarLayout>
+    </com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout>
 
     <FrameLayout
         android:id="@+id/empty_view"

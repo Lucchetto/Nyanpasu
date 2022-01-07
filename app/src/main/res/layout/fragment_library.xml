@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- setting id to CoordinatorLayout prevents scroll
  state to be lost on configuration change, WTF -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/library_root"
     android:layout_width="match_parent"
@@ -10,11 +11,11 @@
     android:orientation="vertical"
     tools:context=".fragment.LibraryFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:colorBackground">
+        android:fitsSystemWindows="true">
 
         <FrameLayout
             android:id="@+id/toolbar_container"
@@ -44,7 +45,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             app:layout_scrollFlags="snap"/>
-    </com.google.android.material.appbar.AppBarLayout>
+    </com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout>
 
     <com.zhenxiang.nyaa.widget.DisableScrollingViewPager
         android:id="@+id/library_pager"

@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.shape.MaterialShapeDrawable
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.widget.DisableScrollingTabLayout
 import com.zhenxiang.nyaa.widget.DisableScrollingViewPager

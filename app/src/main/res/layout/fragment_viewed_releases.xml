@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragment.ViewedReleasesFragment">
 
-    <com.revengeos.revengeui.widget.BounceRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/viewed_releases_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

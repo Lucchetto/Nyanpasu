@@ -27,34 +27,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        findViewById<View>(R.id.main_root).applyInsetter {
-            type(navigationBars = true) {
-                padding()
-            }
-
-            type(statusBars = true) {
-                padding()
-            }
-        }
 
         /*findViewById<View>(R.id.fragment_container).applyInsetter {
             type(ime = true) {
                 margin()
             }
         }*/
-
-        val fragmentContainer = findViewById<View>(R.id.fragment_container)
-        ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer) { v, inset ->
-            val imeInset = WindowInsetsCompat(inset).getInsets(WindowInsetsCompat.Type.ime()).bottom
-            if (imeInset > 0) {
-                val navInset = WindowInsetsCompat(inset).getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
-                v.setPadding(0,0,0, imeInset - bottomNav.height - navInset)
-            } else {
-                v.setPadding(0)
-            }
-
-            return@setOnApplyWindowInsetsListener inset
-        }
 
         val browseFragment: Fragment
         val libraryFragment: Fragment
@@ -75,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomNav = findViewById(R.id.bottom_nav)
-        ViewCompat.setOnApplyWindowInsetsListener(bottomNav, null)
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.browseFragment -> switchActiveFragment(browseFragment)

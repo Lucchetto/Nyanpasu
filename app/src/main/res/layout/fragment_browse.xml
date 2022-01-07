@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- id are required on AppBarLayout and CoordinatorLayout
+<?xml version="1.0" encoding="utf-8"?><!-- id are required on AppBarLayout and CoordinatorLayout
  to preserve the state on orientation change -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,26 +9,30 @@
     android:layout_height="match_parent"
     tools:context=".fragment.BrowseFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout
         android:id="@+id/app_bar"
+        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:colorBackground">
+        android:background="?colorSurface">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="@string/browse_bottom_nav"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:layout_scrollFlags="scroll|enterAlways">
+        </androidx.appcompat.widget.Toolbar>
 
         <com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
             android:id="@+id/browsing_specs_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways"/>
-    </com.google.android.material.appbar.AppBarLayout>
+            app:layout_scrollFlags="snap" />
 
-    <com.revengeos.revengeui.widget.BounceRecyclerView
+    </com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/releases_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,6 +45,6 @@
         app:icon="@drawable/ic_search_black_24dp"
         android:layout_gravity="bottom|end"
         android:text="Search"
-        android:layout_margin="@dimen/fab_margin"/>
+        android:layout_margin="@dimen/fab_margin" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

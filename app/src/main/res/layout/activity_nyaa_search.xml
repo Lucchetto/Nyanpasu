@@ -15,11 +15,11 @@
     android:orientation="vertical"
     tools:context=".NyaaSearchActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:colorBackground">
+        android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_bar"
@@ -35,11 +35,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways"/>
-    </com.google.android.material.appbar.AppBarLayout>
+    </com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout>
 
     <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:clipChildren="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -47,7 +48,7 @@
         <LinearLayout
             android:id="@+id/suggestions_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -68,18 +69,18 @@
                 android:text="@string/releases_search_suggestions_title"
                 android:textAppearance="@style/TextAppearance.Nyaasi.Title.Secondary" />
 
-            <com.revengeos.revengeui.widget.BounceRecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/search_suggestions"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:visibility="gone"
                 android:overScrollMode="ifContentScrolls"/>
         </LinearLayout>
 
-        <com.revengeos.revengeui.widget.BounceRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/search_results"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:visibility="gone"/>
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

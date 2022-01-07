@@ -186,7 +186,7 @@
             android:gravity="center"
             tools:text="Error"/>
 
-        <com.revengeos.revengeui.widget.BounceRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/last_releases_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"

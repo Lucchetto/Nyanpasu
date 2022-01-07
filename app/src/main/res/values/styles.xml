@@ -161,4 +161,13 @@
     <style name="Widget.Nyaasi.ListView.DropDown.NoListSelector" parent="Widget.AppCompat.ListView.DropDown">
         <item name="android:listSelector">@android:color/transparent</item>
     </style>
+
+    <style name="Widget.Nyaasi.AppBarLayout" parent="Widget.Material3.AppBarLayout">
+        <item name="liftOnScroll">false</item>
+        <item name="statusBarForeground">?colorSurface</item>
+    </style>
+
+    <style name="Widget.Nyaasi.NavigationRailView" parent="Widget.Material3.NavigationRailView">
+        <item name="elevation">@dimen/m3_sys_elevation_level2</item>
+    </style>
 </resources>

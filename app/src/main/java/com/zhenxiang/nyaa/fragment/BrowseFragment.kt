@@ -14,12 +14,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
-import com.google.android.material.snackbar.Snackbar
 import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
-
 
 /**
  * A simple [Fragment] subclass.
@@ -45,7 +43,7 @@ class BrowseFragment : Fragment(), ReleaseListParent {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_browse, container, false)
