@@ -99,7 +99,6 @@ dependencies {
     implementation 'dev.chrisbanes.insetter:insetter:0.6.1'
     implementation 'it.gilvegliach.android:transparent-text-textview:1.0.3'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
-    implementation 'com.github.Lucchetto:SpringNestedScrollView:0.0.2'
 
     final def  markwon_version = '4.6.2'
     implementation "io.noties.markwon:core:$markwon_version"
