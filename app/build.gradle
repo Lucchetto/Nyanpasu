@@ -12,7 +12,7 @@ android {
         applicationId "com.zhenxiang.nyaa"
         minSdk 21
         targetSdk 31
-        versionCode 6
+        versionCode 7
         versionName "0.6"
 
         javaCompileOptions {

@@ -40,7 +40,7 @@
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_primaryInverse</item>
 
-        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges</item>
 
         <item name="preferenceTheme">@style/Theme.Nyaasi.PreferenceFragment</item>
         <item name="appBarLayoutStyle">@style/Widget.Nyaasi.AppBarLayout</item>
