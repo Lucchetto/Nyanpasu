@@ -1,7 +1,9 @@
 package com.zhenxiang.nyaa.release
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
@@ -126,6 +128,10 @@ class NyaaReleaseActivity : AppCompatActivity() {
             val idView = findViewById<TextView>(R.id.release_id)
             idView.text = getString(R.string.release_id_content, it.number.toString(), it.dataSourceSpecs.source.url)
 
+            val openLinkBtn = findViewById<View>(R.id.open_link_btn)
+            openLinkBtn.setOnClickListener { _ ->
+                openReleaseLink(it)
+            }
             val magnetBtn = findViewById<View>(R.id.magnet_btn)
             magnetBtn.setOnClickListener { _ ->
                 AppUtils.openMagnetLink(it, coordinatorRoot)
@@ -396,6 +402,13 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun openReleaseLink(release: NyaaReleasePreview) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(AppUtils.getReleasePageUrl(release.getReleaseId(), false))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
     private fun setButtonTracked(tracked: Boolean) {

@@ -99,8 +99,18 @@
                 android:id="@+id/btn_spacer"
                 android:layout_height="1dp"
                 android:layout_width="0dp"
-                app:layout_constraintEnd_toStartOf="@id/save_btn"
+                app:layout_constraintEnd_toStartOf="@id/open_link_btn"
                 app:layout_constraintStart_toEndOf="@id/add_to_tracker" />
+
+            <ImageButton
+                android:id="@+id/open_link_btn"
+                style="@style/Theme.Nyaasi.ReleaseActionButton"
+                android:src="@drawable/ic_outline_open_in_new_24"
+                app:layout_constraintBottom_toTopOf="@id/release_extra_data"
+                app:layout_constraintEnd_toStartOf="@id/save_btn"
+                app:layout_constraintHorizontal_bias="10"
+                app:layout_constraintStart_toEndOf="@id/btn_spacer"
+                app:layout_constraintTop_toBottomOf="@id/category" />
 
             <ImageButton
                 android:id="@+id/save_btn"
@@ -109,7 +119,7 @@
                 app:layout_constraintBottom_toTopOf="@id/release_extra_data"
                 app:layout_constraintEnd_toStartOf="@id/magnet_btn"
                 app:layout_constraintHorizontal_bias="10"
-                app:layout_constraintStart_toEndOf="@id/btn_spacer"
+                app:layout_constraintStart_toEndOf="@id/open_link_btn"
                 app:layout_constraintTop_toBottomOf="@id/category" />
 
             <ImageButton
