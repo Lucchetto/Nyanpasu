@@ -19,6 +19,7 @@ import com.zhenxiang.nyaa.MainActivity
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.zhenxiang.nyaa.AppUtils
@@ -108,7 +109,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
                     applicationContext,
                     0,
                     activityIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
                 ))
             .setAutoCancel(true)
 
