@@ -50,10 +50,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             getString(R.string.ui_mode_key) -> {
                 UIModeUtils.updateUIMode(requireContext())
             }
-            getString(R.string.use_proxy_key) -> {
-                // Refresh state if someone else changed the preference
-                findPreference<SwitchPreferenceCompat>(key)?.isChecked = preferenceManager.sharedPreferences.getBoolean(key, false)
-            }
         }
     }
 }

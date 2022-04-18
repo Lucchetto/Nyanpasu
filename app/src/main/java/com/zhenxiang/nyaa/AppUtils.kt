@@ -82,23 +82,18 @@ class AppUtils {
             snackbar.show()
         }
 
-        fun getUseProxy(context: Context): Boolean {
-            return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(context.getString(R.string.use_proxy_key), false)
+        fun getReleaseTorrentUrl(releaseId: ReleaseId): String {
+            return "https://${NyaaPageProvider.getProperUrl(releaseId.dataSource)}/download/${releaseId.number}.torrent"
         }
 
-        fun getReleaseTorrentUrl(releaseId: ReleaseId, useProxy: Boolean): String {
-            return "https://${NyaaPageProvider.getProperUrl(releaseId.dataSource, useProxy)}/download/${releaseId.number}.torrent"
-        }
-
-        fun getReleasePageUrl(releaseId: ReleaseId, useProxy: Boolean): String {
-            return "https://${NyaaPageProvider.getProperUrl(releaseId.dataSource, useProxy)}/view/${releaseId.number}"
+        fun getReleasePageUrl(releaseId: ReleaseId): String {
+            return "https://${NyaaPageProvider.getProperUrl(releaseId.dataSource)}/view/${releaseId.number}"
         }
 
         fun enqueueDownload(releaseId: ReleaseId, parentView: View, anchorView: View? = null): Long? {
             return try {
                 val manager = parentView.context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                val uri = Uri.parse(getReleaseTorrentUrl(releaseId, getUseProxy(parentView.context)))
+                val uri = Uri.parse(getReleaseTorrentUrl(releaseId))
                 val request = DownloadManager.Request(uri)
                 val filename = "${releaseId.number}.torrent"
                 request.setTitle(filename)

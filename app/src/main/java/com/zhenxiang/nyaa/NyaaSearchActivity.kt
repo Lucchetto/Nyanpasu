@@ -109,7 +109,6 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             resultsAdapter.setItems(it)
             footerAdapter.showLoading(!searchViewModel.endReached())
         })
-        searchViewModel.setupRegionalBlockDetection(this, this, prefsManager)
 
         // Handle saved instance or new instance
         if (savedInstanceState == null) {

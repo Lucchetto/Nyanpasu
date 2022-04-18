@@ -28,9 +28,7 @@ class ReleaseDetailsHolderViewModel(application: Application): AndroidViewModel(
             }
 
             // Then parse updated data from server
-            NyaaPageProvider.getReleaseDetails(id,
-                AppUtils.getUseProxy(getApplication<Application>().applicationContext)
-            )?.let {
+            NyaaPageProvider.getReleaseDetails(id)?.let {
                 details.postValue(it)
                 // Sync local database's data with new data from server
                 detailsDao.insert(it)

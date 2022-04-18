@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
 
 class DataSourceViewModel(application: Application): AndroidViewModel(application) {
 
-    private val repository = NyaaRepository(AppUtils.getUseProxy(application.applicationContext))
+    private val repository = NyaaRepository()
     val resultsLiveData = MutableLiveData<List<NyaaReleasePreview>>()
     val error = MutableLiveData<Int>()
     var firstInsert: Boolean = true
@@ -61,12 +61,6 @@ class DataSourceViewModel(application: Application): AndroidViewModel(applicatio
         repository.username = username
     }
 
-    fun setUseProxyAndReload(useProxy: Boolean) {
-        repository.useProxy = useProxy
-        clearResults()
-        loadResults()
-    }
-
     fun clearResults() {
         firstInsert = true
         repository.clearRepo()
@@ -74,38 +68,4 @@ class DataSourceViewModel(application: Application): AndroidViewModel(applicatio
     }
 
     fun endReached() = this.repository.endReached
-}
-
-fun DataSourceViewModel.setupRegionalBlockDetection(parent: ReleaseListParent,
-                                                    lifecycleOwner: LifecycleOwner, prefs: SharedPreferences) {
-    val useProxyPrefKey = parent.getSnackBarParentView().context.getString(R.string.use_proxy_key)
-    this.error.observe(lifecycleOwner, { error ->
-        // Potential regional block detected
-        if (error == REGIONAL_BLOCK && !prefs.getBoolean(useProxyPrefKey, false)) {
-
-            val snackbar = Snackbar.make(parent.getSnackBarParentView(),
-                parent.getSnackBarParentView().context.getString(R.string.connection_reset_error),
-                Snackbar.LENGTH_INDEFINITE
-            )
-            snackbar.setAction(R.string.turn_on_regional_bypass) {
-                prefs.edit().putBoolean(useProxyPrefKey, true).commit()
-
-                // Reload everything
-                this.setUseProxyAndReload(true)
-
-                val successSnackbar = Snackbar.make(parent.getSnackBarParentView(),
-                    parent.getSnackBarParentView().context.getString(R.string.regional_bypass_turned_on_hint),
-                    Snackbar.LENGTH_SHORT
-                )
-                parent.getSnackBarAnchorView()?.let {
-                    successSnackbar.anchorView = it
-                }
-                successSnackbar.show()
-            }
-            parent.getSnackBarAnchorView()?.let {
-                snackbar.anchorView = it
-            }
-            snackbar.show()
-        }
-    })
 }

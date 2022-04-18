@@ -66,7 +66,6 @@ class BrowseFragment : Fragment(), ReleaseListParent {
             releasesListAdapter.setItems(it)
             footerAdapter.showLoading(!browseViewModel.endReached())
         })
-        browseViewModel.setupRegionalBlockDetection(this, viewLifecycleOwner, prefsManager)
 
         val releasesList = fragmentView.findViewById<RecyclerView>(R.id.releases_list)
         val listLayoutManager = LinearLayoutManager(fragmentView.context)

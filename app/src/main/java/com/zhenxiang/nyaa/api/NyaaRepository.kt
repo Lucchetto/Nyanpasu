@@ -11,7 +11,7 @@ const val PAGE_NOT_FOUND = 404
 const val REGIONAL_BLOCK = -40
 const val GENERIC_JSOUP_ERROR = -1
 
-class NyaaRepository(var useProxy: Boolean) {
+class NyaaRepository() {
 
     private val TAG = javaClass.name
 
@@ -43,7 +43,7 @@ class NyaaRepository(var useProxy: Boolean) {
         if (!endReached && category != null) {
             pageIndex++
             try {
-                val newItems = NyaaPageProvider.getPageItems(category.getDataSource(), useProxy, pageIndex, category, searchValue, username)
+                val newItems = NyaaPageProvider.getPageItems(category.getDataSource(), pageIndex, category, searchValue, username)
                 items.addAll(newItems.items)
                 endReached = if (newItems.bottomReached) {
                     true

@@ -128,7 +128,7 @@ class ReleaseTrackerBgWorker(appContext: Context, workerParams: WorkerParameters
         while(true) {
             // Parse pages until we hit null or empty page
             val releases = try {
-                NyaaPageProvider.getPageItems(tracker.dataSourceSpecs.source, AppUtils.getUseProxy(applicationContext),
+                NyaaPageProvider.getPageItems(tracker.dataSourceSpecs.source,
                     pageIndex, category = tracker.dataSourceSpecs.category,
                     user = tracker.username, searchQuery = tracker.searchQuery)
             } catch (e: Exception) {

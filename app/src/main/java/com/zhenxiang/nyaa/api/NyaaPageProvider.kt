@@ -17,8 +17,6 @@ class NyaaPageProvider {
 
     companion object {
 
-        private const val proxyUrl = "unblockweb.me/?cdURL=https://"
-
         private const val categoryIdRegexString = "(?<=c(%3D)|=)(\\d+_\\d+)(?=(&.*|\$))"
         @JvmStatic private val categoryIdRegex = categoryIdRegexString.toRegex()
         private const val releaseIdRegexString = "(?<=view(%2F)|\\/)(\\d+)(?=(&.*|\$))"
@@ -26,13 +24,13 @@ class NyaaPageProvider {
         private const val userRegexString = "(?<=view(%2F)|\\/)(.+)(?=(&.*|$))"
         @JvmStatic private val TAG = javaClass.name
 
-        fun getProperUrl(dataSource: ApiDataSource, useProxy: Boolean): String {
-            return if (useProxy) proxyUrl + dataSource.url else dataSource.url
+        fun getProperUrl(dataSource: ApiDataSource): String {
+            return dataSource.url
         }
 
-        suspend fun getReleaseDetails(releaseId: ReleaseId, useProxy: Boolean): NyaaReleaseDetails? {
+        suspend fun getReleaseDetails(releaseId: ReleaseId): NyaaReleaseDetails? {
             return try {
-                val doc: Document = Jsoup.connect(AppUtils.getReleasePageUrl(releaseId, useProxy)).get()
+                val doc: Document = Jsoup.connect(AppUtils.getReleasePageUrl(releaseId)).get()
                 doc.outputSettings().prettyPrint(false)
 
                 val userName = doc.selectFirst("div.col-md-1:matches(Submitter:)")!!.parent()!!.select("a[href~=$userRegexString]").text()
@@ -57,13 +55,12 @@ class NyaaPageProvider {
         }
 
         suspend fun getPageItems(dataSource: ApiDataSource,
-                                 useProxy: Boolean,
                                  pageIndex: Int,
                                  category: ReleaseCategory? = null,
                                  searchQuery: String? = null,
                                  user: String? = null): NyaaPageResults {
 
-            val hostUrl = "https://${getProperUrl(dataSource, useProxy)}/"
+            val hostUrl = "https://${getProperUrl(dataSource)}/"
 
             var pathAndParams = ""
             if (!user.isNullOrBlank()) {
@@ -75,11 +72,6 @@ class NyaaPageProvider {
             }
             if (category != null) {
                 pathAndParams += "&c=${category.getId()}"
-            }
-
-            // The proxy we're using requires the encoded url, but but the site itself breaks with proxy
-            if (useProxy) {
-                pathAndParams = URLEncoder.encode(pathAndParams, "utf-8")
             }
 
             val pageItems: Elements
