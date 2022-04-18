@@ -9,6 +9,7 @@ import com.zhenxiang.nyaa.api.NyaaPageProvider
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.*
 import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
+import com.zhenxiang.nyaa.ext.collectInScope
 import com.zhenxiang.nyaa.ext.getNonNull
 import com.zhenxiang.nyaa.ext.latestValue
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,19 @@ class NyaaReleaseViewModel(
     val commentsFlow = releaseDetailsFlow.combine(fromMostRecentFlow) {details, fromMostRecent ->
         details.comments?.let {
             if (fromMostRecent) it.reversed() else it
+        }
+    }
+
+    init {
+        state.get<NyaaReleasePreview>(RELEASE_PREVIEW_KEY)?.let {
+            setReleasePreview(it)
+        }
+
+        _releasePreviewFlow.collectInScope(viewModelScope) {
+            state.set(RELEASE_PREVIEW_KEY, it)
+        }
+        fromMostRecentFlow.collectInScope(viewModelScope) {
+            state.set(FROM_MOST_RECENT_KEY, it)
         }
     }
 
@@ -66,11 +80,6 @@ class NyaaReleaseViewModel(
         }
     }
 
-    override fun onCleared() {
-        state.set(FROM_MOST_RECENT_KEY, fromMostRecentFlow.value)
-        super.onCleared()
-    }
-
     private suspend fun addToViewed(release: NyaaReleasePreview) {
         nyaaLocalRepo.previewsDao.upsert(release)
         nyaaLocalRepo.viewedDao.insert(ViewedNyaaRelease(release.getReleaseId(), System.currentTimeMillis()))
@@ -89,5 +98,6 @@ class NyaaReleaseViewModel(
 
     companion object {
         private const val FROM_MOST_RECENT_KEY = "from_most_recent"
+        private const val RELEASE_PREVIEW_KEY = "release_preview"
     }
 }
