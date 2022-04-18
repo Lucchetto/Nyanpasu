@@ -80,11 +80,14 @@ class NyaaReleaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // This activity must be opened with release preview data
-        val nyaaRelease = (intent.getSerializableExtra(RELEASE_PREVIEW_INTENT_OBJ) as NyaaReleasePreview?) ?: run {
-            Log.e(TAG, "RELEASE_PREVIEW_INTENT_OBJ was null ! Finishing")
-            finish()
-            return
+        if (savedInstanceState == null) {
+            (intent.getSerializableExtra(RELEASE_PREVIEW_INTENT_OBJ) as NyaaReleasePreview?)?.let {
+                viewModel.setReleasePreview(it)
+            } ?: run {
+                Log.e(TAG, "RELEASE_PREVIEW_INTENT_OBJ was null ! Finishing")
+                finish()
+                return
+            }
         }
 
         setContentView(R.layout.activity_nyaa_release)
@@ -130,66 +133,84 @@ class NyaaReleaseActivity : AppCompatActivity() {
             setButtonTracked(it)
         }
 
-        val releaseTitle = findViewById<TextView>(R.id.release_title)
-        releaseTitle.text = nyaaRelease.name
+        viewModel.releasePreviewFlow.collectInLifecycle(this) { nyaaRelease ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                val saveBtn = findViewById<ImageButton>(R.id.save_btn)
+                val active = localNyaaDbViewModel.isSaved(nyaaRelease)
+                withContext(Dispatchers.Main) {
+                    saveBtn.isActivated = active
+                }
+                saveBtn.setOnClickListener { view ->
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val active = localNyaaDbViewModel.toggleSaved(nyaaRelease)
+                        withContext(Dispatchers.Main) {
+                            view.isActivated = active
+                        }
+                    }
+                }
+            }
 
-        val idView = findViewById<TextView>(R.id.release_id)
-        idView.text = getString(R.string.release_id_content, nyaaRelease.number.toString(), nyaaRelease.dataSourceSpecs.source.url)
+            val releaseTitle = findViewById<TextView>(R.id.release_title)
+            releaseTitle.text = nyaaRelease.name
 
-        val openLinkBtn = findViewById<View>(R.id.open_link_btn)
-        openLinkBtn.setOnClickListener { _ ->
-            openReleaseLink(nyaaRelease)
+            val idView = findViewById<TextView>(R.id.release_id)
+            idView.text = getString(R.string.release_id_content, nyaaRelease.number.toString(), nyaaRelease.dataSourceSpecs.source.url)
+
+            val openLinkBtn = findViewById<View>(R.id.open_link_btn)
+            openLinkBtn.setOnClickListener { _ ->
+                openReleaseLink(nyaaRelease)
+            }
+            val magnetBtn = findViewById<View>(R.id.magnet_btn)
+            magnetBtn.setOnClickListener { _ ->
+                AppUtils.openMagnetLink(nyaaRelease, coordinatorRoot)
+            }
+            magnetBtn.setOnLongClickListener { _ ->
+                ReleaseListParent.copyToClipboardShowSnackbar(
+                    nyaaRelease.name, nyaaRelease.magnet,
+                    getString(R.string.magnet_link_copied), coordinatorRoot, null
+                )
+                true
+            }
+
+            val downloadBtn = findViewById<View>(R.id.download_btn)
+            downloadBtn.setOnClickListener { _ ->
+                val newDownload = nyaaRelease.getReleaseId()
+                AppUtils.guardDownloadPermission(this, storagePermissionGuard, {
+                    AppUtils.enqueueDownload(newDownload, coordinatorRoot)
+                }, {
+                    queuedDownload = newDownload
+                })
+            }
+
+            downloadBtn.setOnLongClickListener { _ ->
+                ReleaseListParent.copyToClipboardShowSnackbar(
+                    nyaaRelease.name,
+                    AppUtils.getReleaseTorrentUrl(nyaaRelease.getReleaseId()),
+                    getString(R.string.torrent_link_copied), coordinatorRoot, null
+                )
+                true
+            }
+
+            val category = findViewById<TextView>(R.id.category)
+            category.text = AppUtils.getReleaseCategoryString(this, nyaaRelease.dataSourceSpecs.category)
+
+            val date = findViewById<TextView>(R.id.date)
+            date.text = getString(
+                R.string.release_date,
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(nyaaRelease.timestamp * 1000)))
+
+            val seeders = findViewById<ReleaseDataItemView>(R.id.seeders)
+            seeders.setValue(nyaaRelease.seeders.toString())
+
+            val leechers = findViewById<ReleaseDataItemView>(R.id.leechers)
+            leechers.setValue(nyaaRelease.leechers.toString())
+
+            val completed = findViewById<ReleaseDataItemView>(R.id.completed)
+            completed.setValue(nyaaRelease.completed.toString())
+
+            val releaseSizeView = findViewById<ReleaseDataItemView>(R.id.release_size)
+            releaseSizeView.setValue(nyaaRelease.releaseSize)
         }
-        val magnetBtn = findViewById<View>(R.id.magnet_btn)
-        magnetBtn.setOnClickListener { _ ->
-            AppUtils.openMagnetLink(nyaaRelease, coordinatorRoot)
-        }
-        magnetBtn.setOnLongClickListener { _ ->
-            ReleaseListParent.copyToClipboardShowSnackbar(
-                nyaaRelease.name, nyaaRelease.magnet,
-                getString(R.string.magnet_link_copied), coordinatorRoot, null
-            )
-            true
-        }
-
-        val downloadBtn = findViewById<View>(R.id.download_btn)
-        downloadBtn.setOnClickListener { _ ->
-            val newDownload = nyaaRelease.getReleaseId()
-            AppUtils.guardDownloadPermission(this, storagePermissionGuard, {
-                AppUtils.enqueueDownload(newDownload, coordinatorRoot)
-            }, {
-                queuedDownload = newDownload
-            })
-        }
-
-        downloadBtn.setOnLongClickListener { _ ->
-            ReleaseListParent.copyToClipboardShowSnackbar(
-                nyaaRelease.name,
-                AppUtils.getReleaseTorrentUrl(nyaaRelease.getReleaseId()),
-                getString(R.string.torrent_link_copied), coordinatorRoot, null
-            )
-            true
-        }
-
-        val category = findViewById<TextView>(R.id.category)
-        category.text = AppUtils.getReleaseCategoryString(this, nyaaRelease.dataSourceSpecs.category)
-
-        val date = findViewById<TextView>(R.id.date)
-        date.text = getString(
-            R.string.release_date,
-            DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(nyaaRelease.timestamp * 1000)))
-
-        val seeders = findViewById<ReleaseDataItemView>(R.id.seeders)
-        seeders.setValue(nyaaRelease.seeders.toString())
-
-        val leechers = findViewById<ReleaseDataItemView>(R.id.leechers)
-        leechers.setValue(nyaaRelease.leechers.toString())
-
-        val completed = findViewById<ReleaseDataItemView>(R.id.completed)
-        completed.setValue(nyaaRelease.completed.toString())
-
-        val releaseSizeView = findViewById<ReleaseDataItemView>(R.id.release_size)
-        releaseSizeView.setValue(nyaaRelease.releaseSize)
 
         val commentsSection = findViewById<View>(R.id.comments_section)
         val commentsViewAll = findViewById<View>(R.id.show_all_comments)
@@ -323,28 +344,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     releaseTrackerFragmentSharedViewModel.currentUserTracked.value = isTracked == true
                 }
                 setupTrackerButton(details)
-            }
-        }
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            localNyaaDbViewModel.addToViewed(nyaaRelease)
-
-            val saveBtn = findViewById<ImageButton>(R.id.save_btn)
-            val active = localNyaaDbViewModel.isSaved(nyaaRelease)
-            withContext(Dispatchers.Main) {
-                saveBtn.isActivated = active
-            }
-            saveBtn.setOnClickListener { view ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val active = localNyaaDbViewModel.toggleSaved(nyaaRelease)
-                    withContext(Dispatchers.Main) {
-                        view.isActivated = active
-                    }
-                }
-            }
-
-            if (savedInstanceState == null) {
-                viewModel.releasePreview = nyaaRelease
             }
         }
     }

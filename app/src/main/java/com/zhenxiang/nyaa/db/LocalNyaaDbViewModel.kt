@@ -2,11 +2,9 @@ package com.zhenxiang.nyaa.db
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class LocalNyaaDbViewModel(application: Application): AndroidViewModel(application) {
@@ -38,19 +36,6 @@ class LocalNyaaDbViewModel(application: Application): AndroidViewModel(applicati
         viewedReleasesSearchFilter.value = null
         // Required to emit value for savedReleases on start
         savedReleasesSearchFilter.value = null
-    }
-
-    fun addToViewed(release: NyaaReleasePreview) {
-        nyaaLocalRepo.previewsDao.upsert(release)
-        nyaaLocalRepo.viewedDao.insert(ViewedNyaaRelease(release.getReleaseId(), System.currentTimeMillis()))
-        val toDelete = nyaaLocalRepo.viewedDao.getExcessiveRecentsIds()
-        if (toDelete.isNotEmpty()) {
-            nyaaLocalRepo.viewedDao.deleteByIdList(toDelete)
-            // Catch any SQLITE_CONSTRAINT_TRIGGER caused by constraints of saved table foreign key
-            try {
-                nyaaLocalRepo.previewsDao.deleteByIdList(toDelete)
-            } catch (e: Exception) {}
-        }
     }
 
     fun removeViewed(release: NyaaReleasePreview) {
