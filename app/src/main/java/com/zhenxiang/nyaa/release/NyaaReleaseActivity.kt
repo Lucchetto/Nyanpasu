@@ -1,17 +1,17 @@
 package com.zhenxiang.nyaa.release
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +21,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.revengeos.revengeui.utils.NavigationModeUtils
 import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.AppUtils.Companion.createPermissionRequestLauncher
-import com.zhenxiang.nyaa.BuildConfig
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.ReleaseListParent
 import com.zhenxiang.nyaa.api.CommentsAdapter
@@ -42,11 +41,16 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.*
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.zhenxiang.nyaa.ext.collectInLifecycle
 import com.zhenxiang.nyaa.view.MarkdownWebView
 
 class NyaaReleaseActivity : AppCompatActivity() {
 
     private val TAG = javaClass.name
+
+    private val viewModel: NyaaReleaseViewModel by viewModels {
+        SavedStateViewModelFactory(application, this)
+    }
 
     private lateinit var coordinatorRoot: View
     private lateinit var markdownView: MarkdownWebView
@@ -58,7 +62,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
     private lateinit var commentsSortingOptions: ArrayAdapter<String>
 
     private lateinit var releasesTrackerViewModel: ReleaseTrackerViewModel
-    private lateinit var releaseDetails: ReleaseDetailsHolderViewModel
     private var latestRelease: NyaaReleasePreview? = null
 
     private var queuedDownload: ReleaseId? = null
@@ -113,7 +116,6 @@ class NyaaReleaseActivity : AppCompatActivity() {
         val localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         releasesTrackerViewModel = ViewModelProvider(this).get(ReleaseTrackerViewModel::class.java)
         val releaseTrackerFragmentSharedViewModel = ViewModelProvider(this).get(ReleaseTrackerFragmentSharedViewModel::class.java)
-        releaseDetails = ViewModelProvider(this).get(ReleaseDetailsHolderViewModel::class.java)
 
         nyaaRelease?.let {
 
@@ -251,9 +253,8 @@ class NyaaReleaseActivity : AppCompatActivity() {
                     id: Long
                 ) {
                     val newValue = position == 0
-                    val oldValue = releaseDetails.fromMostRecent.value
-                    if (newValue != oldValue) {
-                        releaseDetails.fromMostRecent.value = newValue
+                    lifecycleScope.launch {
+                        viewModel.fromMostRecentFlow.emit(newValue)
                     }
                 }
 
@@ -274,60 +275,50 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 }
             }
 
-            releaseDetails.fromMostRecent.observe(this, { _ ->
-                // Clear adapter if comments null, reverse list to sort from most recent
-                val comments = releaseDetails.details.value?.comments
+            viewModel.commentsFlow.collectInLifecycle(this) { comments ->
+                commentsSection.visibility = View.VISIBLE
+                commentsCount.text = if (comments.isNullOrEmpty()) {
+                    commentsSection.isEnabled = false
+                    commentsViewAll.visibility = View.GONE
+                    getString(R.string.release_no_comments_title)
+                } else {
+                    commentsSection.isEnabled = true
+                    commentsViewAll.visibility = View.VISIBLE
+                    getString(R.string.release_comments_count_title, comments.size)
+                }
 
                 commentsList.stopScroll()
                 // Hax to scroll to the top
                 commentsListAdapter.setList(null)
-                if (comments != null) {
-                    commentsListAdapter.setList(releaseDetails.sortCommentsIfNecessary(comments))
+                commentsListAdapter.setList(comments)
+            }
+
+            viewModel.releaseDetailsFlow.collectInLifecycle(this) { details ->
+                submitter.text = getString(
+                    R.string.release_submitter,
+                    details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
+
+                markdownView.loadMarkdown(details.descriptionMarkdown)
+
+                val progressFrame = findViewById<View>(R.id.progress_frame)
+                if (progressFrame.visibility == View.VISIBLE) {
+                    // Hide loading circle
+                    progressFrame.visibility = View.GONE
+                    findViewById<View>(R.id.release_extra_data).visibility = View.VISIBLE
+                    markdownView.visibility = View.VISIBLE
                 }
-            })
 
-            releaseDetails.details.observe(this, { details ->
-
+                // Release tracker stuff
                 lifecycleScope.launch(Dispatchers.IO) {
                     val isTracked = details.user?.let { trackedUser ->
                         releasesTrackerViewModel.getTrackerByUsername(trackedUser, details.releaseId.dataSource) != null
                     }
-
                     withContext(Dispatchers.Main) {
-                        submitter.text = getString(
-                            R.string.release_submitter,
-                            details.user?.let { details.user } ?: run { getString(R.string.submitter_null) })
-
-                        // Clear adapter if comments null, reverse list to sort from most recent
-                        commentsListAdapter.setList(
-                            if (details.comments != null) releaseDetails.sortCommentsIfNecessary(details.comments) else null
-                        )
-                        commentsSection.visibility = View.VISIBLE
-                        commentsCount.text = if (details.comments.isNullOrEmpty()) {
-                            commentsSection.isEnabled = false
-                            commentsViewAll.visibility = View.GONE
-                            getString(R.string.release_no_comments_title)
-                        } else {
-                            commentsSection.isEnabled = true
-                            commentsViewAll.visibility = View.VISIBLE
-                            getString(R.string.release_comments_count_title, details.comments.size)
-                        }
-
-                        markdownView.loadMarkdown(details.descriptionMarkdown)
-
                         releaseTrackerFragmentSharedViewModel.currentUserTracked.value = isTracked == true
-
-                        val progressFrame = findViewById<View>(R.id.progress_frame)
-                        if (progressFrame.visibility == View.VISIBLE) {
-                            // Hide loading circle
-                            findViewById<View>(R.id.progress_frame).visibility = View.GONE
-                            findViewById<View>(R.id.release_extra_data).visibility = View.VISIBLE
-                            markdownView.visibility = View.VISIBLE
-                        }
                     }
                     setupTrackerButton(details)
                 }
-            })
+            }
 
             lifecycleScope.launch(Dispatchers.IO) {
                 localNyaaDbViewModel.addToViewed(nyaaRelease)
@@ -347,7 +338,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 }
 
                 if (savedInstanceState == null) {
-                    releaseDetails.requestDetails(it.getReleaseId())
+                    viewModel.releasePreview = it
                 }
             }
         } ?: run {
