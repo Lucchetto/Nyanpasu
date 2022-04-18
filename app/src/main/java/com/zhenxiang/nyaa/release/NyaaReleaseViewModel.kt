@@ -10,11 +10,10 @@ import com.zhenxiang.nyaa.db.NyaaDb
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.db.NyaaReleasePreview.Companion.getReleaseId
+import com.zhenxiang.nyaa.ext.getNonNull
 import com.zhenxiang.nyaa.ext.latestValue
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 // Simple viewmodel to save release details for NyaaReleaseActivity across creations
@@ -26,7 +25,7 @@ class NyaaReleaseViewModel(
     private val detailsDao = NyaaDb.invoke(application).nyaaReleasesDetailsDao()
 
     val releaseDetailsFlow = MutableSharedFlow<NyaaReleaseDetails>(replay = 1)
-    val fromMostRecentFlow = MutableStateFlow(true)
+    val fromMostRecentFlow = MutableStateFlow(state.getNonNull(FROM_MOST_RECENT_KEY, true))
     val commentsFlow = releaseDetailsFlow.combine(fromMostRecentFlow) {details, fromMostRecent ->
         details.comments?.let {
             if (fromMostRecent) it.reversed() else it
@@ -62,6 +61,15 @@ class NyaaReleaseViewModel(
         }
     }
 
+    override fun onCleared() {
+        state.set(FROM_MOST_RECENT_KEY, fromMostRecentFlow.value)
+        super.onCleared()
+    }
+
     private suspend fun loadReleaseDetailsFromNetwork(releaseId: ReleaseId): NyaaReleaseDetails? =
         NyaaPageProvider.getReleaseDetails(releaseId)
+
+    companion object {
+        private const val FROM_MOST_RECENT_KEY = "from_most_recent"
+    }
 }
