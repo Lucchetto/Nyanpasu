@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.LinearLayout
-import androidx.annotation.Nullable
 import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.api.ApiDataSource
@@ -121,10 +120,17 @@ class BrowsingSpecsSelectorView @JvmOverloads constructor(
         categorySpinner.onItemSelectedListener = null
         dataSourceSpinner.adapter = AppUtils.getDataSourcesAdapter(context, true)
         if (state != null && state is SavedState) {
+            val dataSource = ApiDataSource.values()[state.selectedDataSourceIndex]
+            val category = dataSource.categories[state.selectedCategoryIndex]
+
             dataSourceSpinner.setSelection(state.selectedDataSourceIndex, false)
-            updateCategories(ApiDataSource.values()[state.selectedDataSourceIndex])
+            updateCategories(dataSource)
             categorySpinner.setSelection(state.selectedCategoryIndex, false)
             super.onRestoreInstanceState(state.superState)
+
+            // Emit listener callbacks
+            listener?.dataSourceChanged(dataSource)
+            listener?.releaseCategoryChanged(category)
         } else {
             super.onRestoreInstanceState(state)
         }
