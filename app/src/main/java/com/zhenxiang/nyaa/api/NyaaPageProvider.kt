@@ -54,13 +54,16 @@ class NyaaPageProvider {
             }
         }
 
-        suspend fun runSearch(searchSpecsModel: SearchSpecsModel) = getPageItems(
-            searchSpecsModel.dataSource,
-            searchSpecsModel.pageIndex,
-            searchSpecsModel.category,
-            searchSpecsModel.searchQuery,
-            searchSpecsModel.username,
-        )
+        suspend fun runSearch(searchSpecsModel: SearchSpecsModel): NyaaPageResults {
+            val category = searchSpecsModel.category ?: throw IllegalStateException("Category must not be null")
+            return getPageItems(
+                category.getDataSource(),
+                searchSpecsModel.pageIndex,
+                category,
+                searchSpecsModel.searchQuery,
+                searchSpecsModel.username,
+            )
+        }
 
         suspend fun getPageItems(dataSource: ApiDataSource,
                                  pageIndex: Int,

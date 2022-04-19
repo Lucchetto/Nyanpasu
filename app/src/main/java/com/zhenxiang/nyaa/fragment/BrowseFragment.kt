@@ -48,8 +48,9 @@ class BrowseFragment : Fragment(), ReleaseListParent {
         val prefsManager = PreferenceManager.getDefaultSharedPreferences(fragmentView.context)
         val browsingSpecsSelectorView = fragmentView.findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
         if (savedInstanceState == null) {
-            browsingSpecsSelectorView.selectDataSource(prefsManager.getInt(
-                DEFAULT_SELECTED_DATA_SOURCE, 0))
+            browsingSpecsSelectorView.selectDataSource(
+                prefsManager.getInt(DEFAULT_SELECTED_DATA_SOURCE, 0),
+            )
         }
 
         searchBtn = fragmentView.findViewById(R.id.search_btn)

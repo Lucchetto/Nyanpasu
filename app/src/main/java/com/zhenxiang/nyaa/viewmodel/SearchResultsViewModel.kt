@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaPageProvider
+import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.model.SearchSpecsModel
 import com.zhenxiang.nyaa.model.SearchStatus
@@ -20,7 +21,7 @@ class SearchResultsViewModel(
     application: Application,
 ): AndroidViewModel(application) {
 
-    val searchSpecs = SearchSpecsModel(dataSource = ApiDataSource.NYAA_SI)
+    val searchSpecs = SearchSpecsModel()
 
     val resultsFlow = MutableStateFlow(emptyList<NyaaReleasePreview>())
     val searchStatusFlow = MutableStateFlow<SearchStatus>(SearchStatus.Ready)
