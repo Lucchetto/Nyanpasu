@@ -1,10 +1,10 @@
 package com.zhenxiang.nyaa.api
 
-import android.net.Uri
 import android.util.Log
 import com.zhenxiang.nyaa.AppUtils
 import com.zhenxiang.nyaa.db.NyaaReleaseDetails
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
+import com.zhenxiang.nyaa.model.SearchSpecsModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.parser.Parser
@@ -53,6 +53,14 @@ class NyaaPageProvider {
                 null
             }
         }
+
+        suspend fun runSearch(searchSpecsModel: SearchSpecsModel) = getPageItems(
+            searchSpecsModel.dataSource,
+            searchSpecsModel.pageIndex,
+            searchSpecsModel.category,
+            searchSpecsModel.searchQuery,
+            searchSpecsModel.username,
+        )
 
         suspend fun getPageItems(dataSource: ApiDataSource,
                                  pageIndex: Int,

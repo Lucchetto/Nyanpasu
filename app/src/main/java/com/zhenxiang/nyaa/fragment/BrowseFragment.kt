@@ -12,12 +12,15 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
 import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.api.*
+import com.zhenxiang.nyaa.ext.collectInLifecycle
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
+import com.zhenxiang.nyaa.viewmodel.SearchResultsViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -26,19 +29,13 @@ import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
  */
 class BrowseFragment : Fragment(), ReleaseListParent {
 
-    private lateinit var browseViewModel: DataSourceViewModel
+    private val viewModel: SearchResultsViewModel by viewModels()
 
     private lateinit var fragmentView: View
     private lateinit var searchBtn: ExtendedFloatingActionButton
 
     private var mQueuedDownload: ReleaseId? = null
     private val permissionRequestLauncher = ReleaseListParent.setupStoragePermissionRequestLauncher(this)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        browseViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,10 +59,10 @@ class BrowseFragment : Fragment(), ReleaseListParent {
 
         val releasesListAdapter = ReleasesListAdapter()
         val footerAdapter = FooterAdapter()
-        browseViewModel.resultsLiveData.observe(viewLifecycleOwner, {
+
+        viewModel.resultsFlow.collectInLifecycle(this) {
             releasesListAdapter.setItems(it)
-            footerAdapter.showLoading(!browseViewModel.endReached())
-        })
+        }
 
         val releasesList = fragmentView.findViewById<RecyclerView>(R.id.releases_list)
         val listLayoutManager = LinearLayoutManager(fragmentView.context)
@@ -77,7 +74,7 @@ class BrowseFragment : Fragment(), ReleaseListParent {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (listLayoutManager.findLastVisibleItemPosition() == releasesListAdapter.itemCount - 1) {
-                    browseViewModel.loadMore()
+                    viewModel.nextPage()
                 }
             }
         })
@@ -87,19 +84,17 @@ class BrowseFragment : Fragment(), ReleaseListParent {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 // When items are inserted at the beginning and it's the first insert make sure we jump to the top
-                if (positionStart == 0 && browseViewModel.firstInsert) {
+                if (positionStart == 0) {
                     releasesList.scrollToPosition(0)
-                    browseViewModel.firstInsert = false
                 }
             }
         })
 
         browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
             override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
-                if (browseViewModel.getCategory() != releaseCategory) {
-                    browseViewModel.setCategory(releaseCategory)
-                    browseViewModel.clearResults()
-                    browseViewModel.loadResults()
+                if (viewModel.searchSpecs.category != releaseCategory) {
+                    viewModel.searchSpecs.category = releaseCategory
+                    viewModel.loadResults()
                 }
             }
 
