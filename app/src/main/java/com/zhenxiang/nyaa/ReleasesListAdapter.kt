@@ -44,6 +44,10 @@ class ReleasesListAdapter(private val showActions: Boolean = true): RecyclerView
 
     var listener: ItemListener? = null
 
+    init {
+        stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
+    }
+
     inner class DownloadItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //private val id: TextView = view.findViewById(R.id.release_id)
         private val title: TextView = view.findViewById(R.id.release_title)

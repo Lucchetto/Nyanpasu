@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.ext.collectInLifecycle
+import com.zhenxiang.nyaa.model.SearchStatus
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
 import com.zhenxiang.nyaa.viewmodel.SearchResultsViewModel
@@ -63,6 +63,9 @@ class BrowseFragment : Fragment(), ReleaseListParent {
         viewModel.resultsFlow.collectInLifecycle(this) {
             releasesListAdapter.setItems(it)
         }
+        viewModel.searchStatusFlow.collectInLifecycle(this) {
+            footerAdapter.showLoading = it != SearchStatus.End
+        }
 
         val releasesList = fragmentView.findViewById<RecyclerView>(R.id.releases_list)
         val listLayoutManager = LinearLayoutManager(fragmentView.context)
@@ -80,12 +83,14 @@ class BrowseFragment : Fragment(), ReleaseListParent {
         })
 
         releasesListAdapter.listener = ReleaseListParent.setupReleaseListListener(this)
+        // Makes sure when items are added on top and recyclerview is on top too, the scroll position isn't changed
         releasesListAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 // When items are inserted at the beginning and it's the first insert make sure we jump to the top
-                if (positionStart == 0) {
+                if (positionStart == 0 && itemCount > 0 && !viewModel.hasScrolled) {
                     releasesList.scrollToPosition(0)
+                    viewModel.hasScrolled = true
                 }
             }
         })

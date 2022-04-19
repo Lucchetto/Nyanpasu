@@ -107,7 +107,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
         searchViewModel.resultsLiveData.observe(this, {
             resultsAdapter.setItems(it)
-            footerAdapter.showLoading(!searchViewModel.endReached())
+            footerAdapter.showLoading = searchViewModel.endReached()
         })
 
         // Handle saved instance or new instance

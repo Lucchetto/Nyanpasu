@@ -1,5 +1,6 @@
 package com.zhenxiang.nyaa.util
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,15 +9,16 @@ import com.zhenxiang.nyaa.R
 
 class FooterAdapter: RecyclerView.Adapter<FooterAdapter.ViewHolder>() {
 
-    // Hax array with single item which indicates when loading show be visible
-    // Default is true, so it's visible
-    private val footer = booleanArrayOf(true)
+    var showLoading = false
+    @SuppressLint("NotifyDataSetChanged")
+    set(value) {
+        if (value != field) {
+            field = value
+            notifyDataSetChanged()
+        }
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val loadingCircle = view.findViewById<View>(R.id.footer_loading_circle)
-        fun setVisible(visible: Boolean) {
-            loadingCircle.visibility = if (visible) View.VISIBLE else View.GONE
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,15 +28,9 @@ class FooterAdapter: RecyclerView.Adapter<FooterAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setVisible(footer[position])
     }
 
     override fun getItemCount(): Int {
-        return footer.size
-    }
-
-    fun showLoading(loading: Boolean) {
-        footer[0] = loading
-        notifyItemChanged(0)
+        return if (showLoading) 1 else 0
     }
 }

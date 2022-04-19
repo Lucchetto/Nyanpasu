@@ -23,7 +23,8 @@ class SearchResultsViewModel(
     val searchSpecs = SearchSpecsModel(dataSource = ApiDataSource.NYAA_SI)
 
     val resultsFlow = MutableStateFlow(emptyList<NyaaReleasePreview>())
-    private val searchStatusFlow = MutableStateFlow<SearchStatus>(SearchStatus.Ready)
+    val searchStatusFlow = MutableStateFlow<SearchStatus>(SearchStatus.Ready)
+    var hasScrolled: Boolean = false
 
     private var loadResultsInternalJob: Job? = null
 
@@ -38,6 +39,7 @@ class SearchResultsViewModel(
 
         loadResultsInternalJob = viewModelScope.launch(Dispatchers.Default) {
             searchSpecs.pageIndex = 1
+            hasScrolled = false
             resultsFlow.emit(emptyList())
             loadResultsInternal()
         }

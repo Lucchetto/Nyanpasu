@@ -109,7 +109,7 @@ class ReleaseTrackerDetailsActivity : AppCompatActivity(), ReleaseListParent {
 
             searchViewModel.resultsLiveData.observe(this, {
                 latestReleasesAdapter.setItems(it)
-                footerAdapter.showLoading(!searchViewModel.endReached())
+                footerAdapter.showLoading = !searchViewModel.endReached()
             })
 
             if (savedInstanceState == null) {
