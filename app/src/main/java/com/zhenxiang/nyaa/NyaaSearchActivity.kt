@@ -89,7 +89,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         val itemTouchHelper = ItemTouchHelper(swipedCallback)
         itemTouchHelper.attachToRecyclerView(searchSuggestionsList)
 
-        searchHistoryViewModel.searchHistory.observe(this, {
+        searchHistoryViewModel.searchHistory.observe(this) {
             if (it.isEmpty()) {
                 hintText.visibility = View.VISIBLE
                 searchSuggestionsTitle.visibility = View.GONE
@@ -100,7 +100,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
                 searchSuggestionsList.visibility = View.VISIBLE
             }
             suggestionsAdapter.updateList(it)
-        })
+        }
         suggestionsAdapter.listener = object: SearchHistoryAdapter.OnSuggestionActionListener {
             override fun onSuggestionSelected(suggestion: NyaaSearchHistoryItem) {
                 searchBar.setQuery(suggestion.searchQuery, true)
@@ -153,7 +153,9 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
                 if (viewModel.searchSpecs.category != releaseCategory) {
                     viewModel.searchSpecs.category = releaseCategory
-                    viewModel.loadResults()
+                    if (!viewModel.searchSpecs.searchQuery.isNullOrBlank()) {
+                        viewModel.loadResults()
+                    }
                 }
             }
 
