@@ -11,6 +11,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.SavedStateViewModelFactory
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -30,10 +32,13 @@ import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
 import com.zhenxiang.nyaa.widget.SwipedCallback
 import dev.chrisbanes.insetter.applyInsetter
+import kotlinx.coroutines.launch
 
 class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
-    private val viewModel: SearchViewModel by viewModels()
+    private val viewModel: SearchViewModel by viewModels {
+        SavedStateViewModelFactory(application, this)
+    }
 
     private lateinit var activityRoot: View
     private lateinit var searchSuggestionsContainer: View
@@ -52,6 +57,10 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
         val prefsManager = PreferenceManager.getDefaultSharedPreferences(this)
         val searchBar = findViewById<SearchView>(R.id.search_bar)
+
+        if (savedInstanceState == null) {
+            searchBar.requestFocus()
+        }
 
         resultsList = findViewById(R.id.search_results)
         if (!NavigationModeUtils.isFullGestures(this@NyaaSearchActivity)) {
@@ -113,12 +122,8 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         viewModel.searchStatusFlow.collectInLifecycle(this) {
             footerAdapter.showLoading = it != SearchStatus.End
         }
-
-        // Handle saved instance or new instance
-        if (savedInstanceState == null) {
-            searchBar.requestFocus()
-        } else {
-            setShowSuggestions(searchBar.hasFocus() || viewModel.resultsFlow.value.isEmpty())
+        viewModel.showSuggestionsFlow.collectInLifecycle(this) {
+            setShowSuggestions(it)
         }
 
         val listLayoutManager = LinearLayoutManager(this)
@@ -164,7 +169,9 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         }
 
         searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            setShowSuggestions(hasFocus || viewModel.resultsFlow.value.isEmpty())
+            lifecycleScope.launch {
+                viewModel.showSuggestionsFlow.emit(hasFocus)
+            }
         }
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -174,7 +181,6 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
                     viewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))
 
                     searchBar.clearFocus()
-                    setShowSuggestions(false)
                 }
                 return true
             }
