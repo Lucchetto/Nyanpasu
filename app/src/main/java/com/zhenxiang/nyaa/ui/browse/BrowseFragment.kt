@@ -1,4 +1,4 @@
-package com.zhenxiang.nyaa.fragment
+package com.zhenxiang.nyaa.ui.browse
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -18,9 +18,9 @@ import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.ext.collectInLifecycle
 import com.zhenxiang.nyaa.model.SearchStatus
+import com.zhenxiang.nyaa.ui.search.NyaaSearchActivity
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
-import com.zhenxiang.nyaa.viewmodel.SearchResultsViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -29,7 +29,7 @@ import com.zhenxiang.nyaa.viewmodel.SearchResultsViewModel
  */
 class BrowseFragment : Fragment(), ReleaseListParent {
 
-    private val viewModel: SearchResultsViewModel by viewModels()
+    private val viewModel: BrowseViewModel by viewModels()
 
     private lateinit var fragmentView: View
     private lateinit var searchBtn: ExtendedFloatingActionButton

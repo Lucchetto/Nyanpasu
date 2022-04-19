@@ -1,11 +1,9 @@
-package com.zhenxiang.nyaa.viewmodel
+package com.zhenxiang.nyaa.ui.browse
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.NyaaPageProvider
-import com.zhenxiang.nyaa.api.NyaaReleaseCategory
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
 import com.zhenxiang.nyaa.model.SearchSpecsModel
 import com.zhenxiang.nyaa.model.SearchStatus
@@ -17,9 +15,7 @@ import kotlinx.coroutines.launch
 /**
  * A [AndroidViewModel] which provides search results for releases
  */
-class SearchResultsViewModel(
-    application: Application,
-): AndroidViewModel(application) {
+open class BrowseViewModel(application: Application): AndroidViewModel(application) {
 
     val searchSpecs = SearchSpecsModel()
 

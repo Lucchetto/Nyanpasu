@@ -3,19 +3,14 @@ package com.zhenxiang.nyaa
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationBarView
-import com.zhenxiang.nyaa.fragment.BrowseFragment
+import com.zhenxiang.nyaa.ui.browse.BrowseFragment
 import com.zhenxiang.nyaa.fragment.LibraryFragment
 import com.zhenxiang.nyaa.fragment.ReleasesTrackerFragment
 import com.zhenxiang.nyaa.fragment.SettingsFragment
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerBgWorker
-import dev.chrisbanes.insetter.applyInsetter
 
 class MainActivity : AppCompatActivity() {
 

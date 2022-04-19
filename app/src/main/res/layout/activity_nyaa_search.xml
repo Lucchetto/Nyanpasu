@@ -13,7 +13,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context=".NyaaSearchActivity">
+    tools:context=".ui.search.NyaaSearchActivity">
 
     <com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout
         android:id="@+id/app_bar"

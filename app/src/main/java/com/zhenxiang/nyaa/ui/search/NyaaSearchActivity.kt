@@ -1,4 +1,4 @@
-package com.zhenxiang.nyaa
+package com.zhenxiang.nyaa.ui.search
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,35 +11,36 @@ import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.revengeos.revengeui.utils.NavigationModeUtils
+import com.zhenxiang.nyaa.R
+import com.zhenxiang.nyaa.ReleaseListParent
+import com.zhenxiang.nyaa.ReleasesListAdapter
 import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryItem
-import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
+import com.zhenxiang.nyaa.db.SearchViewModel
 import com.zhenxiang.nyaa.db.SearchHistoryAdapter
 import com.zhenxiang.nyaa.ext.collectInLifecycle
 import com.zhenxiang.nyaa.model.SearchStatus
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
-import com.zhenxiang.nyaa.viewmodel.SearchResultsViewModel
 import com.zhenxiang.nyaa.widget.SwipedCallback
 import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
-    private val viewModel: SearchResultsViewModel by viewModels()
-    private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
+    private val viewModel: SearchViewModel by viewModels()
 
     private lateinit var activityRoot: View
     private lateinit var searchSuggestionsContainer: View
     private lateinit var resultsList: RecyclerView
     private var mQueuedDownload: ReleaseId? = null
-    private val permissionRequestLauncher = ReleaseListParent.setupStoragePermissionRequestLauncher(this)
+    private val permissionRequestLauncher =
+        ReleaseListParent.setupStoragePermissionRequestLauncher(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +68,6 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         }
         val resultsAdapter = ReleasesListAdapter()
         val footerAdapter = FooterAdapter()
-        searchHistoryViewModel = ViewModelProvider(this).get(NyaaSearchHistoryViewModel::class.java)
 
         val hintText = findViewById<View>(R.id.search_hint)
         searchSuggestionsContainer = findViewById<View>(R.id.suggestions_container)
@@ -82,14 +82,14 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         swipedCallback.listener = object: SwipedCallback.ItemDeleteListener {
             override fun onDeleteItem(position: Int) {
                 suggestionsAdapter.getItem(position)?.let {
-                    searchHistoryViewModel.delete(it)
+                    viewModel.delete(it)
                 }
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipedCallback)
         itemTouchHelper.attachToRecyclerView(searchSuggestionsList)
 
-        searchHistoryViewModel.searchHistory.observe(this) {
+        viewModel.searchHistory.observe(this) {
             if (it.isEmpty()) {
                 hintText.visibility = View.VISIBLE
                 searchSuggestionsTitle.visibility = View.GONE
@@ -171,7 +171,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
                 query?.let {
                     viewModel.searchSpecs.searchQuery = it
                     viewModel.loadResults()
-                    searchHistoryViewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))
+                    viewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))
 
                     searchBar.clearFocus()
                     setShowSuggestions(false)
@@ -180,7 +180,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                searchHistoryViewModel.searchHistoryFilter.value = newText
+                viewModel.searchHistoryFilter.value = newText
                 return true
             }
 

@@ -7,7 +7,7 @@
     android:id="@+id/browse_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.BrowseFragment">
+    tools:context=".ui.browse.BrowseFragment">
 
     <com.zhenxiang.nyaa.widget.EdgeToEdgeAppBarLayout
         android:id="@+id/app_bar"

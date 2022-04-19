@@ -1,14 +1,14 @@
 package com.zhenxiang.nyaa.db
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.zhenxiang.nyaa.ui.browse.BrowseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class NyaaSearchHistoryViewModel(application: Application): AndroidViewModel(application) {
+class SearchViewModel(application: Application): BrowseViewModel(application) {
     private val dao = NyaaDb(application.applicationContext).nyaaSearchHistoryDao()
 
     val searchHistoryFilter = MutableLiveData<String>()
