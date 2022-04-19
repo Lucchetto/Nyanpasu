@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.WindowCompat
@@ -22,14 +22,17 @@ import com.zhenxiang.nyaa.api.*
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryItem
 import com.zhenxiang.nyaa.db.NyaaSearchHistoryViewModel
 import com.zhenxiang.nyaa.db.SearchHistoryAdapter
+import com.zhenxiang.nyaa.ext.collectInLifecycle
+import com.zhenxiang.nyaa.model.SearchStatus
 import com.zhenxiang.nyaa.util.FooterAdapter
 import com.zhenxiang.nyaa.view.BrowsingSpecsSelectorView
+import com.zhenxiang.nyaa.viewmodel.SearchResultsViewModel
 import com.zhenxiang.nyaa.widget.SwipedCallback
 import dev.chrisbanes.insetter.applyInsetter
 
 class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
-    private lateinit var searchViewModel: DataSourceViewModel
+    private val viewModel: SearchResultsViewModel by viewModels()
     private lateinit var searchHistoryViewModel: NyaaSearchHistoryViewModel
 
     private lateinit var activityRoot: View
@@ -64,7 +67,6 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         }
         val resultsAdapter = ReleasesListAdapter()
         val footerAdapter = FooterAdapter()
-        searchViewModel = ViewModelProvider(this).get(DataSourceViewModel::class.java)
         searchHistoryViewModel = ViewModelProvider(this).get(NyaaSearchHistoryViewModel::class.java)
 
         val hintText = findViewById<View>(R.id.search_hint)
@@ -105,17 +107,18 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             }
         }
 
-        searchViewModel.resultsLiveData.observe(this, {
+        viewModel.resultsFlow.collectInLifecycle(this) {
             resultsAdapter.setItems(it)
-            footerAdapter.showLoading = searchViewModel.endReached()
-        })
+        }
+        viewModel.searchStatusFlow.collectInLifecycle(this) {
+            footerAdapter.showLoading = it != SearchStatus.End
+        }
 
         // Handle saved instance or new instance
         if (savedInstanceState == null) {
-            searchViewModel.setSearchText(null)
             searchBar.requestFocus()
         } else {
-            setShowSuggestions(searchBar.hasFocus() || searchViewModel.firstInsert)
+            setShowSuggestions(searchBar.hasFocus() || viewModel.resultsFlow.value.isEmpty())
         }
 
         val listLayoutManager = LinearLayoutManager(this)
@@ -127,7 +130,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (listLayoutManager.findLastVisibleItemPosition() == resultsAdapter.itemCount - 1) {
-                    searchViewModel.loadMore()
+                    viewModel.nextPage()
                 }
             }
         })
@@ -138,18 +141,20 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 // When items are inserted at the beginning and it's the first insert make sure we jump to the top
-                if (positionStart == 0 && itemCount > 0 && searchViewModel.firstInsert) {
+                if (positionStart == 0 && itemCount > 0 && !viewModel.hasScrolled) {
                     resultsList.scrollToPosition(0)
-                    searchViewModel.firstInsert = false
+                    viewModel.hasScrolled = true
                 }
             }
         })
-
         val browsingSpecsSelectorView = findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
         browsingSpecsSelectorView.selectDataSource(0)
         browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
             override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
-                searchViewModel.setCategory(releaseCategory)
+                if (viewModel.searchSpecs.category != releaseCategory) {
+                    viewModel.searchSpecs.category = releaseCategory
+                    viewModel.loadResults()
+                }
             }
 
             override fun dataSourceChanged(apiDataSource: ApiDataSource) {
@@ -157,15 +162,13 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         }
 
         searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            setShowSuggestions(hasFocus || searchViewModel.firstInsert)
+            setShowSuggestions(hasFocus || viewModel.resultsFlow.value.isEmpty())
         }
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                    // Clear results so it will show loading status
-                    searchViewModel.clearResults()
-                    searchViewModel.setSearchText(it)
-                    searchViewModel.loadResults()
+                    viewModel.searchSpecs.searchQuery = it
+                    viewModel.loadResults()
                     searchHistoryViewModel.insert(NyaaSearchHistoryItem(it, System.currentTimeMillis()))
 
                     searchBar.clearFocus()
