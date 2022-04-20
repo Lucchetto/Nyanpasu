@@ -41,6 +41,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
     }
 
     private lateinit var activityRoot: View
+    private lateinit var searchBar: SearchView
     private lateinit var searchSuggestionsContainer: View
     private lateinit var resultsList: RecyclerView
     private var mQueuedDownload: ReleaseId? = null
@@ -54,10 +55,9 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         activityRoot = findViewById(R.id.search_activity_root)
+        searchBar = findViewById(R.id.search_bar)
 
         val prefsManager = PreferenceManager.getDefaultSharedPreferences(this)
-        val searchBar = findViewById<SearchView>(R.id.search_bar)
-
         if (savedInstanceState == null) {
             searchBar.requestFocus()
         }
@@ -98,6 +98,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         val itemTouchHelper = ItemTouchHelper(swipedCallback)
         itemTouchHelper.attachToRecyclerView(searchSuggestionsList)
 
+        viewModel.searchSpecs.searchQuery = savedInstanceState?.getString(SEARCH_QUERY_TEXT_KEY)
         viewModel.searchHistory.observe(this) {
             if (it.isEmpty()) {
                 hintText.visibility = View.VISIBLE
@@ -153,7 +154,6 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             }
         })
         val browsingSpecsSelectorView = findViewById<BrowsingSpecsSelectorView>(R.id.browsing_specs_selector)
-        browsingSpecsSelectorView.selectDataSource(0)
         browsingSpecsSelectorView.listener = object: BrowsingSpecsSelectorView.OnSpecsChangedListener {
             override fun releaseCategoryChanged(releaseCategory: ReleaseCategory) {
                 if (viewModel.searchSpecs.category != releaseCategory) {
@@ -168,9 +168,16 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             }
         }
 
+        if (savedInstanceState == null) {
+            browsingSpecsSelectorView.selectDataSource(0)
+        }
+
         searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
             lifecycleScope.launch {
-                viewModel.showSuggestionsFlow.emit(hasFocus)
+                viewModel.showSuggestionsFlow.emit(
+                    hasFocus ||
+                            (viewModel.resultsFlow.value.isEmpty() && viewModel.searchStatusFlow.value != SearchStatus.Loading)
+                )
             }
         }
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -191,6 +198,13 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             }
 
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        searchBar.query?.let {
+            outState.putString(SEARCH_QUERY_TEXT_KEY, it.toString())
+        }
+        super.onSaveInstanceState(outState)
     }
 
     private fun setShowSuggestions(value: Boolean) {
@@ -269,5 +283,9 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
 
     override fun storagePermissionRequestLauncher(): ActivityResultLauncher<String> {
         return permissionRequestLauncher
+    }
+
+    companion object {
+        private const val SEARCH_QUERY_TEXT_KEY = "search_query_text"
     }
 }
