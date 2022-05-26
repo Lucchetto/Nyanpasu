@@ -129,7 +129,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
         val releaseTrackerFragmentSharedViewModel = ViewModelProvider(this).get(ReleaseTrackerFragmentSharedViewModel::class.java)
 
         manageTrackerBtn = findViewById(R.id.add_to_tracker)
-        releaseTrackerFragmentSharedViewModel.currentUserTracked.observe(this) {
+        releaseTrackerFragmentSharedViewModel.currentUserTracked.collectInLifecycle(this) {
             setButtonTracked(it)
         }
 
@@ -340,9 +340,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
                 val isTracked = details.user?.let { trackedUser ->
                     releasesTrackerViewModel.getTrackerByUsername(trackedUser, details.releaseId.dataSource) != null
                 }
-                withContext(Dispatchers.Main) {
-                    releaseTrackerFragmentSharedViewModel.currentUserTracked.value = isTracked == true
-                }
+                releaseTrackerFragmentSharedViewModel.currentUserTracked.tryEmit(isTracked == true)
                 setupTrackerButton(details)
             }
         }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -15,12 +14,14 @@ import com.zhenxiang.nyaa.CreateTrackerActivity
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.api.ApiDataSource
 import com.zhenxiang.nyaa.api.DataSourceSpecs
-import com.zhenxiang.nyaa.api.NyaaReleaseCategory
+import com.zhenxiang.nyaa.ext.collectInLifecycle
+import com.zhenxiang.nyaa.ext.latestValue
 import com.zhenxiang.nyaa.releasetracker.ReleaseTrackerViewModel
 import com.zhenxiang.nyaa.releasetracker.SubscribedTracker
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
 private const val ARG_DATASOURCE = "dataSource"
@@ -56,11 +57,9 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
         val trackAllDesc = fragmentView.findViewById<TextView>(R.id.track_all_desc)
         trackAllFromUser.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
-                if (releaseTrackerFragmentSharedViewModel.currentUserTracked.value == true) {
+                if (releaseTrackerFragmentSharedViewModel.currentUserTracked.latestValue == true) {
                     releasesTrackerViewModel.deleteTrackedUser(username)
-                    withContext(Dispatchers.Main) {
-                        releaseTrackerFragmentSharedViewModel.currentUserTracked.value = false
-                    }
+                    releaseTrackerFragmentSharedViewModel.currentUserTracked.emit(false)
                 } else {
                     val newTracked = SubscribedTracker(
                         dataSourceSpecs = DataSourceSpecs(dataSource, dataSource.categories[0]),
@@ -68,15 +67,14 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
                         latestReleaseTimestamp = latestTimestamp,
                         createdTimestamp = System.currentTimeMillis())
                     releasesTrackerViewModel.addReleaseTracker(newTracked)
-                    withContext(Dispatchers.Main) {
-                        releaseTrackerFragmentSharedViewModel.currentUserTracked.value = true
-                    }
+
+                    releaseTrackerFragmentSharedViewModel.currentUserTracked.emit(true)
                     dismiss()
                 }
             }
         }
 
-        releaseTrackerFragmentSharedViewModel.currentUserTracked.observe(viewLifecycleOwner) {
+        releaseTrackerFragmentSharedViewModel.currentUserTracked.collectInLifecycle(viewLifecycleOwner) {
             trackAllTitle.text = getString(if (it) R.string.untrack_all_from_user_title else R.string.track_all_from_user_title)
             trackAllDesc.text = getString(if (it) R.string.untrack_all_from_user_desc else R.string.track_all_from_user_desc)
         }
@@ -108,6 +106,10 @@ class ReleaseTrackerBottomFragment : BottomSheetDialogFragment() {
 // Shared between activity and fragment
 class ReleaseTrackerFragmentSharedViewModel : ViewModel() {
     // First value must be set by parent activity
-    val currentUserTracked = MutableLiveData<Boolean>()
+    val currentUserTracked = MutableSharedFlow<Boolean>(
+        replay = 1,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_LATEST,
+    )
 }
 
