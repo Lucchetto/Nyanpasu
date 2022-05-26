@@ -1,7 +1,7 @@
 package com.zhenxiang.nyaa.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NyaaSearchHistoryDao {
@@ -10,7 +10,7 @@ interface NyaaSearchHistoryDao {
     fun insert(item: NyaaSearchHistoryItem)
 
     @Query("SELECT * FROM nyaasearchhistoryitem ORDER BY searchTimestamp DESC")
-    fun getAllLive(): LiveData<List<NyaaSearchHistoryItem>>
+    fun getAllFlow(): Flow<List<NyaaSearchHistoryItem>>
 
     @Query("DELETE FROM nyaasearchhistoryitem WHERE searchQuery NOT IN (SELECT searchQuery FROM nyaasearchhistoryitem ORDER BY searchTimestamp DESC LIMIT 25)")
     fun deleteExcessiveRecents(): Int

@@ -99,7 +99,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
         itemTouchHelper.attachToRecyclerView(searchSuggestionsList)
 
         viewModel.searchSpecs.searchQuery = savedInstanceState?.getString(SEARCH_QUERY_TEXT_KEY)
-        viewModel.searchHistory.observe(this) {
+        viewModel.searchHistory.collectInLifecycle(this) {
             if (it.isEmpty()) {
                 hintText.visibility = View.VISIBLE
                 searchSuggestionsTitle.visibility = View.GONE
@@ -193,7 +193,7 @@ class NyaaSearchActivity : AppCompatActivity(), ReleaseListParent {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.searchHistoryFilter.value = newText
+                viewModel.searchHistoryFilter.tryEmit(newText)
                 return true
             }
 

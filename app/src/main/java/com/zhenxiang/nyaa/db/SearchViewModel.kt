@@ -1,15 +1,13 @@
 package com.zhenxiang.nyaa.db
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.zhenxiang.nyaa.ext.getNonNull
 import com.zhenxiang.nyaa.ui.browse.BrowseViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -18,26 +16,26 @@ class SearchViewModel(
 ): BrowseViewModel(application) {
     private val dao = NyaaDb(application.applicationContext).nyaaSearchHistoryDao()
 
-    val searchHistoryFilter = MutableLiveData<String>()
-    // Source of data
-    private val preFilterSearchHistory = dao.getAllLive()
+    val searchHistoryFilter = MutableSharedFlow<String?>(
+        replay = 1,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_LATEST,
+    ).apply {
+        // Required to emit value for searchHistory on start
+        tryEmit(null)
+    }
 
     val showSuggestionsFlow = MutableStateFlow(state.getNonNull(SHOW_SUGGESTIONS_KEY, true))
 
-    val searchHistory = Transformations.switchMap(searchHistoryFilter) { query ->
+    val searchHistory = combine(dao.getAllFlow(), searchHistoryFilter) { history ,query ->
         if (query.isNullOrBlank()) {
-            preFilterSearchHistory
+            history
         } else {
-            Transformations.map(preFilterSearchHistory) {
-                it.filter { item -> item.searchQuery.contains(query, true) }
-            }
+            history.filter { it.searchQuery.contains(query, true) }
         }
     }
 
     init {
-        // Required to emit value for searchHistory on start
-        searchHistoryFilter.value = null
-
         viewModelScope.launch(Dispatchers.Default) {
             showSuggestionsFlow.collect {
                 state.set(SHOW_SUGGESTIONS_KEY, it)
