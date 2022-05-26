@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 class SavedReleasesFragment: ViewedReleasesFragment() {
 
@@ -11,11 +13,11 @@ class SavedReleasesFragment: ViewedReleasesFragment() {
         return false
     }
 
-    override fun liveDataSource(): LiveData<List<NyaaReleasePreview>> {
+    override fun liveDataSource(): Flow<List<NyaaReleasePreview>> {
         return localNyaaDbViewModel.savedReleases
     }
 
-    override fun searchQueryLiveData(): MutableLiveData<String> {
+    override fun searchQueryFlow(): MutableSharedFlow<String?> {
         return localNyaaDbViewModel.savedReleasesSearchFilter
     }
 

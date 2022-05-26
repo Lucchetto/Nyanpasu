@@ -9,8 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,9 +17,13 @@ import com.zhenxiang.nyaa.*
 import com.zhenxiang.nyaa.api.ReleaseId
 import com.zhenxiang.nyaa.db.LocalNyaaDbViewModel
 import com.zhenxiang.nyaa.db.NyaaReleasePreview
+import com.zhenxiang.nyaa.ext.collectInLifecycle
+import com.zhenxiang.nyaa.ext.latestValue
 import com.zhenxiang.nyaa.widget.ReleaseItemAnimator
 import com.zhenxiang.nyaa.widget.SwipedCallback
 import dev.chrisbanes.insetter.applyInsetter
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
 
@@ -70,11 +72,11 @@ open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
         localNyaaDbViewModel = ViewModelProvider(this).get(LocalNyaaDbViewModel::class.java)
         val releasesListAdapter = ReleasesListAdapter()
 
-        liveDataSource().observe(viewLifecycleOwner, {
+        liveDataSource().collectInLifecycle(viewLifecycleOwner) {
             // Show empty hint when data source is empty and search query is empty as well
-            emptyViewHint.visibility = if (it.isEmpty() && searchQueryLiveData().value.isNullOrEmpty()) View.VISIBLE else View.GONE
+            emptyViewHint.visibility = if (it.isEmpty() && searchQueryFlow().latestValue.isNullOrEmpty()) View.VISIBLE else View.GONE
             releasesListAdapter.setItems(it)
-        })
+        }
 
         /*searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -125,16 +127,16 @@ open class ViewedReleasesFragment : Fragment(), ReleaseListParent {
         return ItemTouchHelper.LEFT
     }
 
-    open fun liveDataSource(): LiveData<List<NyaaReleasePreview>> {
+    open fun liveDataSource(): Flow<List<NyaaReleasePreview>> {
         return localNyaaDbViewModel.viewedReleases
     }
 
-    open fun searchQueryLiveData(): MutableLiveData<String> {
+    open fun searchQueryFlow(): MutableSharedFlow<String?> {
         return localNyaaDbViewModel.viewedReleasesSearchFilter
     }
 
     fun setSearchQuery(query: String?) {
-        searchQueryLiveData().value = query
+        searchQueryFlow().tryEmit(query)
     }
 
     open fun emptyViewStringRes(): Int {

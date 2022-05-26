@@ -1,19 +1,19 @@
 package com.zhenxiang.nyaa.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.zhenxiang.nyaa.api.ApiDataSource
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SavedNyaaReleaseDao {
 
     // Order from most recent
     @Query("SELECT * FROM savednyaarelease ORDER BY savedTimestamp DESC")
-    fun getAll(): LiveData<List<SavedNyaaRelease>>
+    fun getAll(): Flow<List<SavedNyaaRelease>>
 
     // Order from most recent
     @Query("SELECT * From savednyaarelease INNER JOIN nyaareleasepreview ON number=parent_number AND dataSource=parent_dataSource ORDER BY savedTimestamp DESC")
-    fun getAllWithDetails(): LiveData<List<SavedNyaaReleaseWithDetails>>
+    fun getAllWithDetails(): Flow<List<SavedNyaaReleaseWithDetails>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(release: SavedNyaaRelease)
