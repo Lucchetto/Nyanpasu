@@ -6,8 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
-import androidx.preference.SwitchPreferenceCompat
 import com.zhenxiang.nyaa.R
 import com.zhenxiang.nyaa.util.UIModeUtils
 
@@ -15,11 +13,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onDestroy() {
-        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
         super.onDestroy()
     }
 
@@ -27,13 +25,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
     }
 
-    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        if (preference?.key == requireContext().getString(R.string.open_discord_key)) {
+    override fun onPreferenceTreeClick(preference: Preference): Boolean {
+        if (preference.key == requireContext().getString(R.string.open_discord_key)) {
             try {
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = Uri.parse("https://discord.gg/PDJVtsHJMc")
                 startActivity(intent)
-            } catch (e: Exception) {}
+            } catch (_: Exception) {}
         }
         return super.onPreferenceTreeClick(preference)
     }

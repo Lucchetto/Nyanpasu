@@ -267,6 +267,7 @@ class CreateTrackerActivity : AppCompatActivity() {
             when (status) {
                 Status.VALIDATED_EMPTY -> hintText.text = getString(R.string.no_releases_found_for_tracker_hint)
                 Status.TO_VALIDATE -> hintText.text = getString(R.string.create_tracker_hint)
+                else -> Unit
             }
         } else {
             hintText.visibility = View.GONE
@@ -285,6 +286,7 @@ class CreateTrackerActivity : AppCompatActivity() {
                 Status.FAILED -> errorHint.text = getString(R.string.tracker_validation_failed_error)
                 Status.FAILED_USER_NOT_FOUND -> errorHint.text = getString(R.string.tracker_validation_user_not_found)
                 Status.FAILED_ALREADY_EXISTS -> errorHint.text = getString(R.string.tracker_already_exists_error)
+                else -> Unit
             }
         } else {
             errorHint.visibility = View.GONE

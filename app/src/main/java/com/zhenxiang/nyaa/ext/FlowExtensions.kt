@@ -18,7 +18,7 @@ inline fun <T> Flow<T>.collectInScope(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         crossinline action: suspend (value: T) -> Unit,
 ) = coroutineScope.launch(dispatcher) {
-        collect(action)
+        collect { action(it) }
 }
 
 inline fun <T> Flow<T>.collectInLifecycle(
