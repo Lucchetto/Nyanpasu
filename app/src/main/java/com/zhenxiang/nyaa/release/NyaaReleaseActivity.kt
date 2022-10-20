@@ -269,7 +269,7 @@ class NyaaReleaseActivity : AppCompatActivity() {
         }
 
         val commentsSheetToolbar = findViewById<Toolbar>(R.id.comments_sheet_toolbar)
-        val commentsSortingMenuBtn = commentsSheetToolbar.menu.findItem(R.id.comments_sorting).actionView
+        val commentsSortingMenuBtn = commentsSheetToolbar.menu.findItem(R.id.comments_sorting).actionView!!
         val commentsSortingSpinner = commentsSortingMenuBtn.findViewById<Spinner>(R.id.comments_sorting_spinner)
         commentsSortingSpinner.adapter = commentsSortingOptions
         commentsSortingSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {

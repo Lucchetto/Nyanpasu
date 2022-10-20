@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.zhenxiang.nyaa"
         minSdk 21
-        targetSdk 31
+        targetSdk 33
         versionCode 8
         versionName "0.7"
 
